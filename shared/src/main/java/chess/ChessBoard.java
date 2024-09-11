@@ -12,7 +12,7 @@ public class ChessBoard {
         
     }
 
-    ChessPiece[] pieces = new ChessPiece[16];
+    ChessPiece[][] chessBoard = new ChessPiece[8][8];
 
     /**
      * Adds a chess piece to the chessboard
@@ -22,12 +22,7 @@ public class ChessBoard {
      */
     public void addPiece(ChessPosition position, ChessPiece piece) {
         //throw new RuntimeException("Not implemented");
-        for (ChessPiece chessPiece : pieces) {
-            if (chessPiece == null) {
-                chessPiece = piece;
-                break;
-            }
-        }
+        chessBoard[position.getRow()][position.getColumn()] = piece;
     }
 
     /**
