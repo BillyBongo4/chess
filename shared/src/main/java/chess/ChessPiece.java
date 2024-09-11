@@ -10,7 +10,11 @@ import java.util.Collection;
  */
 public class ChessPiece {
 
-    public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+    ChessGame.TeamColor pieceColor;
+    PieceType type;
+    public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
+        this.pieceColor = pieceColor;
+        this.type = type;
     }
 
     /**
@@ -29,14 +33,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return pieceColor;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
     /**
@@ -47,6 +51,53 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = new java.util.ArrayList<>();
+        if (type == PieceType.BISHOP) {
+            int modifier = 1;
+            while (true) { //Check diagonal right up
+                ChessPosition currPosition = new ChessPosition(myPosition.getRow() + modifier,
+                        myPosition.getColumn() + modifier);
+                if (currPosition.getRow() >= 8 || currPosition.getColumn() >= 8 || board.getPiece(currPosition) != null) {
+                    break;
+                }
+                ChessMove move = new ChessMove(myPosition, currPosition, null);
+                moves.add(move);
+                modifier++;
+            }
+            modifier = 1;
+            while (true) { //Check diagonal right down
+                ChessPosition currPosition = new ChessPosition(myPosition.getRow() - modifier,
+                        myPosition.getColumn() + modifier);
+                if (currPosition.getRow() < 1 || currPosition.getColumn() >= 8 || board.getPiece(currPosition) != null) {
+                    break;
+                }
+                ChessMove move = new ChessMove(myPosition, currPosition, null);
+                moves.add(move);
+                modifier++;
+            }
+            modifier = 1;
+            while (true) { //Check diagonal left up
+                ChessPosition currPosition = new ChessPosition(myPosition.getRow() + modifier,
+                        myPosition.getColumn() - modifier);
+                if (currPosition.getRow() >= 8 || currPosition.getColumn() < 1 || board.getPiece(currPosition) != null) {
+                    break;
+                }
+                ChessMove move = new ChessMove(myPosition, currPosition, null);
+                moves.add(move);
+                modifier++;
+            }
+            modifier = 1;
+            while (true) { //Check diagonal left down
+                ChessPosition currPosition = new ChessPosition(myPosition.getRow() - modifier,
+                        myPosition.getColumn() - modifier);
+                if (currPosition.getRow() < 1 || currPosition.getColumn() >= 8 || board.getPiece(currPosition) != null) {
+                    break;
+                }
+                ChessMove move = new ChessMove(myPosition, currPosition, null);
+                moves.add(move);
+                modifier++;
+            }
+        }
+        return moves;
     }
 }
