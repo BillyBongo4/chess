@@ -84,91 +84,37 @@ public class ChessPiece {
                     }
                 }
             }
-            /*int modifier = 1;
-            while (true) { //Check diagonal right up
-                ChessPosition currPosition = new ChessPosition(myPosition.getRow() + modifier,
-                        myPosition.getColumn() + modifier);
-                if (currPosition.getRow() > 8 || currPosition.getColumn() > 8) {
-                    break;
-                }
-                if (board.getPiece(currPosition) != null) {
-                    if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
-                        break;
-                    }
-                }
+        }
+        else if (type == PieceType.KING) {
+            int rowMod = 1;
+            for (int i = 0; i < 3; i++) {
+                int colMod = 1;
+                for (int j = 0; j < 3; j++) {
+                    ChessPosition currPosition = new ChessPosition(myPosition.getRow() + rowMod,
+                            myPosition.getColumn() + colMod);
 
-                ChessMove move = new ChessMove(myPosition, currPosition, null);
-                moves.add(move);
-                modifier++;
-                if (board.getPiece(currPosition) != null) {
-                    if (board.getPiece(currPosition).getTeamColor() != getTeamColor()) {
-                        break;
+                    if (currPosition.getRow() > 8 || currPosition.getRow() < 1) { break; }
+                    if (currPosition.getColumn() <= 8 && currPosition.getColumn() >= 1
+                            && currPosition != myPosition) {
+                        if (board.getPiece(currPosition) != null) {
+                            if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
+                                break;
+                            }
+                        }
+                        ChessMove move = new ChessMove(myPosition, currPosition, null);
+                        moves.add(move);
                     }
+
+                    colMod--;
+
+                    /*if (board.getPiece(currPosition) != null) {
+                        if (board.getPiece(currPosition).getTeamColor() != getTeamColor()) {
+                            break;
+                        }
+                    }*/
                 }
+                rowMod--;
             }
-            modifier = 1;
-            while (true) { //Check diagonal right down
-                ChessPosition currPosition = new ChessPosition(myPosition.getRow() - modifier,
-                        myPosition.getColumn() + modifier);
-                if (currPosition.getRow() < 1 || currPosition.getColumn() > 8) {
-                    break;
-                }
-                if (board.getPiece(currPosition) != null) {
-                    if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
-                        break;
-                    }
-                }
-                ChessMove move = new ChessMove(myPosition, currPosition, null);
-                moves.add(move);
-                modifier++;
-                if (board.getPiece(currPosition) != null) {
-                    if (board.getPiece(currPosition).getTeamColor() != getTeamColor()) {
-                        break;
-                    }
-                }
-            }
-            modifier = 1;
-            while (true) { //Check diagonal left up
-                ChessPosition currPosition = new ChessPosition(myPosition.getRow() + modifier,
-                        myPosition.getColumn() - modifier);
-                if (currPosition.getRow() > 8 || currPosition.getColumn() < 1) {
-                    break;
-                }
-                if (board.getPiece(currPosition) != null) {
-                    if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
-                        break;
-                    }
-                }
-                ChessMove move = new ChessMove(myPosition, currPosition, null);
-                moves.add(move);
-                modifier++;
-                if (board.getPiece(currPosition) != null) {
-                    if (board.getPiece(currPosition).getTeamColor() != getTeamColor()) {
-                        break;
-                    }
-                }
-            }
-            modifier = 1;
-            while (true) { //Check diagonal left down
-                ChessPosition currPosition = new ChessPosition(myPosition.getRow() - modifier,
-                        myPosition.getColumn() - modifier);
-                if (currPosition.getRow() < 1 || currPosition.getColumn() < 1) {
-                    break;
-                }
-                if (board.getPiece(currPosition) != null) {
-                    if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
-                        break;
-                    }
-                }
-                ChessMove move = new ChessMove(myPosition, currPosition, null);
-                moves.add(move);
-                modifier++;
-                if (board.getPiece(currPosition) != null) {
-                    if (board.getPiece(currPosition).getTeamColor() != getTeamColor()) {
-                        break;
-                    }
-                }
-            }*/
         }
         return moves;
     }
