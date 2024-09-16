@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -51,7 +52,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new java.util.ArrayList<>();
+        Collection<ChessMove> moves = new ArrayList<>();
         if (type == PieceType.BISHOP) {
             int modifier = 1;
             while (true) { //Check diagonal right up
@@ -97,6 +98,9 @@ public class ChessPiece {
                 moves.add(move);
                 modifier++;
             }
+        }
+        else if (type == PieceType.ROOK) {
+
         }
         return moves;
     }
