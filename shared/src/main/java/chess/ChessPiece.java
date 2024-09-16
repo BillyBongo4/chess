@@ -58,7 +58,7 @@ public class ChessPiece {
             while (true) { //Check diagonal right up
                 ChessPosition currPosition = new ChessPosition(myPosition.getRow() + modifier,
                         myPosition.getColumn() + modifier);
-                if (currPosition.getRow() >= 8 || currPosition.getColumn() >= 8 || board.getPiece(currPosition) != null) {
+                if (currPosition.getRow() > 8 || currPosition.getColumn() > 8 || board.getPiece(currPosition) != null) {
                     break;
                 }
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
@@ -69,7 +69,7 @@ public class ChessPiece {
             while (true) { //Check diagonal right down
                 ChessPosition currPosition = new ChessPosition(myPosition.getRow() - modifier,
                         myPosition.getColumn() + modifier);
-                if (currPosition.getRow() < 1 || currPosition.getColumn() >= 8 || board.getPiece(currPosition) != null) {
+                if (currPosition.getRow() < 1 || currPosition.getColumn() > 8 || board.getPiece(currPosition) != null) {
                     break;
                 }
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
@@ -80,7 +80,7 @@ public class ChessPiece {
             while (true) { //Check diagonal left up
                 ChessPosition currPosition = new ChessPosition(myPosition.getRow() + modifier,
                         myPosition.getColumn() - modifier);
-                if (currPosition.getRow() >= 8 || currPosition.getColumn() < 1 || board.getPiece(currPosition) != null) {
+                if (currPosition.getRow() > 8 || currPosition.getColumn() < 1 || board.getPiece(currPosition) != null) {
                     break;
                 }
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
@@ -91,7 +91,7 @@ public class ChessPiece {
             while (true) { //Check diagonal left down
                 ChessPosition currPosition = new ChessPosition(myPosition.getRow() - modifier,
                         myPosition.getColumn() - modifier);
-                if (currPosition.getRow() < 1 || currPosition.getColumn() >= 8 || board.getPiece(currPosition) != null) {
+                if (currPosition.getRow() < 1 || currPosition.getColumn() < 1 || board.getPiece(currPosition) != null) {
                     break;
                 }
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
@@ -103,5 +103,25 @@ public class ChessPiece {
 
         }
         return moves;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) { return true; }
+        if (object == null || getClass() != object.getClass()) { return false; }
+        ChessPiece piece = (ChessPiece) object;
+        return (pieceColor.equals(piece.pieceColor) && type.equals(piece.type));
+    }
+
+    @Override
+    public int hashCode() {
+        var typeCode = (type == null ? 9 : type.ordinal());
+        var colorCode = (type == null ? 7 : pieceColor.ordinal());
+        return (71 * colorCode) + typeCode;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s:%s", pieceColor.toString(), type.toString());
     }
 }
