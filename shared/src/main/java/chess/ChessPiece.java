@@ -54,7 +54,37 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         Collection<ChessMove> moves = new ArrayList<>();
         if (type == PieceType.BISHOP) {
-            int modifier = 1;
+            for (int i = 0; i < 4; i++) {
+                int modifier = 1;
+                while (true) {
+                    int rowMod = modifier;
+                    int colMod = modifier;
+                    if (i == 1 || i == 3) { rowMod *= -1; }
+                    if (i == 2 || i == 3) { colMod *= -1; }
+
+                    ChessPosition currPosition = new ChessPosition(myPosition.getRow() + rowMod,
+                            myPosition.getColumn() + colMod);
+
+                    if (currPosition.getRow() > 8 || currPosition.getRow() < 1) { break; }
+                    if (currPosition.getColumn() > 8 || currPosition.getColumn() < 1) { break; }
+                    if (board.getPiece(currPosition) != null) {
+                        if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
+                            break;
+                        }
+                    }
+
+                    ChessMove move = new ChessMove(myPosition, currPosition, null);
+                    moves.add(move);
+                    modifier++;
+
+                    if (board.getPiece(currPosition) != null) {
+                        if (board.getPiece(currPosition).getTeamColor() != getTeamColor()) {
+                            break;
+                        }
+                    }
+                }
+            }
+            /*int modifier = 1;
             while (true) { //Check diagonal right up
                 ChessPosition currPosition = new ChessPosition(myPosition.getRow() + modifier,
                         myPosition.getColumn() + modifier);
@@ -138,10 +168,7 @@ public class ChessPiece {
                         break;
                     }
                 }
-            }
-        }
-        else if (type == PieceType.ROOK) {
-
+            }*/
         }
         return moves;
     }
