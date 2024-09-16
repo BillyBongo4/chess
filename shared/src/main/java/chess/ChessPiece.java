@@ -93,25 +93,22 @@ public class ChessPiece {
                     ChessPosition currPosition = new ChessPosition(myPosition.getRow() + rowMod,
                             myPosition.getColumn() + colMod);
 
+                    boolean validSpace = true;
                     if (currPosition.getRow() > 8 || currPosition.getRow() < 1) { break; }
                     if (currPosition.getColumn() <= 8 && currPosition.getColumn() >= 1
                             && currPosition != myPosition) {
                         if (board.getPiece(currPosition) != null) {
                             if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
-                                break;
+                                validSpace = false;
                             }
                         }
-                        ChessMove move = new ChessMove(myPosition, currPosition, null);
-                        moves.add(move);
+                        if (validSpace) {
+                            ChessMove move = new ChessMove(myPosition, currPosition, null);
+                            moves.add(move);
+                        }
                     }
 
                     colMod--;
-
-                    /*if (board.getPiece(currPosition) != null) {
-                        if (board.getPiece(currPosition).getTeamColor() != getTeamColor()) {
-                            break;
-                        }
-                    }*/
                 }
                 rowMod--;
             }
