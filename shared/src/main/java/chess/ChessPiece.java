@@ -70,6 +70,11 @@ public class ChessPiece {
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
                 moves.add(move);
                 modifier++;
+                if (board.getPiece(currPosition) != null) {
+                    if (board.getPiece(currPosition).getTeamColor() != getTeamColor()) {
+                        break;
+                    }
+                }
             }
             modifier = 1;
             while (true) { //Check diagonal right down
@@ -86,6 +91,11 @@ public class ChessPiece {
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
                 moves.add(move);
                 modifier++;
+                if (board.getPiece(currPosition) != null) {
+                    if (board.getPiece(currPosition).getTeamColor() != getTeamColor()) {
+                        break;
+                    }
+                }
             }
             modifier = 1;
             while (true) { //Check diagonal left up
@@ -102,6 +112,11 @@ public class ChessPiece {
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
                 moves.add(move);
                 modifier++;
+                if (board.getPiece(currPosition) != null) {
+                    if (board.getPiece(currPosition).getTeamColor() != getTeamColor()) {
+                        break;
+                    }
+                }
             }
             modifier = 1;
             while (true) { //Check diagonal left down
@@ -118,6 +133,11 @@ public class ChessPiece {
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
                 moves.add(move);
                 modifier++;
+                if (board.getPiece(currPosition) != null) {
+                    if (board.getPiece(currPosition).getTeamColor() != getTeamColor()) {
+                        break;
+                    }
+                }
             }
         }
         else if (type == PieceType.ROOK) {
