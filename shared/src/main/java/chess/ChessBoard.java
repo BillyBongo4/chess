@@ -62,4 +62,5 @@ public class ChessBoard {
     public String toString() {
         return String.format("%s", Arrays.deepToString(chessBoard));
     }
+    //test
 }

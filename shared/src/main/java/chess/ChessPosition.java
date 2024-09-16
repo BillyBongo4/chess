@@ -48,4 +48,5 @@ public class ChessPosition {
     public String toString() {
         return String.format("%s:%s", row, col);
     }
+    //test
 }

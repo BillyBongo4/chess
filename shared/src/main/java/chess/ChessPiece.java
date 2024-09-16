@@ -124,4 +124,5 @@ public class ChessPiece {
     public String toString() {
         return String.format("%s:%s", pieceColor.toString(), type.toString());
     }
+    // test
 }
