@@ -58,9 +58,15 @@ public class ChessPiece {
             while (true) { //Check diagonal right up
                 ChessPosition currPosition = new ChessPosition(myPosition.getRow() + modifier,
                         myPosition.getColumn() + modifier);
-                if (currPosition.getRow() > 8 || currPosition.getColumn() > 8 || board.getPiece(currPosition) != null) {
+                if (currPosition.getRow() > 8 || currPosition.getColumn() > 8) {
                     break;
                 }
+                if (board.getPiece(currPosition) != null) {
+                    if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
+                        break;
+                    }
+                }
+
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
                 moves.add(move);
                 modifier++;
@@ -69,8 +75,13 @@ public class ChessPiece {
             while (true) { //Check diagonal right down
                 ChessPosition currPosition = new ChessPosition(myPosition.getRow() - modifier,
                         myPosition.getColumn() + modifier);
-                if (currPosition.getRow() < 1 || currPosition.getColumn() > 8 || board.getPiece(currPosition) != null) {
+                if (currPosition.getRow() < 1 || currPosition.getColumn() > 8) {
                     break;
+                }
+                if (board.getPiece(currPosition) != null) {
+                    if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
+                        break;
+                    }
                 }
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
                 moves.add(move);
@@ -80,8 +91,13 @@ public class ChessPiece {
             while (true) { //Check diagonal left up
                 ChessPosition currPosition = new ChessPosition(myPosition.getRow() + modifier,
                         myPosition.getColumn() - modifier);
-                if (currPosition.getRow() > 8 || currPosition.getColumn() < 1 || board.getPiece(currPosition) != null) {
+                if (currPosition.getRow() > 8 || currPosition.getColumn() < 1) {
                     break;
+                }
+                if (board.getPiece(currPosition) != null) {
+                    if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
+                        break;
+                    }
                 }
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
                 moves.add(move);
@@ -91,8 +107,13 @@ public class ChessPiece {
             while (true) { //Check diagonal left down
                 ChessPosition currPosition = new ChessPosition(myPosition.getRow() - modifier,
                         myPosition.getColumn() - modifier);
-                if (currPosition.getRow() < 1 || currPosition.getColumn() < 1 || board.getPiece(currPosition) != null) {
+                if (currPosition.getRow() < 1 || currPosition.getColumn() < 1) {
                     break;
+                }
+                if (board.getPiece(currPosition) != null) {
+                    if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
+                        break;
+                    }
                 }
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
                 moves.add(move);
