@@ -158,7 +158,9 @@ public class ChessPiece {
             }
 
             for (int i = 0; i < numMoves; i++) {
-
+                ChessPosition currPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
+                ChessMove move = new ChessMove(myPosition, currPosition, null);
+                moves.add(move);
             }
             //check if pawn has moved already
             //check if enemy is forward diagonal from pawn
