@@ -13,7 +13,7 @@ public class ChessPiece {
 
     ChessGame.TeamColor pieceColor;
     PieceType type;
-
+    boolean movedBefore = false;
     public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
