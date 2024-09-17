@@ -158,19 +158,25 @@ public class ChessPiece {
             }
 
             for (int i = 0; i < numForwardMoves; i++) {
-                ChessPosition currPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
+                ChessPosition currPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
 
-                for (int j = 0; j < 2; j++) {
-                    int modifier = 1;
-                    if (j == 1) { modifier = -1; }
+                boolean validMove = ((currPosition.getRow() <= 8 && currPosition.getRow() >= 1)
+                        && (currPosition.getColumn() <= 8 && currPosition.getColumn() >= 1));
 
-                    ChessPosition possibleCapture = new ChessPosition(currPosition.getRow(),
-                            currPosition.getColumn() + modifier);
-                    boolean validCapture = ((currPosition.getRow() <= 8 && currPosition.getRow() >= 1)
-                            && (currPosition.getColumn() <= 8 && currPosition.getColumn() >= 1));
-                    if (validCapture && board.getPiece(possibleCapture) != null) {
-                        if (board.getPiece(possibleCapture).getPieceType() != getPieceType()) {
-                            ChessMove move = new ChessMove(myPosition, possibleCapture, PieceType.QUEEN);
+                if (validMove && i == 0) {
+                    for (int j = 0; j < 2; j++) {
+                        int modifier = 1;
+                        if (j == 1) { modifier = -1; }
+
+                        ChessPosition possibleCapture = new ChessPosition(currPosition.getRow(),
+                                currPosition.getColumn() + modifier);
+                        boolean validCapture = ((possibleCapture.getRow() <= 8 && possibleCapture.getRow() >= 1)
+                                && (possibleCapture.getColumn() <= 8 && possibleCapture.getColumn() >= 1));
+                        if (validCapture && board.getPiece(possibleCapture) != null) {
+                            if (board.getPiece(possibleCapture).getPieceType() != getPieceType()) {
+                                ChessMove move = new ChessMove(myPosition, possibleCapture, PieceType.QUEEN);
+                                moves.add(move);
+                            }
                         }
                     }
                 }
