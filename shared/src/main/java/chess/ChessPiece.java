@@ -192,6 +192,9 @@ public class ChessPiece {
                     ChessMove move = new ChessMove(myPosition, currPosition, null);
                     moves.add(move);
                 }
+
+                if (getTeamColor() == ChessGame.TeamColor.BLACK) { rowMod--; }
+                else { rowMod++; }
             }
             //check if pawn has moved already
             //check if enemy is forward diagonal from pawn
