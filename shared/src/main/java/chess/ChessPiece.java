@@ -150,7 +150,9 @@ public class ChessPiece {
                 }
             }
         }
-        else if (type == PieceType.PAWN) { System.out.println("Temp!"); }
+        else if (type == PieceType.PAWN) {
+
+        }
         else if (type == PieceType.QUEEN) {
             for (int i = 0; i < 4; i++) {
                 int modifier = 1;
