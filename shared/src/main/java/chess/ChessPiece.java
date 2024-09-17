@@ -156,6 +156,10 @@ public class ChessPiece {
             if (!movedBefore && (myPosition.getRow() == 2 || myPosition.getRow() == 7)) {
                 numMoves++;
             }
+
+            for (int i = 0; i < numMoves; i++) {
+
+            }
             //check if pawn has moved already
             //check if enemy is forward diagonal from pawn
             //otherwise move just move one forward
