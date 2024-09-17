@@ -157,8 +157,11 @@ public class ChessPiece {
                 numForwardMoves++;
             }
 
+            int rowMod = 1;
+            if (getTeamColor() == ChessGame.TeamColor.BLACK) { rowMod = -1; }
+
             for (int i = 0; i < numForwardMoves; i++) {
-                ChessPosition currPosition = new ChessPosition(myPosition.getRow() + 1, myPosition.getColumn());
+                ChessPosition currPosition = new ChessPosition(myPosition.getRow() + rowMod, myPosition.getColumn());
 
                 boolean validMove = ((currPosition.getRow() <= 8 && currPosition.getRow() >= 1)
                         && (currPosition.getColumn() <= 8 && currPosition.getColumn() >= 1));
