@@ -137,7 +137,7 @@ public class ChessPiece {
                             && (currPosition.getColumn() <= 8 && currPosition.getColumn() >= 1);
 
 
-                    if (board.getPiece(currPosition) != null) {
+                    if (validSpace && board.getPiece(currPosition) != null) {
                         if (board.getPiece(currPosition).getTeamColor() == getTeamColor()) {
                             validSpace = false;
                         }
