@@ -13,6 +13,7 @@ public class ChessPiece {
 
     ChessGame.TeamColor pieceColor;
     PieceType type;
+
     public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
@@ -151,7 +152,9 @@ public class ChessPiece {
             }
         }
         else if (type == PieceType.PAWN) {
-
+            //check if pawn has moved already
+            //check if enemy is forward diagonal from pawn
+            //otherwise move just move one forward
         }
         else if (type == PieceType.QUEEN) {
             for (int i = 0; i < 4; i++) {
