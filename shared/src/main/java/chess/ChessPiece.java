@@ -162,7 +162,7 @@ public class ChessPiece {
 
                 for (int j = 0; j < 2; j++) {
                     int modifier = 1;
-                    if (j == 2) { modifier = -1; }
+                    if (j == 1) { modifier = -1; }
 
                     ChessPosition possibleCapture = new ChessPosition(currPosition.getRow(),
                             currPosition.getColumn() + modifier);
