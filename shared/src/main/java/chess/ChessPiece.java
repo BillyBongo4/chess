@@ -134,7 +134,7 @@ public class ChessPiece {
                             myPosition.getColumn() + colMod);
 
                     boolean validSpace = (currPosition.getRow() <= 8 || currPosition.getRow() >= 1)
-                            || (currPosition.getColumn() <= 8 || currPosition.getColumn() >= 1);
+                            && (currPosition.getColumn() <= 8 || currPosition.getColumn() >= 1);
 
 
                     if (board.getPiece(currPosition) != null) {
