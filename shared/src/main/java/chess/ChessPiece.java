@@ -181,6 +181,10 @@ public class ChessPiece {
                     }
                 }
 
+                if (board.getPiece(currPosition) != null) {
+
+                }
+
                 if (validMove) {
                     ChessMove move = new ChessMove(myPosition, currPosition, null);
                     moves.add(move);
