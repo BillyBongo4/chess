@@ -166,8 +166,12 @@ public class ChessPiece {
 
                     ChessPosition possibleCapture = new ChessPosition(currPosition.getRow(),
                             currPosition.getColumn() + modifier);
-                    if (board.getPiece(possibleCapture) != null) {
-
+                    boolean validCapture = ((currPosition.getRow() <= 8 && currPosition.getRow() >= 1)
+                            && (currPosition.getColumn() <= 8 && currPosition.getColumn() >= 1));
+                    if (validCapture && board.getPiece(possibleCapture) != null) {
+                        if (board.getPiece(possibleCapture).getPieceType() != getPieceType()) {
+                            ChessMove move = new ChessMove(myPosition, possibleCapture, PieceType.QUEEN);
+                        }
                     }
                 }
 
