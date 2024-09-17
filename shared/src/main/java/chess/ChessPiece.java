@@ -182,7 +182,7 @@ public class ChessPiece {
                 }
 
                 if (board.getPiece(currPosition) != null) {
-
+                    break;
                 }
 
                 if (validMove) {
