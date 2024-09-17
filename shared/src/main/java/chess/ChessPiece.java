@@ -168,7 +168,7 @@ public class ChessPiece {
                         int modifier = 1;
                         if (j == 1) { modifier = -1; }
 
-                        ChessPosition possibleCapture = new ChessPosition(currPosition.getRow(),
+                        ChessPosition possibleCapture = new ChessPosition(currPosition.getRow() + 1,
                                 currPosition.getColumn() + modifier);
                         boolean validCapture = ((possibleCapture.getRow() <= 8 && possibleCapture.getRow() >= 1)
                                 && (possibleCapture.getColumn() <= 8 && possibleCapture.getColumn() >= 1));
