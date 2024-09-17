@@ -133,9 +133,8 @@ public class ChessPiece {
                     ChessPosition currPosition = new ChessPosition(myPosition.getRow() + rowMod,
                             myPosition.getColumn() + colMod);
 
-                    boolean validSpace = true;
-                    if (currPosition.getRow() > 8 || currPosition.getRow() < 1) { validSpace = false; }
-                    if (currPosition.getColumn() > 8 || currPosition.getColumn() < 1) { validSpace = false; }
+                    boolean validSpace = (currPosition.getRow() <= 8 || currPosition.getRow() >= 1)
+                            || (currPosition.getColumn() <= 8 || currPosition.getColumn() >= 1);
 
 
                     if (board.getPiece(currPosition) != null) {
