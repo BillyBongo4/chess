@@ -153,7 +153,8 @@ public class ChessPiece {
         }
         else if (type == PieceType.PAWN) {
             int numForwardMoves = 1;
-            if (!movedBefore && (myPosition.getRow() == 2 || myPosition.getRow() == 7)) {
+            if (!movedBefore && ((myPosition.getRow() == 2 && getTeamColor() == ChessGame.TeamColor.WHITE)
+                    || (myPosition.getRow() == 7) && getTeamColor() == ChessGame.TeamColor.BLACK)) {
                 numForwardMoves++;
             }
 
