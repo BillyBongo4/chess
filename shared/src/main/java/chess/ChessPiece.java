@@ -152,13 +152,25 @@ public class ChessPiece {
             }
         }
         else if (type == PieceType.PAWN) {
-            int numMoves = 1;
+            int numForwardMoves = 1;
             if (!movedBefore && (myPosition.getRow() == 2 || myPosition.getRow() == 7)) {
-                numMoves++;
+                numForwardMoves++;
             }
 
-            for (int i = 0; i < numMoves; i++) {
+            for (int i = 0; i < numForwardMoves; i++) {
                 ChessPosition currPosition = new ChessPosition(myPosition.getRow(), myPosition.getColumn());
+
+                for (int j = 0; j < 2; j++) {
+                    int modifier = 1;
+                    if (j == 2) { modifier = -1; }
+
+                    ChessPosition possibleCapture = new ChessPosition(currPosition.getRow(),
+                            currPosition.getColumn() + modifier);
+                    if (board.getPiece(possibleCapture) != null) {
+
+                    }
+                }
+
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
                 moves.add(move);
             }
