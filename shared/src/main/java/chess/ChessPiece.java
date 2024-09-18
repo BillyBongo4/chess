@@ -45,6 +45,19 @@ public class ChessPiece {
         return type;
     }
 
+    public void pawnPromotion(Collection<ChessMove> moves, ChessPosition myPosition, ChessPosition currPosition) {
+        for (int j = 0; j < 4; j++) {
+            PieceType promotion;
+            if (j == 0) { promotion = PieceType.QUEEN; }
+            else if (j == 1) { promotion = PieceType.BISHOP; }
+            else if (j == 2) { promotion = PieceType.ROOK; }
+            else { promotion = PieceType.KNIGHT; }
+
+            ChessMove move = new ChessMove(myPosition, currPosition, promotion);
+            moves.add(move);
+        }
+    }
+
     /**
      * Calculates all the positions a chess piece can move to
      * Does not take into account moves that are illegal due to leaving the king in
@@ -192,16 +205,7 @@ public class ChessPiece {
                 if (validMove) {
                     if ((getTeamColor() == ChessGame.TeamColor.WHITE && currPosition.getRow() == 8)
                             || (getTeamColor() == ChessGame.TeamColor.BLACK && currPosition.getRow() == 1)) {
-                        for (int j = 0; j < 4; j++) {
-                            PieceType promotion = null;
-                            if (j == 0) { promotion = PieceType.QUEEN; }
-                            else if (j == 1) { promotion = PieceType.BISHOP; }
-                            else if (j == 2) { promotion = PieceType.ROOK; }
-                            else if (j == 3) { promotion = PieceType.KNIGHT; }
-
-                            ChessMove move = new ChessMove(myPosition, currPosition, promotion);
-                            moves.add(move);
-                        }
+                        pawnPromotion(moves, myPosition, currPosition);
                     }
                     else {
                         ChessMove move = new ChessMove(myPosition, currPosition, null);
