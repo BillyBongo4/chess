@@ -44,10 +44,24 @@ public class ChessBoard {
         //throw new RuntimeException("Not implemented");
         for (int i = 0; i < chessBoard.length; i++) {
             for (int j = 0; j < chessBoard[i].length; j++) {
-                if (i == 1) { chessBoard[i][j] =
+                if (i == 0) {
+                    if (j == 0 || j == 7) { chessBoard[i][j] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK); }
+                    else if (j == 1 || j == 6) { chessBoard[i][j] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT); }
+                    else if (j == 2 || j == 5) { chessBoard[i][j] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP); }
+                    else if (j == 3) { chessBoard[i][j] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.QUEEN); }
+                    else if (j == 4) { chessBoard[i][j] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KING); }
+                }
+                else if (i == 1) { chessBoard[i][j] =
                         new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN); }
                 else if (i == 6) { chessBoard[i][j] =
                         new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN); }
+                else if (i == 7) {
+                    if (j == 0 || j == 7) { chessBoard[i][j] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.ROOK); }
+                    else if (j == 1 || j == 6) { chessBoard[i][j] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KNIGHT); }
+                    else if (j == 2 || j == 5) { chessBoard[i][j] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.BISHOP); }
+                    else if (j == 3) { chessBoard[i][j] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.QUEEN); }
+                    else if (j == 4) { chessBoard[i][j] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.KING); }
+                }
                 else { chessBoard[i][j] = null; }
             }
 
