@@ -50,6 +50,7 @@ public class ChessBoard {
                         new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN); }
                 else { chessBoard[i][j] = null; }
             }
+
         }
     }
 
