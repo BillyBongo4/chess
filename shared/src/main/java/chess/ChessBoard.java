@@ -43,16 +43,13 @@ public class ChessBoard {
     public void resetBoard() {
         //throw new RuntimeException("Not implemented");
         for (int i = 0; i < chessBoard.length; i++) {
-            /*if (i == 0) {}
-            else {
-                for (int j = 0; j < chessBoard[i].length; j++) {
-                    if (i == 2) { chessBoard[i][j] =
-                            new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN); }
-                    else if (i == 7) { chessBoard[i][j] =
-                            new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN); }
-                    else { chessBoard[i][j] = null; }
-                }
-            }*/
+            for (int j = 0; j < chessBoard[i].length; j++) {
+                if (i == 1) { chessBoard[i][j] =
+                        new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN); }
+                else if (i == 6) { chessBoard[i][j] =
+                        new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN); }
+                else { chessBoard[i][j] = null; }
+            }
         }
     }
 
