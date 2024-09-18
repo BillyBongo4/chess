@@ -190,8 +190,24 @@ public class ChessPiece {
                 }
 
                 if (validMove) {
-                    ChessMove move = new ChessMove(myPosition, currPosition, null);
-                    moves.add(move);
+                    if ((getTeamColor() == ChessGame.TeamColor.WHITE && currPosition.getRow() == 8)
+                            || (getTeamColor() == ChessGame.TeamColor.BLACK && currPosition.getRow() == 1)) {
+                        for (int j = 0; j < 4; j++) {
+                            PieceType promotion = null;
+                            if (j == 0) { promotion = PieceType.QUEEN; }
+                            else if (j == 1) { promotion = PieceType.BISHOP; }
+                            else if (j == 2) { promotion = PieceType.ROOK; }
+                            else if (j == 3) { promotion = PieceType.KNIGHT; }
+
+                            ChessMove move = new ChessMove(myPosition, currPosition, promotion);
+                            moves.add(move);
+                        }
+                    }
+                    else {
+                        ChessMove move = new ChessMove(myPosition, currPosition, null);
+                        moves.add(move);
+                    }
+
                 }
 
                 if (getTeamColor() == ChessGame.TeamColor.BLACK) { rowMod--; }
