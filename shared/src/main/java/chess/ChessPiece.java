@@ -196,7 +196,7 @@ public class ChessPiece {
                                     pawnPromotion(moves, myPosition, possibleCapture);
                                 }
                                 else {
-                                    ChessMove move = new ChessMove(myPosition, currPosition, null);
+                                    ChessMove move = new ChessMove(myPosition, possibleCapture, null);
                                     moves.add(move);
                                 }
                             }
