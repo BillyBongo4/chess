@@ -191,8 +191,14 @@ public class ChessPiece {
                                 && (possibleCapture.getColumn() <= 8 && possibleCapture.getColumn() >= 1));
                         if (validCapture && board.getPiece(possibleCapture) != null) {
                             if (board.getPiece(possibleCapture).getTeamColor() != getTeamColor()) {
-                                ChessMove move = new ChessMove(myPosition, possibleCapture, null);
-                                moves.add(move);
+                                if ((getTeamColor() == ChessGame.TeamColor.WHITE && currPosition.getRow() == 8)
+                                        || (getTeamColor() == ChessGame.TeamColor.BLACK && currPosition.getRow() == 1)) {
+                                    pawnPromotion(moves, myPosition, currPosition);
+                                }
+                                else {
+                                    ChessMove move = new ChessMove(myPosition, currPosition, null);
+                                    moves.add(move);
+                                }
                             }
                         }
                     }
