@@ -177,8 +177,8 @@ public class ChessPiece {
                         boolean validCapture = ((possibleCapture.getRow() <= 8 && possibleCapture.getRow() >= 1)
                                 && (possibleCapture.getColumn() <= 8 && possibleCapture.getColumn() >= 1));
                         if (validCapture && board.getPiece(possibleCapture) != null) {
-                            if (board.getPiece(possibleCapture).getPieceType() != getPieceType()) {
-                                ChessMove move = new ChessMove(myPosition, possibleCapture, PieceType.QUEEN);
+                            if (board.getPiece(possibleCapture).getTeamColor() != getTeamColor()) {
+                                ChessMove move = new ChessMove(myPosition, possibleCapture, null);
                                 moves.add(move);
                             }
                         }
