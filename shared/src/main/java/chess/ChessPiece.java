@@ -193,7 +193,7 @@ public class ChessPiece {
                             if (board.getPiece(possibleCapture).getTeamColor() != getTeamColor()) {
                                 if ((getTeamColor() == ChessGame.TeamColor.WHITE && currPosition.getRow() == 8)
                                         || (getTeamColor() == ChessGame.TeamColor.BLACK && currPosition.getRow() == 1)) {
-                                    pawnPromotion(moves, myPosition, currPosition);
+                                    pawnPromotion(moves, myPosition, possibleCapture);
                                 }
                                 else {
                                     ChessMove move = new ChessMove(myPosition, currPosition, null);
