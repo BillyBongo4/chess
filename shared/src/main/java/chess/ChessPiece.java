@@ -331,7 +331,7 @@ public class ChessPiece {
         if (this == object) { return true; }
         if (object == null || getClass() != object.getClass()) { return false; }
         ChessPiece piece = (ChessPiece) object;
-        return (pieceColor.equals(piece.pieceColor) && type.equals(piece.type));
+        return (pieceColor.equals(piece.getTeamColor()) && type.equals(piece.getPieceType()));
     }
 
     @Override

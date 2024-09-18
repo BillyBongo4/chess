@@ -36,7 +36,7 @@ public class ChessPosition {
         if (this == object) { return true; }
         if (object == null || getClass() != object.getClass()) { return false; }
         ChessPosition pos = (ChessPosition) object;
-        return (row == pos.row && col == pos.col);
+        return (row == pos.getRow() && col == pos.getColumn());
     }
 
     @Override

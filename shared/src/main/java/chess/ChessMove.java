@@ -47,8 +47,8 @@ public class ChessMove {
         if (this == object) { return true; }
         if (object == null || getClass() != object.getClass()) { return false; }
         ChessMove move = (ChessMove) object;
-        return (startPosition.equals(move.startPosition) && endPosition.equals(move.endPosition)
-                && (promotionPiece == null || promotionPiece.equals(move.promotionPiece)));
+        return (startPosition.equals(move.getStartPosition()) && endPosition.equals(move.getEndPosition())
+                && ((promotionPiece == null && move.getPromotionPiece() == null) || getPromotionPiece().equals(move.getPromotionPiece())));
     }
 
     @Override
