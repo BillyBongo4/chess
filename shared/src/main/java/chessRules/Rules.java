@@ -79,7 +79,7 @@ public class Rules {
         }
     }
 
-    public Collection<ChessMove> getMoves() {
+    protected Collection<ChessMove> getMoves() {
         return moves;
     }
 }
