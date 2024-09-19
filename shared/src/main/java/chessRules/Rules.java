@@ -78,4 +78,8 @@ public class Rules {
             }
         }
     }
+
+    public Collection<ChessMove> getMoves() {
+        return moves;
+    }
 }
