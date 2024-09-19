@@ -2,6 +2,7 @@ package chess;
 
 import chessRules.BishopRules;
 import chessRules.QueenRules;
+import chessRules.RookRules;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -329,6 +330,7 @@ public class ChessPiece {
         return moves;*/
         if (type == PieceType.BISHOP) { return new BishopRules().pieceMoves(this, myPosition, board); }
         else if (type == PieceType.QUEEN) { return new QueenRules().pieceMove(this, myPosition, board); }
+        else if (type == PieceType.ROOK) { return new RookRules().pieceMove(this, myPosition, board); }
         return null;
     }
 
