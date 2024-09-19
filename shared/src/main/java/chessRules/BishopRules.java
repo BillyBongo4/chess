@@ -9,6 +9,7 @@ import java.util.Collection;
 
 public class BishopRules extends Rules {
     public Collection<ChessMove> moves(ChessPiece currPiece, ChessPosition myPosition, ChessBoard board) {
-        return super.diagonalMoves(currPiece, myPosition, board);
+        super.diagonalMoves(currPiece, myPosition, board);
+        return getMoves();
     }
 }
