@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 public class Rules {
-    private Collection<ChessMove> moves = new ArrayList<>();
+    private final Collection<ChessMove> moves = new ArrayList<>();
 
     protected void diagonalMoves(ChessPiece currPiece, ChessPosition myPosition, ChessBoard board) {
         for (int i = 0; i < 4; i++) {
