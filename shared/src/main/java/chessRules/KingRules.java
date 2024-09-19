@@ -27,7 +27,7 @@ public class KingRules extends Rules {
                     }
                     if (validSpace) {
                         ChessMove move = new ChessMove(myPosition, currPosition, null);
-                        moves.add(move);
+                        getMoves().add(move);
                     }
                 }
 
