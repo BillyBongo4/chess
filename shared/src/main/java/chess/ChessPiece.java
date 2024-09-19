@@ -1,5 +1,8 @@
 package chess;
 
+import chessRules.BishopRules;
+import chessRules.QueenRules;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -66,7 +69,7 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        Collection<ChessMove> moves = new ArrayList<>();
+        /*Collection<ChessMove> moves = new ArrayList<>();
         if (type == PieceType.BISHOP) {
             for (int i = 0; i < 4; i++) {
                 int modifier = 1;
@@ -323,7 +326,10 @@ public class ChessPiece {
                 }
             }
         }
-        return moves;
+        return moves;*/
+        if (type == PieceType.BISHOP) { return new BishopRules().pieceMoves(this, myPosition, board); }
+        else if (type == PieceType.QUEEN) { return new QueenRules().pieceMove(this, myPosition, board); }
+        return null;
     }
 
     @Override
