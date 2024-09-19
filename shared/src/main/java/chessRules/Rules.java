@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class Rules {
     Collection<ChessMove> moves = new ArrayList<>();
 
-    public Collection<ChessMove> diagonalMoves(ChessPiece currPiece, ChessPosition myPosition, ChessBoard board) {
+    public void diagonalMoves(ChessPiece currPiece, ChessPosition myPosition, ChessBoard board) {
         for (int i = 0; i < 4; i++) {
             int modifier = 1;
             while (true) {
@@ -42,11 +42,9 @@ public class Rules {
                 }
             }
         }
-
-        return moves;
     }
 
-    public Collection<ChessMove> straightMoves(ChessPiece currPiece, ChessPosition myPosition, ChessBoard board) {
+    public void straightMoves(ChessPiece currPiece, ChessPosition myPosition, ChessBoard board) {
         for (int i = 0; i < 4; i++) {
             int modifier = 1;
             while (true) {
@@ -79,7 +77,5 @@ public class Rules {
                 }
             }
         }
-
-        return moves;
     }
 }
