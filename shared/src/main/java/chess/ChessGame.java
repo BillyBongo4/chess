@@ -51,30 +51,20 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         Collection<ChessMove> possibleMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
-        Collection<ChessMove> enemies = new ArrayList<>();
-        for (var move: possibleMoves) {
-            if (board.getPiece(move.getEndPosition()).getTeamColor() != teamTurn) {
-                enemies.add(move);
-            }
-        }
-
-        Collection<ChessMove> validMoves = new ArrayList<>();
-        for (var move : possibleMoves) {
-            ChessBoard check = board;
-            check.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
-            check.removePiece(move.getStartPosition());
-
-            for (var enemy : enemies) {
-                Collection<ChessMove> enemyMoves =
-                        check.getPiece(enemy.getEndPosition()).pieceMoves(check, enemy.getEndPosition());
-                for (var enemyMove : enemyMoves) {
-                    if (check.getPiece(enemyMove.getEndPosition()).getPieceType()
-                            != ChessPiece.PieceType.KING) {
-
+        Collection<ChessPiece> enemies = new ArrayList<>();
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPosition currPos = new ChessPosition(i, j);
+                if (board.getPiece(currPos) != null) {
+                    if (board.getPiece(currPos).getTeamColor() != teamTurn) {
+                        enemies.add(board.getPiece(currPos));
                     }
                 }
             }
         }
+
+        Collection<ChessMove> validMoves = new ArrayList<>();
+
 
         return null;
     }
