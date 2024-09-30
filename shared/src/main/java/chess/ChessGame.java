@@ -13,9 +13,21 @@ public class ChessGame {
 
     ChessBoard board;
     TeamColor teamTurn;
+    boolean whiteCheck;
+    boolean blackCheck;
+    boolean whiteCheckmate;
+    boolean blackCheckmate;
+    boolean whiteStalemate;
+    boolean blackStalemate;
     public ChessGame() {
         board = null;
-        teamTurn = TeamColor.BLACK;
+        //teamTurn = TeamColor.WHITE;
+        whiteCheck = false;
+        blackCheck = false;
+        whiteCheckmate = false;
+        blackCheckmate = false;
+        whiteStalemate = false;
+        blackStalemate = false;
     }
 
     /**
@@ -110,7 +122,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return teamColor == TeamColor.WHITE ? whiteCheck : blackCheck;
     }
 
     /**
@@ -120,7 +132,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return teamColor == TeamColor.WHITE ? whiteCheckmate : blackCheckmate;
     }
 
     /**
@@ -131,7 +143,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        return teamColor == TeamColor.WHITE ? whiteStalemate : blackStalemate;
     }
 
     /**
