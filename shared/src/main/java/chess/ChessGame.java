@@ -51,13 +51,13 @@ public class ChessGame {
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         Collection<ChessMove> possibleMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
-        Collection<ChessPiece> enemies = new ArrayList<>();
+        Collection<ChessPosition> enemies = new ArrayList<>();
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
                 ChessPosition currPos = new ChessPosition(i, j);
                 if (board.getPiece(currPos) != null) {
                     if (board.getPiece(currPos).getTeamColor() != teamTurn) {
-                        enemies.add(board.getPiece(currPos));
+                        enemies.add(currPos);
                     }
                 }
             }
@@ -68,6 +68,10 @@ public class ChessGame {
             ChessBoard checker = board;
             checker.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
             checker.removePiece(move.getStartPosition());
+
+            for (var enemy : enemies) {
+                Collection<ChessMove> enemyMoves = board.getPiece(enemy).pieceMoves(checker, enemy);
+            }
         }
 
         return null;
