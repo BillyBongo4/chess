@@ -15,7 +15,7 @@ public class ChessGame {
     TeamColor teamTurn;
     public ChessGame() {
         board = null;
-        teamTurn = TeamColor.WHITE;
+        teamTurn = TeamColor.BLACK;
     }
 
     /**
@@ -52,17 +52,8 @@ public class ChessGame {
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
         if (startPosition == null) { return null; }
 
-        Collection<ChessPosition> enemies = new ArrayList<>();
-        for (int i = 1; i < 9; i++) {
-            for (int j = 1; j < 9; j++) {
-                ChessPosition pos = new ChessPosition(i, j);
-                if (board.getPiece(pos) != null) {
-                    if (board.getPiece(pos).getTeamColor() != teamTurn) { enemies.add(pos); }
-                }
-            }
-        }
-
         ChessPiece currPiece = board.getPiece(startPosition);
+        teamTurn = currPiece.getTeamColor();
 
         Collection<ChessMove> moves = currPiece.pieceMoves(board, startPosition);
         Collection<ChessMove> valid = new ArrayList<>();
@@ -72,9 +63,20 @@ public class ChessGame {
             checker.addPiece(move.getEndPosition(), currPiece);
             checker.removePiece(move.getStartPosition());
 
+            Collection<ChessPosition> enemies = new ArrayList<>();
+            for (int i = 1; i < 9; i++) {
+                for (int j = 1; j < 9; j++) {
+                    ChessPosition pos = new ChessPosition(i, j);
+                    if (board.getPiece(pos) != null) {
+                        if (board.getPiece(pos).getTeamColor() != teamTurn) { enemies.add(pos); }
+                    }
+                }
+            }
+
             boolean validMove = true;
             for (var enemy : enemies) {
-                Collection<ChessMove> enemyMoves = checker.getPiece(enemy).pieceMoves(checker, enemy);
+                ChessPiece currEnemy = new ChessPiece(checker.getPiece(enemy).getTeamColor(), checker.getPiece(enemy).getPieceType());
+                Collection<ChessMove> enemyMoves = currEnemy.pieceMoves(checker, enemy);
                 for (var enemyMove : enemyMoves) {
                     if (checker.getPiece(enemyMove.getEndPosition()) != null) {
                         if (checker.getPiece(enemyMove.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING) {
