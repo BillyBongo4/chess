@@ -2,14 +2,13 @@ package chessRules;
 
 import chess.ChessBoard;
 import chess.ChessMove;
-import chess.ChessPiece;
 import chess.ChessPosition;
 
 import java.util.Collection;
 
 public class BishopRules extends Rules {
-    public Collection<ChessMove> pieceMoves(ChessPiece currPiece, ChessPosition myPosition, ChessBoard board) {
-        super.diagonalMoves(currPiece, myPosition, board);
+    public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
+        diagonalMoves(board, myPosition);
         return getMoves();
     }
 }
