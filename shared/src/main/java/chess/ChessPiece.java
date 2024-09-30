@@ -66,12 +66,12 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        if (type == PieceType.BISHOP) { return new BishopRules().pieceMoves(this, myPosition, board); }
-        else if (type == PieceType.KING) { return new KingRules().pieceMove(this, myPosition, board); }
-        else if (type == PieceType.KNIGHT) { return new KnightRules().pieceMove(this, myPosition, board); }
-        else if (type == PieceType.PAWN) { return new PawnRules().pieceMove(this, myPosition, board); }
-        else if (type == PieceType.QUEEN) { return new QueenRules().pieceMove(this, myPosition, board); }
-        else if (type == PieceType.ROOK) { return new RookRules().pieceMove(this, myPosition, board); }
+        if (type == PieceType.BISHOP) { return new BishopRules().pieceMoves(board, myPosition); }
+        else if (type == PieceType.KING) { return new KingRules().pieceMoves(board, myPosition); }
+        else if (type == PieceType.KNIGHT) { return new KnightRules().pieceMoves(board, myPosition); }
+        else if (type == PieceType.PAWN) { return new PawnRules().pieceMoves(board, myPosition); }
+        else if (type == PieceType.QUEEN) { return new QueenRules().pieceMoves(board, myPosition); }
+        else if (type == PieceType.ROOK) { return new RookRules().pieceMoves(board, myPosition); }
         return null;
     }
 
