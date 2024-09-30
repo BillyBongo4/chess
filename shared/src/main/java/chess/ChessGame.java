@@ -64,7 +64,11 @@ public class ChessGame {
         }
 
         Collection<ChessMove> validMoves = new ArrayList<>();
-
+        for (var move : possibleMoves) {
+            ChessBoard checker = board;
+            checker.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+            checker.removePiece(move.getStartPosition());
+        }
 
         return null;
     }
