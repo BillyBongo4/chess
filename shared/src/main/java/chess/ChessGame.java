@@ -65,7 +65,6 @@ public class ChessGame {
         if (startPosition == null) { return null; }
 
         ChessPiece currPiece = board.getPiece(startPosition);
-        teamTurn = currPiece.getTeamColor();
 
         Collection<ChessMove> moves = currPiece.pieceMoves(board, startPosition);
         Collection<ChessMove> valid = new ArrayList<>();
@@ -80,7 +79,9 @@ public class ChessGame {
                 for (int j = 1; j < 9; j++) {
                     ChessPosition pos = new ChessPosition(i, j);
                     if (board.getPiece(pos) != null) {
-                        if (board.getPiece(pos).getTeamColor() != teamTurn) { enemies.add(pos); }
+                        if (board.getPiece(pos).getTeamColor() != currPiece.getTeamColor()) {
+                            enemies.add(pos);
+                        }
                     }
                 }
             }
