@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -49,7 +50,33 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        return board.getPiece(startPosition).pieceMoves(board, startPosition);
+        Collection<ChessMove> possibleMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
+        Collection<ChessMove> enemies = new ArrayList<>();
+        for (var move: possibleMoves) {
+            if (board.getPiece(move.getEndPosition()).getTeamColor() != teamTurn) {
+                enemies.add(move);
+            }
+        }
+
+        Collection<ChessMove> validMoves = new ArrayList<>();
+        for (var move : possibleMoves) {
+            ChessBoard check = board;
+            check.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+            check.removePiece(move.getStartPosition());
+
+            for (var enemy : enemies) {
+                Collection<ChessMove> enemyMoves =
+                        check.getPiece(enemy.getEndPosition()).pieceMoves(check, enemy.getEndPosition());
+                for (var enemyMove : enemyMoves) {
+                    if (check.getPiece(enemyMove.getEndPosition()).getPieceType()
+                            != ChessPiece.PieceType.KING) {
+
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
