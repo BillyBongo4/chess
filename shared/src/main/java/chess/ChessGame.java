@@ -50,6 +50,8 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
+        if (startPosition == null) { return null; }
+
         Collection<ChessMove> possibleMoves = board.getPiece(startPosition).pieceMoves(board, startPosition);
         Collection<ChessPosition> enemies = new ArrayList<>();
         for (int i = 1; i < 9; i++) {
@@ -69,12 +71,24 @@ public class ChessGame {
             checker.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
             checker.removePiece(move.getStartPosition());
 
+            boolean invalidMove = false;
             for (var enemy : enemies) {
                 Collection<ChessMove> enemyMoves = board.getPiece(enemy).pieceMoves(checker, enemy);
+                for (var enemyMove : enemyMoves) {
+                    if (board.getPiece(enemyMove.getEndPosition()) != null) {
+                        if (board.getPiece(enemyMove.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING
+                                && board.getPiece(enemyMove.getEndPosition()).getTeamColor() == teamTurn) {
+                            invalidMove = true;
+                        }
+                    }
+                }
             }
+
+            if (!invalidMove) { validMoves.add(move); }
         }
 
-        return null;
+        if (validMoves.isEmpty()) { return null; }
+        else { return validMoves; }
     }
 
     /**
