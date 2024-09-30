@@ -27,9 +27,7 @@ public class Rules {
         ChessMove move = new ChessMove(myPosition, currPosition, null);
         moves.add(move);
 
-        if (stop) { return true; }
-
-        return false;
+        return stop;
     }
 
     protected void diagonalMoves(ChessBoard board, ChessPosition myPosition) {
