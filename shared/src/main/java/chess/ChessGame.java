@@ -67,9 +67,13 @@ public class ChessGame {
 
         Collection<ChessMove> validMoves = new ArrayList<>();
         for (var move : possibleMoves) {
-            ChessBoard checker = board;
+            ChessBoard checker = new ChessBoard(board);
             checker.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
             checker.removePiece(move.getStartPosition());
+
+            ChessPiece test = checker.getPiece(move.getEndPosition());
+            ChessPiece test2 = checker.getPiece(move.getStartPosition());
+            if (test == test2) { break; }
 
             boolean invalidMove = false;
             for (var enemy : enemies) {
@@ -79,6 +83,7 @@ public class ChessGame {
                         if (board.getPiece(enemyMove.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING
                                 && board.getPiece(enemyMove.getEndPosition()).getTeamColor() == teamTurn) {
                             invalidMove = true;
+                            break;
                         }
                     }
                 }
