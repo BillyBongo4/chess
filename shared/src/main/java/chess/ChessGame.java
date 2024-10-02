@@ -155,6 +155,17 @@ public class ChessGame {
         return kingInCheck(board, teamColor);
     }
 
+    private boolean noValidTeamMoves(TeamColor team) {
+        Collection<ChessPosition> teamPositions = getTeamPositions(team);
+        for (var teammate : teamPositions) {
+            Collection<ChessMove> moves = validMoves(teammate);
+            if (!moves.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * Determines if the given team is in checkmate
      *
@@ -162,15 +173,7 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        Collection<ChessPosition> teamPositions = getTeamPositions(teamColor);
-        boolean checkmate = true;
-        for (var teammate : teamPositions) {
-            Collection<ChessMove> moves = validMoves(teammate);
-            if (!moves.isEmpty()) {
-                checkmate = false;
-            }
-        }
-        return (kingInCheck(board, teamColor) && checkmate);
+        return (kingInCheck(board, teamColor) && noValidTeamMoves(teamColor));
     }
 
     /**
@@ -181,7 +184,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        return true;
+        return noValidTeamMoves(teamColor);
     }
 
     /**
