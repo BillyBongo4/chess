@@ -66,43 +66,43 @@ public class ChessGame {
 
         ChessPiece currPiece = board.getPiece(startPosition);
 
-        if (currPiece == null) { return null; }
-
-        Collection<ChessMove> moves = currPiece.pieceMoves(board, startPosition);
         Collection<ChessMove> valid = new ArrayList<>();
+        if (currPiece != null) {
+            Collection<ChessMove> moves = currPiece.pieceMoves(board, startPosition);
 
-        for (var move : moves) {
-            ChessBoard checker = new ChessBoard(board);
-            checker.addPiece(move.getEndPosition(), currPiece);
-            checker.removePiece(move.getStartPosition());
+            for (var move : moves) {
+                ChessBoard checker = new ChessBoard(board);
+                checker.addPiece(move.getEndPosition(), currPiece);
+                checker.removePiece(move.getStartPosition());
 
-            Collection<ChessPosition> enemies = new ArrayList<>();
-            for (int i = 1; i < 9; i++) {
-                for (int j = 1; j < 9; j++) {
-                    ChessPosition pos = new ChessPosition(i, j);
-                    if (board.getPiece(pos) != null) {
-                        if (board.getPiece(pos).getTeamColor() != currPiece.getTeamColor()) {
-                            enemies.add(pos);
+                Collection<ChessPosition> enemies = new ArrayList<>();
+                for (int i = 1; i < 9; i++) {
+                    for (int j = 1; j < 9; j++) {
+                        ChessPosition pos = new ChessPosition(i, j);
+                        if (board.getPiece(pos) != null) {
+                            if (board.getPiece(pos).getTeamColor() != currPiece.getTeamColor()) {
+                                enemies.add(pos);
+                            }
                         }
                     }
                 }
-            }
 
-            boolean validMove = true;
-            for (var enemy : enemies) {
-                ChessPiece currEnemy = new ChessPiece(checker.getPiece(enemy).getTeamColor(), checker.getPiece(enemy).getPieceType());
-                Collection<ChessMove> enemyMoves = currEnemy.pieceMoves(checker, enemy);
-                for (var enemyMove : enemyMoves) {
-                    if (checker.getPiece(enemyMove.getEndPosition()) != null) {
-                        if (checker.getPiece(enemyMove.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING) {
-                            validMove = false;
-                            break;
+                boolean validMove = true;
+                for (var enemy : enemies) {
+                    ChessPiece currEnemy = new ChessPiece(checker.getPiece(enemy).getTeamColor(), checker.getPiece(enemy).getPieceType());
+                    Collection<ChessMove> enemyMoves = currEnemy.pieceMoves(checker, enemy);
+                    for (var enemyMove : enemyMoves) {
+                        if (checker.getPiece(enemyMove.getEndPosition()) != null) {
+                            if (checker.getPiece(enemyMove.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING) {
+                                validMove = false;
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
-            if (validMove) { valid.add(move); }
+                if (validMove) { valid.add(move); }
+            }
         }
 
         return valid;
