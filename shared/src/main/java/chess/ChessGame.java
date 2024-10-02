@@ -20,7 +20,7 @@ public class ChessGame {
     boolean whiteStalemate;
     boolean blackStalemate;
     public ChessGame() {
-        board = null;
+        board = new ChessBoard();
         //teamTurn = TeamColor.WHITE;
         whiteCheck = false;
         blackCheck = false;
@@ -65,6 +65,8 @@ public class ChessGame {
         if (startPosition == null) { return null; }
 
         ChessPiece currPiece = board.getPiece(startPosition);
+
+        if (currPiece == null) { return null; }
 
         Collection<ChessMove> moves = currPiece.pieceMoves(board, startPosition);
         Collection<ChessMove> valid = new ArrayList<>();
