@@ -56,6 +56,34 @@ public class ChessGame {
         BLACK
     }
 
+    private boolean kingInCheck(ChessBoard checker, TeamColor currColor) {
+        Collection<ChessPosition> enemies = new ArrayList<>();
+        for (int i = 1; i < 9; i++) {
+            for (int j = 1; j < 9; j++) {
+                ChessPosition pos = new ChessPosition(i, j);
+                if (board.getPiece(pos) != null) {
+                    if (board.getPiece(pos).getTeamColor() != currColor) {
+                        enemies.add(pos);
+                    }
+                }
+            }
+        }
+
+        for (var enemy : enemies) {
+            ChessPiece currEnemy = new ChessPiece(checker.getPiece(enemy).getTeamColor(), checker.getPiece(enemy).getPieceType());
+            Collection<ChessMove> enemyMoves = currEnemy.pieceMoves(checker, enemy);
+            for (var enemyMove : enemyMoves) {
+                if (checker.getPiece(enemyMove.getEndPosition()) != null) {
+                    if (checker.getPiece(enemyMove.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Gets a valid moves for a piece at the given location
      *
@@ -77,33 +105,9 @@ public class ChessGame {
                 checker.addPiece(move.getEndPosition(), currPiece);
                 checker.removePiece(move.getStartPosition());
 
-                Collection<ChessPosition> enemies = new ArrayList<>();
-                for (int i = 1; i < 9; i++) {
-                    for (int j = 1; j < 9; j++) {
-                        ChessPosition pos = new ChessPosition(i, j);
-                        if (board.getPiece(pos) != null) {
-                            if (board.getPiece(pos).getTeamColor() != currPiece.getTeamColor()) {
-                                enemies.add(pos);
-                            }
-                        }
-                    }
+                if (kingInCheck(checker, board.getPiece(move.getStartPosition()).getTeamColor())) {
+                    valid.add(move);
                 }
-
-                boolean validMove = true;
-                for (var enemy : enemies) {
-                    ChessPiece currEnemy = new ChessPiece(checker.getPiece(enemy).getTeamColor(), checker.getPiece(enemy).getPieceType());
-                    Collection<ChessMove> enemyMoves = currEnemy.pieceMoves(checker, enemy);
-                    for (var enemyMove : enemyMoves) {
-                        if (checker.getPiece(enemyMove.getEndPosition()) != null) {
-                            if (checker.getPiece(enemyMove.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING) {
-                                validMove = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (validMove) { valid.add(move); }
             }
         }
 
@@ -117,7 +121,8 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        if (board.getPiece(move.getStartPosition()).getTeamColor() != teamTurn) {
+        if (board.getPiece(move.getStartPosition()) == null
+                || board.getPiece(move.getStartPosition()).getTeamColor() != teamTurn) {
             throw new chess.InvalidMoveException();
         }
 
