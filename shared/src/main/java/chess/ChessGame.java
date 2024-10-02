@@ -56,18 +56,26 @@ public class ChessGame {
         BLACK
     }
 
-    private boolean kingInCheck(ChessBoard checker, TeamColor currColor) {
-        Collection<ChessPosition> enemies = new ArrayList<>();
+    private Collection<ChessPosition> getTeamPositions(TeamColor team) {
+        Collection<ChessPosition> positions = new ArrayList<>();
         for (int i = 1; i < 9; i++) {
             for (int j = 1; j < 9; j++) {
                 ChessPosition pos = new ChessPosition(i, j);
                 if (board.getPiece(pos) != null) {
-                    if (board.getPiece(pos).getTeamColor() != currColor) {
-                        enemies.add(pos);
+                    if (board.getPiece(pos).getTeamColor() == team) {
+                        positions.add(pos);
                     }
                 }
             }
         }
+
+        return positions;
+    }
+
+    private boolean kingInCheck(ChessBoard checker, TeamColor currColor) {
+        TeamColor enemyColor = TeamColor.WHITE;
+        if (currColor == TeamColor.WHITE) { enemyColor = TeamColor.BLACK; }
+        Collection<ChessPosition> enemies = getTeamPositions(enemyColor);
 
         for (var enemy : enemies) {
             ChessPiece currEnemy = new ChessPiece(checker.getPiece(enemy).getTeamColor(), checker.getPiece(enemy).getPieceType());
@@ -167,7 +175,15 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        return teamColor == TeamColor.WHITE ? whiteCheckmate : blackCheckmate;
+        Collection<ChessPosition> teamPositions = getTeamPositions(teamColor);
+        boolean checkmate = true;
+        for (var teammate : teamPositions) {
+            Collection<ChessMove> moves = validMoves(teammate);
+            if (!moves.isEmpty()) {
+                checkmate = false;
+            }
+        }
+        return (kingInCheck(board, teamColor) && checkmate);
     }
 
     /**
