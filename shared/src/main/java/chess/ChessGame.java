@@ -21,7 +21,9 @@ public class ChessGame {
     boolean blackStalemate;
     public ChessGame() {
         board = new ChessBoard();
-        //teamTurn = TeamColor.WHITE;
+        board.resetBoard();
+        teamTurn = TeamColor.WHITE;
+
         whiteCheck = false;
         blackCheck = false;
         whiteCheckmate = false;
@@ -115,6 +117,10 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        if (board.getPiece(move.getStartPosition()).getTeamColor() != teamTurn) {
+            throw new chess.InvalidMoveException();
+        }
+
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
 
         boolean valid = false;
@@ -132,6 +138,9 @@ public class ChessGame {
             }
             else { board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition())); }
             board.removePiece(move.getStartPosition());
+
+            if (teamTurn == TeamColor.WHITE) { teamTurn = TeamColor.BLACK; }
+            else { teamTurn = TeamColor.WHITE; }
         }
         else { throw new chess.InvalidMoveException(); }
     }
