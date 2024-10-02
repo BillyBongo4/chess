@@ -13,23 +13,10 @@ public class ChessGame {
 
     ChessBoard board;
     TeamColor teamTurn;
-    boolean whiteCheck;
-    boolean blackCheck;
-    boolean whiteCheckmate;
-    boolean blackCheckmate;
-    boolean whiteStalemate;
-    boolean blackStalemate;
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
         teamTurn = TeamColor.WHITE;
-
-        whiteCheck = false;
-        blackCheck = false;
-        whiteCheckmate = false;
-        blackCheckmate = false;
-        whiteStalemate = false;
-        blackStalemate = false;
     }
 
     /**
@@ -194,7 +181,7 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        return teamColor == TeamColor.WHITE ? whiteStalemate : blackStalemate;
+        return true;
     }
 
     /**
