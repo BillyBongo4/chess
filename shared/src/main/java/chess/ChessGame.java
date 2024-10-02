@@ -119,7 +119,7 @@ public class ChessGame {
 
         boolean valid = false;
         for (var validMove : validMoves) {
-            if (validMove == move) {
+            if (validMove.equals(move)) {
                 valid = true;
                 break;
             }
