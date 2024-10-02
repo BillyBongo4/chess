@@ -75,13 +75,13 @@ public class ChessGame {
             for (var enemyMove : enemyMoves) {
                 if (checker.getPiece(enemyMove.getEndPosition()) != null) {
                     if (checker.getPiece(enemyMove.getEndPosition()).getPieceType() == ChessPiece.PieceType.KING) {
-                        return false;
+                        return true;
                     }
                 }
             }
         }
 
-        return true;
+        return false;
     }
 
     /**
@@ -105,7 +105,7 @@ public class ChessGame {
                 checker.addPiece(move.getEndPosition(), currPiece);
                 checker.removePiece(move.getStartPosition());
 
-                if (kingInCheck(checker, board.getPiece(move.getStartPosition()).getTeamColor())) {
+                if (!kingInCheck(checker, board.getPiece(move.getStartPosition()).getTeamColor())) {
                     valid.add(move);
                 }
             }
@@ -157,7 +157,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        return teamColor == TeamColor.WHITE ? whiteCheck : blackCheck;
+        return kingInCheck(board, teamColor);
     }
 
     /**
