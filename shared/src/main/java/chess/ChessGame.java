@@ -126,7 +126,11 @@ public class ChessGame {
         }
 
         if (valid) {
-            board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
+            if (move.getPromotionPiece() != null) {
+                ChessPiece promotion = new ChessPiece(board.getPiece(move.getStartPosition()).getTeamColor(), move.getPromotionPiece());
+                board.addPiece(move.getEndPosition(), promotion);
+            }
+            else { board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition())); }
             board.removePiece(move.getStartPosition());
         }
         else { throw new chess.InvalidMoveException(); }
