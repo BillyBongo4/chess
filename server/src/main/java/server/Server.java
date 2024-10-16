@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import model.UserData;
 import service.RegisterService;
 import spark.*;
+import exception.ResponseException;
 
 public class Server {
     private RegisterService registerService;
@@ -22,6 +23,7 @@ public class Server {
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::register);
+        Spark.exception(ResponseException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint 
         Spark.init();
@@ -30,15 +32,21 @@ public class Server {
         return Spark.port();
     }
 
-    private Object register(Request request, Response response) {
+    private void exceptionHandler(ResponseException ex, Request req, Response res) {
+        res.status(ex.StatusCode());
+    }
+
+    private Object register(Request request, Response response) throws ResponseException {
         var user = new Gson().fromJson(request.body(), UserData.class);
         var existingUser = registerService.getUser(user.getUsername());
 
         if (existingUser == null) {
             registerService.createUser(user);
-        }
 
-        return new Gson().toJson(user);
+            return new Gson().toJson(user);
+        } else {
+            throw new ResponseException(403, "Error: already taken");
+        }
     }
 
     public void stop() {
