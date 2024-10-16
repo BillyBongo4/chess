@@ -47,7 +47,7 @@ public class Server {
             AuthData authData = new AuthData(user.getUsername());
             registerService.createAuth(authData);
 
-            return new Gson().toJson(user);
+            return new Gson().toJson(authData);
         } else {
             throw new ResponseException(403, "Error: already taken");
         }
