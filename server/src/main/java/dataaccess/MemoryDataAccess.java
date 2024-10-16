@@ -17,7 +17,8 @@ public class MemoryDataAccess implements DataAccess {
 
     @Override
     public UserData createUser(UserData userData) {
-        return null;
+        users.put(userData.getUsername(), userData);
+        return userData;
     }
 
     @Override
