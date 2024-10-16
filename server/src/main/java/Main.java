@@ -1,6 +1,7 @@
 import chess.*;
 import dataaccess.MemoryDataAccess;
 import server.Server;
+import service.LoginService;
 import service.RegisterService;
 
 public class Main {
@@ -10,8 +11,9 @@ public class Main {
 
         MemoryDataAccess memoryDataAccess = new MemoryDataAccess();
         RegisterService registerService = new RegisterService(memoryDataAccess);
-        Server server = new Server(registerService);
-        
+        LoginService loginService = new LoginService(memoryDataAccess);
+        Server server = new Server(registerService, loginService);
+
         server.run(8080);
     }
 }
