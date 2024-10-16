@@ -2,9 +2,15 @@ package server;
 
 import com.google.gson.Gson;
 import model.UserData;
+import service.RegisterService;
 import spark.*;
 
 public class Server {
+    private final RegisterService registerService;
+
+    public Server(RegisterService registerService) {
+        this.registerService = registerService;
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -23,7 +29,7 @@ public class Server {
 
     private Object register(Request request, Response response) {
         var user = new Gson().fromJson(request.body(), UserData.class);
-        
+        var existingUser = registerService.getUser("temp!!");
         return new Gson().toJson(user);
     }
 
