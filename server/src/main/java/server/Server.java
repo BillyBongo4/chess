@@ -6,7 +6,10 @@ import service.RegisterService;
 import spark.*;
 
 public class Server {
-    private final RegisterService registerService;
+    private RegisterService registerService;
+
+    public Server() {
+    }
 
     public Server(RegisterService registerService) {
         this.registerService = registerService;
@@ -29,7 +32,12 @@ public class Server {
 
     private Object register(Request request, Response response) {
         var user = new Gson().fromJson(request.body(), UserData.class);
-        var existingUser = registerService.getUser("temp!!");
+        var existingUser = registerService.getUser(user.getUsername());
+
+        if (existingUser == null) {
+            registerService.createUser(user);
+        }
+
         return new Gson().toJson(user);
     }
 
