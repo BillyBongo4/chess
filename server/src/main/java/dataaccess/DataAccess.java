@@ -1,5 +1,11 @@
 package dataaccess;
 
-public class DataAccess {
+import model.*;
 
+public interface DataAccess {
+    UserData getUser(String username);
+
+    UserData createUser(UserData userData);
+
+    AuthData createAuth(AuthData authData);
 }
