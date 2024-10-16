@@ -17,4 +17,8 @@ public class RegisterService {
     public UserData createUser(UserData userData) {
         return dataAccess.createUser(userData);
     }
+
+    public AuthData createAuth(AuthData authData) {
+        return dataAccess.createAuth(authData);
+    }
 }

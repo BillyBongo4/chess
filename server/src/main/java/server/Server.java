@@ -1,6 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
+import model.AuthData;
 import model.UserData;
 import service.RegisterService;
 import spark.*;
@@ -42,6 +43,9 @@ public class Server {
 
         if (existingUser == null) {
             registerService.createUser(user);
+
+            AuthData authData = new AuthData(user.getUsername());
+            registerService.createAuth(authData);
 
             return new Gson().toJson(user);
         } else {

@@ -10,4 +10,12 @@ public class AuthData {
         authToken = UUID.randomUUID().toString();
         this.username = username;
     }
+
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public String getUsername() {
+        return username;
+    }
 }

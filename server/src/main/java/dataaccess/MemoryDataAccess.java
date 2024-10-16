@@ -23,6 +23,7 @@ public class MemoryDataAccess implements DataAccess {
 
     @Override
     public AuthData createAuth(AuthData authData) {
-        return null;
+        auths.put(authData.getUsername(), authData);
+        return authData;
     }
 }
