@@ -2,6 +2,7 @@ import chess.*;
 import dataaccess.MemoryDataAccess;
 import server.Server;
 import service.LoginService;
+import service.LogoutService;
 import service.RegisterService;
 
 public class Main {
@@ -12,7 +13,8 @@ public class Main {
         MemoryDataAccess memoryDataAccess = new MemoryDataAccess();
         RegisterService registerService = new RegisterService(memoryDataAccess);
         LoginService loginService = new LoginService(memoryDataAccess);
-        Server server = new Server(registerService, loginService);
+        LogoutService logoutService = new LogoutService(memoryDataAccess);
+        Server server = new Server(registerService, loginService, logoutService);
 
         server.run(8080);
     }
