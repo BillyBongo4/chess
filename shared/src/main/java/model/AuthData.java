@@ -7,8 +7,8 @@ public class AuthData {
     private String authToken;
 
     public AuthData(String username) {
-        authToken = UUID.randomUUID().toString();
         this.username = username;
+        authToken = UUID.randomUUID().toString();
     }
 
     public String getAuthToken() {
