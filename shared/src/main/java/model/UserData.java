@@ -9,7 +9,7 @@ public class UserData {
         this.username = username;
     }
 
-    String getUsername() {
+    public String getUsername() {
         return username;
     }
 }
