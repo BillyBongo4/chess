@@ -3,8 +3,8 @@ package model;
 import java.util.UUID;
 
 public class AuthData {
-    private String authToken;
     private String username;
+    private String authToken;
 
     public AuthData(String username) {
         authToken = UUID.randomUUID().toString();
