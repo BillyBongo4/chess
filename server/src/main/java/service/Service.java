@@ -1,7 +1,10 @@
 package service;
 
 import dataaccess.DataAccess;
+import model.AuthData;
 import model.UserData;
+
+import java.util.UUID;
 
 public class Service {
     DataAccess dataAccess;
@@ -10,11 +13,16 @@ public class Service {
         this.dataAccess = dataAccess;
     }
 
-    public UserData registerUser(UserData newUser) throws ServiceException {
+    public AuthData registerUser(UserData newUser) throws ServiceException {
         if (dataAccess.getUser(newUser.username()) != null) {
             throw new ServiceException("User already exists");
         }
 
-        return newUser;
+        dataAccess.createUser(newUser);
+
+        AuthData newAuth = new AuthData(UUID.randomUUID().toString(), newUser.username());
+        dataAccess.createAuth(newAuth);
+
+        return newAuth;
     }
 }
