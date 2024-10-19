@@ -17,13 +17,13 @@ public class MemoryDataAccess implements DataAccess {
 
     @Override
     public UserData createUser(UserData userData) {
-        users.put(userData.getUsername(), userData);
+        users.put(userData.username(), userData);
         return userData;
     }
 
     @Override
     public AuthData createAuth(AuthData authData) {
-        auths.put(authData.getUsername(), authData);
+        auths.put(authData.username(), authData);
         return authData;
     }
 
