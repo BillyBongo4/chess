@@ -62,4 +62,36 @@ public class ServiceTests {
             service.loginUser(user);
         });
     }
+
+    @Test
+    public void logoutUser() throws Exception {
+        var user = new UserData("a", "p", "a@a.com");
+        var expected = "";
+
+        var authData = service.registerUser(user);
+
+        var logoutResult = service.logoutUser(authData.authToken());
+        assertEquals(expected, logoutResult);
+    }
+
+    @Test
+    public void noAuthorization() throws Exception {
+        assertThrows(ServiceException.class, () -> {
+            service.logoutUser("");
+        });
+    }
+
+    @Test
+    public void registerLogoutLogBackInAndThenLogOutAgain() throws Exception {
+        var user = new UserData("a", "p", "a@a.com");
+        var expected = "";
+
+        var authData = service.registerUser(user);
+        service.logoutUser(authData.authToken());
+        authData = service.loginUser(user);
+
+        var logoutResult = service.logoutUser(authData.authToken());
+
+        assertEquals(expected, logoutResult);
+    }
 }
