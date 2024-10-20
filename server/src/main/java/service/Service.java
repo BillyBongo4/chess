@@ -19,7 +19,7 @@ public class Service {
         return authData;
     }
 
-    public Object registerUser(UserData newUser) throws ServiceException {
+    public AuthData registerUser(UserData newUser) throws ServiceException {
         if (dataAccess.getUser(newUser.username()) != null) {
             throw new ServiceException("User already exists");
         }
@@ -29,7 +29,7 @@ public class Service {
         return createAuth(newUser);
     }
 
-    public Object loginUser(UserData user) throws ServiceException {
+    public AuthData loginUser(UserData user) throws ServiceException {
         if (dataAccess.getUser(user.username()) == null) {
             throw new ServiceException("User doesn't exists");
         }
