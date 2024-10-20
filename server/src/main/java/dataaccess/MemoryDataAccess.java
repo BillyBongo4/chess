@@ -23,7 +23,7 @@ public class MemoryDataAccess implements DataAccess {
 
     @Override
     public AuthData createAuth(AuthData authData) {
-        auths.put(authData.username(), authData);
+        auths.put(authData.authToken(), authData);
         return authData;
     }
 
