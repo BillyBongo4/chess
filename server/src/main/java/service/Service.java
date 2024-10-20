@@ -36,4 +36,14 @@ public class Service {
 
         return createAuth(user);
     }
+
+    public String logoutUser(String authToken) throws ServiceException {
+        if (dataAccess.getAuth(authToken) == null) {
+            throw new ServiceException("Unauthorized");
+        }
+
+        dataAccess.deleteAuth(authToken);
+
+        return "";
+    }
 }
