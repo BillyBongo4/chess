@@ -13,16 +13,27 @@ public class Service {
         this.dataAccess = dataAccess;
     }
 
-    public AuthData registerUser(UserData newUser) throws ServiceException {
+    private AuthData createAuth(UserData user) {
+        AuthData authData = new AuthData(UUID.randomUUID().toString(), user.username());
+        dataAccess.createAuth(authData);
+        return authData;
+    }
+
+    public Object registerUser(UserData newUser) throws ServiceException {
         if (dataAccess.getUser(newUser.username()) != null) {
             throw new ServiceException("User already exists");
         }
 
         dataAccess.createUser(newUser);
 
-        AuthData newAuth = new AuthData(UUID.randomUUID().toString(), newUser.username());
-        dataAccess.createAuth(newAuth);
+        return createAuth(newUser);
+    }
 
-        return newAuth;
+    public Object loginUser(UserData user) throws ServiceException {
+        if (dataAccess.getUser(user.username()) == null) {
+            throw new ServiceException("User doesn't exists");
+        }
+
+        return createAuth(user);
     }
 }
