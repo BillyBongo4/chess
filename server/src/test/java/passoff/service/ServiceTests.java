@@ -19,8 +19,8 @@ public class ServiceTests {
     private static DataAccess dataAccess;
     private static Service service;
 
-    @BeforeAll
-    public static void init() {
+    @BeforeEach
+    public void init() {
         dataAccess = new MemoryDataAccess();
         service = new Service(dataAccess);
     }
@@ -28,9 +28,9 @@ public class ServiceTests {
     @Test
     public void registerUser() throws Exception {
         var user = new UserData("a", "p", "a@a.com");
-        var auth = new AuthData(UUID.randomUUID().toString(), "a");
+        var expectedAuth = new AuthData(UUID.randomUUID().toString(), "a");
         var registrationResult = service.registerUser(user);
-        Assertions.assertEquals(auth.username(), registrationResult.username());
+        assertEquals(expectedAuth.username(), registrationResult.username());
     }
 
     @Test
@@ -40,6 +40,26 @@ public class ServiceTests {
 
         assertThrows(ServiceException.class, () -> {
             service.registerUser(user);
+        });
+    }
+
+    @Test
+    public void loginUser() throws Exception {
+        var user = new UserData("a", "p", "a@a.com");
+        var expectedAuth = new AuthData(UUID.randomUUID().toString(), "a");
+        service.registerUser(user);
+
+        var loginResult = service.loginUser(user);
+        assertEquals(expectedAuth.username(), loginResult.username());
+    }
+
+    @Test
+    public void userDoesNotExist() throws Exception {
+        var user = new UserData("a", "p", "a@a.com");
+        var expectedAuth = new AuthData(UUID.randomUUID().toString(), "a");
+
+        assertThrows(ServiceException.class, () -> {
+            service.loginUser(user);
         });
     }
 }
