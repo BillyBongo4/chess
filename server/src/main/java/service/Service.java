@@ -82,4 +82,12 @@ public class Service {
 
         return "";
     }
+
+    public String clear() throws ServiceException {
+        dataAccess.clearGameData();
+        dataAccess.clearAuthData();
+        dataAccess.clearUserData();
+        
+        return "";
+    }
 }

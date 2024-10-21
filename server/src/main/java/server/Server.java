@@ -28,6 +28,7 @@ public class Server {
         Spark.get("/game", this::listGames);
         Spark.post("/game", this::createGame);
         Spark.put("/game", this::joinGame);
+        Spark.delete("/db", this::clear);
 
         //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.init();
@@ -76,6 +77,11 @@ public class Server {
 
         var result = service.joinGame(authToken, user, gameID, playerColor);
         return serializer.toJson(result);
+    }
+
+    private String clear(Request req, Response res) throws Exception {
+        service.clear();
+        return serializer.toJson("");
     }
 
     public void stop() {

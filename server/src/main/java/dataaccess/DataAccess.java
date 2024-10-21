@@ -22,4 +22,10 @@ public interface DataAccess {
     boolean checkColorUsername(int gameID, String color) throws DataAccessException;
 
     void updateGame(int gameID, String username, String color);
+
+    void clearGameData();
+
+    void clearAuthData();
+
+    void clearUserData();
 }
