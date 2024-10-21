@@ -16,4 +16,10 @@ public interface DataAccess {
     GameData[] listGames();
 
     GameData createGame(GameData gameData);
+
+    GameData getGame(int gameID);
+
+    boolean checkColorUsername(int gameID, String color);
+
+    void updateGame(int gameID, String username, String color);
 }

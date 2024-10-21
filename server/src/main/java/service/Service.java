@@ -5,6 +5,7 @@ import dataaccess.DataAccess;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.eclipse.jetty.server.Authentication;
 
 import java.util.Random;
 import java.util.UUID;
@@ -68,5 +69,19 @@ public class Service {
         GameData gameData = new GameData(gameID, null, null, gameName, game);
 
         return dataAccess.createGame(gameData).gameId();
+    }
+
+    public String joinGame(String authToken, UserData user, int gameID, String playerColor) throws ServiceException {
+        if (dataAccess.getAuth(authToken) == null) {
+            throw new ServiceException("Unauthorized");
+        }
+
+        if (dataAccess.checkColorUsername(gameID, playerColor)) {
+            throw new ServiceException("Already taken");
+        }
+
+        dataAccess.updateGame(gameID, user.username(), playerColor);
+
+        return "";
     }
 }
