@@ -7,6 +7,7 @@ import dataaccess.*;
 import model.GameData;
 import model.UserData;
 import service.Service;
+import service.ServiceException;
 import spark.*;
 
 public class Server {
@@ -29,6 +30,7 @@ public class Server {
         Spark.post("/game", this::createGame);
         Spark.put("/game", this::joinGame);
         Spark.delete("/db", this::clear);
+        Spark.exception(ServiceException.class, this::exceptionHandler);
 
         //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.init();
@@ -80,8 +82,11 @@ public class Server {
     }
 
     private String clear(Request req, Response res) throws Exception {
-        service.clear();
-        return serializer.toJson("");
+        return serializer.toJson(service.clear());
+    }
+
+    private void exceptionHandler(ServiceException ex, Request req, Response res) {
+        res.status(ex.StatusCode());
     }
 
     public void stop() {
