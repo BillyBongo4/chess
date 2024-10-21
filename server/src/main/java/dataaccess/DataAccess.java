@@ -19,7 +19,7 @@ public interface DataAccess {
 
     GameData getGame(int gameID);
 
-    boolean checkColorUsername(int gameID, String color);
+    boolean checkColorUsername(int gameID, String color) throws DataAccessException;
 
     void updateGame(int gameID, String username, String color);
 }

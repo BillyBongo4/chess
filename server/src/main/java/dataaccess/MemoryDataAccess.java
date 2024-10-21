@@ -4,6 +4,7 @@ import chess.ChessGame;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import service.ServiceException;
 
 import java.util.HashMap;
 
@@ -57,8 +58,12 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public boolean checkColorUsername(int gameID, String color) {
+    public boolean checkColorUsername(int gameID, String color) throws DataAccessException {
         var game = games.get(gameID);
+
+        if (game == null) {
+            throw new DataAccessException("Game doesn't exist!");
+        }
 
         if (color.equals("WHITE") && game.whiteUsername() == null) {
             return false;

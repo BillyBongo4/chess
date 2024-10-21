@@ -69,7 +69,7 @@ public class Service {
         return dataAccess.createGame(gameData).gameId();
     }
 
-    public String joinGame(String authToken, UserData user, int gameID, String playerColor) throws ServiceException {
+    public String joinGame(String authToken, UserData user, int gameID, String playerColor) throws Exception {
         if (dataAccess.getAuth(authToken) == null) {
             throw new ServiceException("Unauthorized");
         }
