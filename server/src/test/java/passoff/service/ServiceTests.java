@@ -94,4 +94,16 @@ public class ServiceTests {
 
         assertEquals(expected, logoutResult);
     }
+
+    @Test
+    public void createGame() throws Exception {
+        var user = new UserData("a", "p", "a@a.com");
+        var expected = 0;
+
+        var authData = service.registerUser(user);
+
+        var createGameResult = service.createGame(authData.authToken(), "name");
+
+        assertEquals(expected, createGameResult);
+    }
 }
