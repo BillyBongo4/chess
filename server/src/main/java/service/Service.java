@@ -23,7 +23,7 @@ public class Service {
 
     public AuthData registerUser(UserData newUser) throws ServiceException {
         if (dataAccess.getUser(newUser.username()) != null) {
-            throw new ServiceException("User already exists");
+            throw new ServiceException(403, "User already exists");
         }
 
         dataAccess.createUser(newUser);
@@ -33,7 +33,7 @@ public class Service {
 
     public AuthData loginUser(UserData user) throws ServiceException {
         if (dataAccess.getUser(user.username()) == null) {
-            throw new ServiceException("User doesn't exists");
+            throw new ServiceException(500, "User doesn't exists");
         }
 
         return createAuth(user);
@@ -41,17 +41,17 @@ public class Service {
 
     public String logoutUser(String authToken) throws ServiceException {
         if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException("Unauthorized");
+            throw new ServiceException(401, "Unauthorized");
         }
 
         dataAccess.deleteAuth(authToken);
 
-        return "";
+        return null;
     }
 
     public GameData[] listGames(String authToken) throws ServiceException {
         if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException("Unauthorized");
+            throw new ServiceException(401, "Unauthorized");
         }
 
         return dataAccess.listGames();
@@ -59,7 +59,7 @@ public class Service {
 
     public int createGame(String authToken, String gameName) throws ServiceException {
         if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException("Unauthorized");
+            throw new ServiceException(401, "Unauthorized");
         }
 
         int gameID = listGames(authToken).length + 1;
@@ -71,23 +71,23 @@ public class Service {
 
     public String joinGame(String authToken, UserData user, int gameID, String playerColor) throws Exception {
         if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException("Unauthorized");
+            throw new ServiceException(401, "Unauthorized");
         }
 
         if (dataAccess.checkColorUsername(gameID, playerColor)) {
-            throw new ServiceException("Already taken");
+            throw new ServiceException(403, "Already taken");
         }
 
         dataAccess.updateGame(gameID, user.username(), playerColor);
 
-        return "";
+        return null;
     }
 
     public String clear() throws ServiceException {
         dataAccess.clearGameData();
         dataAccess.clearAuthData();
         dataAccess.clearUserData();
-        
-        return "";
+
+        return null;
     }
 }
