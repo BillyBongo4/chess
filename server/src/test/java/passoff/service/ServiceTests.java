@@ -106,4 +106,11 @@ public class ServiceTests {
 
         assertEquals(expected, createGameResult);
     }
+
+    @Test
+    public void createGameNoAuthorizatio() {
+        assertThrows(ServiceException.class, () -> {
+            service.createGame("", "");
+        });
+    }
 }
