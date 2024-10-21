@@ -13,5 +13,7 @@ public interface DataAccess {
 
     void deleteAuth(String authToken);
 
+    GameData[] listGames();
+
     GameData createGame(GameData gameData);
 }

@@ -40,6 +40,11 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
+    public GameData[] listGames() {
+        return games.values().toArray(new GameData[0]);
+    }
+
+    @Override
     public GameData createGame(GameData gameData) {
         games.put(gameData.gameId(), gameData);
         return gameData;

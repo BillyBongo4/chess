@@ -54,7 +54,9 @@ public class Server {
     }
 
     private String listGames(Request req, Response res) throws Exception {
-        return "";
+        var authToken = req.headers("Authorization");
+        var result = service.listGames(authToken);
+        return serializer.toJson(result);
     }
 
     private String createGame(Request req, Response res) throws Exception {

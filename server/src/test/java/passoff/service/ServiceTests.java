@@ -1,8 +1,10 @@
 package passoff.service;
 
+import chess.ChessGame;
 import dataaccess.DataAccess;
 import dataaccess.MemoryDataAccess;
 import model.AuthData;
+import model.GameData;
 import server.Server;
 import model.UserData;
 import org.junit.jupiter.api.*;
@@ -96,11 +98,48 @@ public class ServiceTests {
     }
 
     @Test
-    public void createGame() throws Exception {
+    public void listGames() throws Exception {
         var user = new UserData("a", "p", "a@a.com");
-        var expected = 0;
+        var expected = 3;
 
         var authData = service.registerUser(user);
+
+        service.createGame(authData.authToken(), "game");
+        service.createGame(authData.authToken(), "game2");
+        service.createGame(authData.authToken(), "game3");
+
+        var listGamesResult = service.listGames(authData.authToken());
+
+        assertEquals(expected, listGamesResult.length);
+    }
+
+    @Test
+    public void listGamesNoAuthorization() throws Exception {
+        assertThrows(ServiceException.class, () -> {
+            service.listGames("");
+        });
+    }
+
+    @Test
+    public void createGame() throws Exception {
+        var user = new UserData("a", "p", "a@a.com");
+        var expected = 1;
+
+        var authData = service.registerUser(user);
+
+        var createGameResult = service.createGame(authData.authToken(), "name");
+
+        assertEquals(expected, createGameResult);
+    }
+
+    @Test
+    public void createSecondGame() throws Exception {
+        var user = new UserData("a", "p", "a@a.com");
+        var expected = 2;
+
+        var authData = service.registerUser(user);
+
+        service.createGame(authData.authToken(), "second");
 
         var createGameResult = service.createGame(authData.authToken(), "name");
 

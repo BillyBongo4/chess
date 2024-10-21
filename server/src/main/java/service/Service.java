@@ -50,7 +50,12 @@ public class Service {
         return "";
     }
 
-    public void listGames() {
+    public GameData[] listGames(String authToken) throws ServiceException {
+        if (dataAccess.getAuth(authToken) == null) {
+            throw new ServiceException("Unauthorized");
+        }
+
+        return dataAccess.listGames();
     }
 
     public int createGame(String authToken, String gameName) throws ServiceException {
@@ -58,9 +63,9 @@ public class Service {
             throw new ServiceException("Unauthorized");
         }
 
-        int gameID = 0;//Have it be the number of current games +1
+        int gameID = listGames(authToken).length + 1;
         ChessGame game = new ChessGame();
-        GameData gameData = new GameData(0, null, null, gameName, game);
+        GameData gameData = new GameData(gameID, null, null, gameName, game);
 
         return dataAccess.createGame(gameData).gameId();
     }
