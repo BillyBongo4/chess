@@ -2,6 +2,7 @@ package passoff.service;
 
 import chess.ChessGame;
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 import dataaccess.MemoryDataAccess;
 import model.AuthData;
 import model.GameData;
@@ -150,6 +151,49 @@ public class ServiceTests {
     public void createGameNoAuthorizatio() {
         assertThrows(ServiceException.class, () -> {
             service.createGame("", "");
+        });
+    }
+
+    @Test
+    public void joinGame() throws Exception {
+        var user = new UserData("a", "p", "a@a.com");
+        var expected = "";
+
+        var authData = service.registerUser(user);
+        var gameID = service.createGame(authData.authToken(), "gameName");
+
+        var joinGameResult = service.joinGame(authData.authToken(), user, gameID, "WHITE");
+        assertEquals(expected, joinGameResult);
+    }
+
+    @Test
+    public void joinGameNoAuthorization() throws Exception {
+        assertThrows(ServiceException.class, () -> {
+            service.joinGame("", new UserData("", "", ""), 0, "");
+        });
+    }
+
+    @Test
+    void noGame() throws Exception {
+        var user = new UserData("a", "p", "a@a.com");
+
+        var authData = service.registerUser(user);
+
+        assertThrows(DataAccessException.class, () -> {
+            service.joinGame(authData.authToken(), user, 0, "WHITE");
+        });
+    }
+
+    @Test
+    void colorAlreadyInUse() throws Exception {
+        var user = new UserData("a", "p", "a@a.com");
+
+        var authData = service.registerUser(user);
+        var gameID = service.createGame(authData.authToken(), "gameName");
+        service.joinGame(authData.authToken(), user, gameID, "WHITE");
+
+        assertThrows(ServiceException.class, () -> {
+            service.joinGame(authData.authToken(), user, gameID, "WHITE");
         });
     }
 }
