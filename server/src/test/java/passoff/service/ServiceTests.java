@@ -174,7 +174,7 @@ public class ServiceTests {
     }
 
     @Test
-    void noGame() throws Exception {
+    public void noGame() throws Exception {
         var user = new UserData("a", "p", "a@a.com");
 
         var authData = service.registerUser(user);
@@ -185,7 +185,7 @@ public class ServiceTests {
     }
 
     @Test
-    void colorAlreadyInUse() throws Exception {
+    public void colorAlreadyInUse() throws Exception {
         var user = new UserData("a", "p", "a@a.com");
 
         var authData = service.registerUser(user);
@@ -195,5 +195,60 @@ public class ServiceTests {
         assertThrows(ServiceException.class, () -> {
             service.joinGame(authData.authToken(), user, gameID, "WHITE");
         });
+    }
+
+    @Test
+    public void clear() throws Exception {
+        var user = new UserData("a", "p", "a@a.com");
+        var user2 = new UserData("a2", "p", "a@a.com");
+        var user3 = new UserData("a3", "p", "a@a.com");
+        var user4 = new UserData("a4", "p", "a@a.com");
+        var expected = "";
+
+        var authData = service.registerUser(user);
+        service.registerUser(user2);
+        service.registerUser(user3);
+        service.registerUser(user4);
+        var gameID = service.createGame(authData.authToken(), "gameName");
+        service.createGame(authData.authToken(), "gameName2");
+        service.createGame(authData.authToken(), "gameName3");
+        service.createGame(authData.authToken(), "gameName4");
+
+        var clearResult = service.clear();
+        assertEquals(expected, clearResult);
+        assertEquals(0, dataAccess.listGames().length);
+    }
+
+    @Test
+    public void allTogether() throws Exception {
+        var authData = service.registerUser(new UserData("fellow1", "p", "e"));
+        var authData2 = service.registerUser(new UserData("fellow2", "p", "e"));
+        var expectedListLength = 1;
+        var expectedJoin = "";
+        var expectedClear = "";
+
+        service.logoutUser(authData.authToken());
+
+        service.createGame(authData2.authToken(), "game1");
+
+        authData = service.loginUser(new UserData("fellow1", "p", null));
+
+        var listResult = service.listGames(authData.authToken());
+
+        assertEquals(expectedListLength, listResult.length);
+
+        var joinResult = service.joinGame(authData.authToken(), new UserData("fellow1", "p", "e"), 1, "WHITE");
+
+        assertEquals(expectedJoin, joinResult);
+
+        assertThrows(ServiceException.class, () -> {
+            service.joinGame(authData2.authToken(), new UserData("fellow2", "p", "e"), 1, "WHITE");
+        });
+
+        service.joinGame(authData2.authToken(), new UserData("fellow2", "p", "e"), 1, "BLACK");
+
+        var clearResult = service.clear();
+
+        assertEquals(expectedClear, clearResult);
     }
 }
