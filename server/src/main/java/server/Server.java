@@ -4,15 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import dataaccess.*;
-import model.AuthData;
 import model.GameData;
 import model.UserData;
-import org.eclipse.jetty.server.Authentication;
 import service.Service;
-import service.ServiceException;
 import spark.*;
-
-import javax.sql.rowset.serial.SerialException;
 
 public class Server {
     private final DataAccess dataAccess = new MemoryDataAccess();
