@@ -6,6 +6,8 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Service {
@@ -23,7 +25,7 @@ public class Service {
 
     public AuthData registerUser(UserData newUser) throws ServiceException {
         if (dataAccess.getUser(newUser.username()) != null) {
-            throw new ServiceException(403, "User already exists");
+            throw new ServiceException(403, "Error: User already exists");
         }
 
         dataAccess.createUser(newUser);
@@ -33,7 +35,9 @@ public class Service {
 
     public AuthData loginUser(UserData user) throws ServiceException {
         if (dataAccess.getUser(user.username()) == null) {
-            throw new ServiceException(500, "User doesn't exists");
+            throw new ServiceException(401, "Error: User doesn't exists");
+        } else if (!user.password().equals(dataAccess.getUser(user.username()).password())) {
+            throw new ServiceException(401, "Error: Unauthorized");
         }
 
         return createAuth(user);
@@ -41,7 +45,7 @@ public class Service {
 
     public String logoutUser(String authToken) throws ServiceException {
         if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException(401, "Unauthorized");
+            throw new ServiceException(401, "Error: Unauthorized");
         }
 
         dataAccess.deleteAuth(authToken);
@@ -51,31 +55,33 @@ public class Service {
 
     public GameData[] listGames(String authToken) throws ServiceException {
         if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException(401, "Unauthorized");
+            throw new ServiceException(401, "Error: Unauthorized");
         }
 
         return dataAccess.listGames();
     }
 
-    public int createGame(String authToken, String gameName) throws ServiceException {
+    public Map<String, Integer> createGame(String authToken, String gameName) throws ServiceException {
         if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException(401, "Unauthorized");
+            throw new ServiceException(401, "Error: Unauthorized");
         }
-
         int gameID = listGames(authToken).length + 1;
         ChessGame game = new ChessGame();
         GameData gameData = new GameData(gameID, null, null, gameName, game);
+        dataAccess.createGame(gameData);
 
-        return dataAccess.createGame(gameData).gameId();
+        Map<String, Integer> result = new HashMap<>();
+        result.put("gameID", gameID);
+        return result;
     }
 
     public String joinGame(String authToken, UserData user, int gameID, String playerColor) throws Exception {
         if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException(401, "Unauthorized");
+            throw new ServiceException(401, "Error: Unauthorized");
         }
 
         if (dataAccess.checkColorUsername(gameID, playerColor)) {
-            throw new ServiceException(403, "Already taken");
+            throw new ServiceException(403, "Error: Already taken");
         }
 
         dataAccess.updateGame(gameID, user.username(), playerColor);
