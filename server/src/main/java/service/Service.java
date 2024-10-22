@@ -17,6 +17,12 @@ public class Service {
         this.dataAccess = dataAccess;
     }
 
+    public void validateUserData(UserData user) throws ServiceException {
+        if (user == null || user.username() == null || user.password() == null) {
+            throw new ServiceException(400, "Bad Request: Missing required fields. Error: missing_fields");
+        }
+    }
+
     private AuthData createAuth(UserData user) {
         AuthData authData = new AuthData(UUID.randomUUID().toString(), user.username());
         dataAccess.createAuth(authData);
@@ -24,6 +30,7 @@ public class Service {
     }
 
     public AuthData registerUser(UserData newUser) throws ServiceException {
+        validateUserData(newUser);
         if (dataAccess.getUser(newUser.username()) != null) {
             throw new ServiceException(403, "Error: User already exists");
         }
@@ -34,6 +41,7 @@ public class Service {
     }
 
     public AuthData loginUser(UserData user) throws ServiceException {
+        validateUserData(user);
         if (dataAccess.getUser(user.username()) == null) {
             throw new ServiceException(401, "Error: User doesn't exists");
         } else if (!user.password().equals(dataAccess.getUser(user.username()).password())) {
@@ -76,6 +84,7 @@ public class Service {
     }
 
     public String joinGame(String authToken, UserData user, int gameID, String playerColor) throws Exception {
+        validateUserData(user);
         if (dataAccess.getAuth(authToken) == null) {
             throw new ServiceException(401, "Error: Unauthorized");
         }
