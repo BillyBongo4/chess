@@ -81,7 +81,7 @@ public class Server {
         return serializer.toJson(result);
     }
 
-    private String clear(Request req, Response res) throws Exception {
+    private String clear(Request req, Response res) {
         return serializer.toJson(service.clear());
     }
 
