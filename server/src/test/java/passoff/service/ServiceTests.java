@@ -69,7 +69,7 @@ public class ServiceTests {
     @Test
     public void logoutUser() throws Exception {
         var user = new UserData("a", "p", "a@a.com");
-        var expected = "";
+        Object expected = null;
 
         var authData = service.registerUser(user);
 
@@ -87,7 +87,7 @@ public class ServiceTests {
     @Test
     public void registerLogoutLogBackInAndThenLogOutAgain() throws Exception {
         var user = new UserData("a", "p", "a@a.com");
-        var expected = "";
+        Object expected = null;
 
         var authData = service.registerUser(user);
         service.logoutUser(authData.authToken());
@@ -111,7 +111,7 @@ public class ServiceTests {
 
         var listGamesResult = service.listGames(authData.authToken());
 
-        assertEquals(expected, listGamesResult.length);
+        assertEquals(expected, listGamesResult.get("games").length);
     }
 
     @Test
@@ -130,7 +130,7 @@ public class ServiceTests {
 
         var createGameResult = service.createGame(authData.authToken(), "name");
 
-        assertEquals(expected, createGameResult);
+        assertEquals(expected, createGameResult.get("gameID"));
     }
 
     @Test
@@ -144,7 +144,7 @@ public class ServiceTests {
 
         var createGameResult = service.createGame(authData.authToken(), "name");
 
-        assertEquals(expected, createGameResult);
+        assertEquals(expected, createGameResult.get("gameID"));
     }
 
     @Test
@@ -203,7 +203,7 @@ public class ServiceTests {
         var user2 = new UserData("a2", "p", "a@a.com");
         var user3 = new UserData("a3", "p", "a@a.com");
         var user4 = new UserData("a4", "p", "a@a.com");
-        var expected = "";
+        Object expected = null;
 
         var authData = service.registerUser(user);
         service.registerUser(user2);
@@ -224,8 +224,8 @@ public class ServiceTests {
         var authData = service.registerUser(new UserData("fellow1", "p", "e"));
         var authData2 = service.registerUser(new UserData("fellow2", "p", "e"));
         var expectedListLength = 1;
-        var expectedJoin = "";
-        var expectedClear = "";
+        Object expectedJoin = null;
+        Object expectedClear = null;
 
         service.logoutUser(authData.authToken());
 
@@ -235,7 +235,7 @@ public class ServiceTests {
 
         var listResult = service.listGames(authData.authToken());
 
-        assertEquals(expectedListLength, listResult.length);
+        assertEquals(expectedListLength, listResult.get("games").length);
 
         var joinResult = service.joinGame(authData.authToken(), new UserData("fellow1", "p", "e"), 1, "WHITE");
 

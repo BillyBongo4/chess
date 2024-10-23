@@ -61,19 +61,40 @@ public class Service {
         return null;
     }
 
-    public GameData[] listGames(String authToken) throws ServiceException {
+    /*public GameData[] listGames(String authToken) throws ServiceException {
         if (dataAccess.getAuth(authToken) == null) {
             throw new ServiceException(401, "Error: Unauthorized");
         }
 
         return dataAccess.listGames();
+    }*/
+    public Map<String, GameListEntry[]> listGames(String authToken) throws ServiceException {
+        if (dataAccess.getAuth(authToken) == null) {
+            throw new ServiceException(401, "Error: Unauthorized");
+        }
+
+        GameData[] games = dataAccess.listGames();
+        GameListEntry[] entries = new GameListEntry[games.length];
+        for (int i = 0; i < games.length; i++) {
+            GameData game = games[i];
+            entries[i] = new GameListEntry(
+                    game.gameId(),
+                    game.gameName(),
+                    game.whiteUsername(),
+                    game.blackUsername()
+            );
+        }
+        Map<String, GameListEntry[]> result = new HashMap<>();
+        result.put("games", entries);
+        return result;
     }
+
 
     public Map<String, Integer> createGame(String authToken, String gameName) throws ServiceException {
         if (dataAccess.getAuth(authToken) == null) {
             throw new ServiceException(401, "Error: Unauthorized");
         }
-        int gameID = listGames(authToken).length + 1;
+        int gameID = listGames(authToken).get("games").length + 1;
         ChessGame game = new ChessGame();
         GameData gameData = new GameData(gameID, null, null, gameName, game);
         dataAccess.createGame(gameData);
