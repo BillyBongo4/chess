@@ -15,8 +15,6 @@ public class Server {
     private final Service service = new Service(dataAccess);
     private final Gson serializer = new Gson();
 
-    private UserData user = null;
-
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
@@ -40,13 +38,13 @@ public class Server {
     }
 
     private String createUser(Request req, Response res) throws Exception {
-        user = serializer.fromJson(req.body(), UserData.class);
+        var user = serializer.fromJson(req.body(), UserData.class);
         var result = service.registerUser(user);
         return serializer.toJson(result);
     }
 
     private String loginUser(Request req, Response res) throws Exception {
-        user = serializer.fromJson(req.body(), UserData.class);
+        var user = serializer.fromJson(req.body(), UserData.class);
         var result = service.loginUser(user);
         return serializer.toJson(result);
     }
@@ -71,13 +69,32 @@ public class Server {
         return serializer.toJson(result);
     }
 
+    private String validateJsonField(JsonObject body, String fieldName, Response res) {
+        if (!body.has(fieldName) || body.get(fieldName).isJsonNull()) {
+            res.status(400); // Bad Request
+            res.body("{\"message\": \"Bad Request: Missing or null " + fieldName + " field. Error: missing_" + fieldName.toLowerCase() + "\"}");
+            return res.body();
+        }
+        return null;
+    }
+
     private String joinGame(Request req, Response res) throws Exception {
         var authToken = req.headers("Authorization");
         JsonObject body = JsonParser.parseString(req.body()).getAsJsonObject();
+
+        String validationError = validateJsonField(body, "playerColor", res);
+        if (validationError != null) {
+            return validationError;
+        }
+        validationError = validateJsonField(body, "gameID", res);
+        if (validationError != null) {
+            return validationError;
+        }
+
         var playerColor = body.get("playerColor").getAsString();
         var gameID = body.get("gameID").getAsInt();
 
-        var result = service.joinGame(authToken, user, gameID, playerColor);
+        var result = service.joinGame(authToken, gameID, playerColor);
         return serializer.toJson(result);
     }
 
