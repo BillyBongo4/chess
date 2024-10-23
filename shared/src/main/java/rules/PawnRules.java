@@ -16,11 +16,15 @@ public class PawnRules extends Rules {
             int rowMod = color == ChessGame.TeamColor.BLACK ? -modifier : modifier;
             ChessPosition currPosition = new ChessPosition(myPosition.getRow() + rowMod, myPosition.getColumn());
 
-            if (isPositionOutOfBounds(currPosition)) break;
+            if (isPositionOutOfBounds(currPosition)) {
+                break;
+            }
 
             handleCaptures(board, currPiece, myPosition, currPosition);
 
-            if (board.getPiece(currPosition) != null) break;
+            if (board.getPiece(currPosition) != null) {
+                break;
+            }
 
             addMoveOrPromotion(currPiece, myPosition, currPosition, color);
             modifier++;
@@ -48,7 +52,9 @@ public class PawnRules extends Rules {
         for (int j = 0; j < 2; j++) {
             ChessPosition capturePosition = new ChessPosition(currPosition.getRow(), currPosition.getColumn() + colMod);
 
-            if (isPositionOutOfBounds(capturePosition)) break;
+            if (isPositionOutOfBounds(capturePosition)) {
+                break;
+            }
 
             ChessPiece capturedPiece = board.getPiece(capturePosition);
             if (capturedPiece != null) {
