@@ -111,7 +111,7 @@ public class Service {
         return null;
     }
 
-    public String clear() throws ServiceException {
+    public String clear() {
         dataAccess.clearGameData();
         dataAccess.clearAuthData();
         dataAccess.clearUserData();
