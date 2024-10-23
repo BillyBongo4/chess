@@ -61,13 +61,6 @@ public class Service {
         return null;
     }
 
-    /*public GameData[] listGames(String authToken) throws ServiceException {
-        if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException(401, "Error: Unauthorized");
-        }
-
-        return dataAccess.listGames();
-    }*/
     public Map<String, GameListEntry[]> listGames(String authToken) throws ServiceException {
         if (dataAccess.getAuth(authToken) == null) {
             throw new ServiceException(401, "Error: Unauthorized");
@@ -88,7 +81,6 @@ public class Service {
         result.put("games", entries);
         return result;
     }
-
 
     public Map<String, Integer> createGame(String authToken, String gameName) throws ServiceException {
         if (dataAccess.getAuth(authToken) == null) {
