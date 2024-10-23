@@ -96,15 +96,19 @@ public class Service {
         return result;
     }
 
-    public String joinGame(String authToken, UserData user, int gameID, String playerColor) throws Exception {
-        validateUserData(user);
-        if (dataAccess.getAuth(authToken) == null) {
+    public String joinGame(String authToken, int gameID, String playerColor) throws Exception {
+        AuthData authData = dataAccess.getAuth(authToken);
+        if (authData == null) {
             throw new ServiceException(401, "Error: Unauthorized");
         }
 
         if (dataAccess.checkColorUsername(gameID, playerColor)) {
             throw new ServiceException(403, "Error: Already taken");
         }
+
+
+        UserData user = dataAccess.getUser(authData.username());
+        validateUserData(user);
 
         dataAccess.updateGame(gameID, user.username(), playerColor);
 

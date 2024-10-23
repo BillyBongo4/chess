@@ -169,7 +169,7 @@ public class ServiceTests {
     @Test
     public void joinGameNoAuthorization() throws Exception {
         assertThrows(ServiceException.class, () -> {
-            service.joinGame("", new UserData("", "", ""), 0, "");
+            service.joinGame("", 0, "");
         });
     }
 
@@ -180,7 +180,7 @@ public class ServiceTests {
         var authData = service.registerUser(user);
 
         assertThrows(DataAccessException.class, () -> {
-            service.joinGame(authData.authToken(), user, 0, "WHITE");
+            service.joinGame(authData.authToken(), 0, "WHITE");
         });
     }
 
@@ -190,10 +190,10 @@ public class ServiceTests {
 
         var authData = service.registerUser(user);
         var gameID = service.createGame(authData.authToken(), "gameName");
-        service.joinGame(authData.authToken(), user, gameID.get("gameID"), "WHITE");
+        service.joinGame(authData.authToken(), gameID.get("gameID"), "WHITE");
 
         assertThrows(ServiceException.class, () -> {
-            service.joinGame(authData.authToken(), user, gameID.get("gameID"), "WHITE");
+            service.joinGame(authData.authToken(), gameID.get("gameID"), "WHITE");
         });
     }
 
@@ -237,15 +237,15 @@ public class ServiceTests {
 
         assertEquals(expectedListLength, listResult.get("games").length);
 
-        var joinResult = service.joinGame(authData.authToken(), new UserData("fellow1", "p", "e"), 1, "WHITE");
+        var joinResult = service.joinGame(authData.authToken(), 1, "WHITE");
 
         assertEquals(expectedJoin, joinResult);
 
         assertThrows(ServiceException.class, () -> {
-            service.joinGame(authData2.authToken(), new UserData("fellow2", "p", "e"), 1, "WHITE");
+            service.joinGame(authData2.authToken(), 1, "WHITE");
         });
 
-        service.joinGame(authData2.authToken(), new UserData("fellow2", "p", "e"), 1, "BLACK");
+        service.joinGame(authData2.authToken(), 1, "BLACK");
 
         var clearResult = service.clear();
 
