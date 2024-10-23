@@ -103,7 +103,7 @@ public class Server {
     }
 
     private void exceptionHandler(ServiceException ex, Request req, Response res) {
-        res.status(ex.StatusCode());
+        res.status(ex.statusCode());
         res.type("application/json");
         res.body("{\"message\": \"" + ex.getMessage() + "\"}");
     }
