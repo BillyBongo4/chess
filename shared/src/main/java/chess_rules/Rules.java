@@ -1,4 +1,4 @@
-package chessRules;
+package chess_rules;
 
 import chess.ChessBoard;
 import chess.ChessMove;
@@ -14,14 +14,21 @@ public class Rules {
         ChessPosition currPosition = new ChessPosition(myPosition.getRow() + rowMod,
                 myPosition.getColumn() + colMod);
 
-        if (currPosition.getRow() > 8 || currPosition.getRow() < 1) { return true; }
-        if (currPosition.getColumn() > 8 || currPosition.getColumn() < 1) { return true; }
+        if (currPosition.getRow() > 8 || currPosition.getRow() < 1) {
+            return true;
+        }
+        if (currPosition.getColumn() > 8 || currPosition.getColumn() < 1) {
+            return true;
+        }
 
         boolean stop = false;
         if (board.getPiece(currPosition) != null) {
             if (board.getPiece(currPosition).getTeamColor()
-                    == board.getPiece(myPosition).getTeamColor()) { return true; }
-            else { stop = true; }
+                    == board.getPiece(myPosition).getTeamColor()) {
+                return true;
+            } else {
+                stop = true;
+            }
         }
 
         ChessMove move = new ChessMove(myPosition, currPosition, null);
@@ -36,10 +43,16 @@ public class Rules {
             while (true) {
                 int rowMod = modifier;
                 int colMod = modifier;
-                if (i == 1 || i == 2) { rowMod *= -1; }
-                if (i == 2 || i == 3) { colMod *= -1; }
+                if (i == 1 || i == 2) {
+                    rowMod *= -1;
+                }
+                if (i == 2 || i == 3) {
+                    colMod *= -1;
+                }
 
-                if (addMove(board, myPosition, rowMod, colMod)) { break; }
+                if (addMove(board, myPosition, rowMod, colMod)) {
+                    break;
+                }
 
                 modifier++;
             }
@@ -52,17 +65,29 @@ public class Rules {
             while (true) {
                 int rowMod = modifier;
                 int colMod = modifier;
-                if (i == 1 || i == 3) { rowMod = 0; }
-                if (i == 0 || i == 2) { colMod = 0; }
-                if (i == 2) { rowMod *= -1; }
-                if (i == 3) { colMod *= -1; }
+                if (i == 1 || i == 3) {
+                    rowMod = 0;
+                }
+                if (i == 0 || i == 2) {
+                    colMod = 0;
+                }
+                if (i == 2) {
+                    rowMod *= -1;
+                }
+                if (i == 3) {
+                    colMod *= -1;
+                }
 
-                if (addMove(board, myPosition, rowMod, colMod)) { break; }
+                if (addMove(board, myPosition, rowMod, colMod)) {
+                    break;
+                }
 
                 modifier++;
             }
         }
     }
 
-    protected Collection<ChessMove> getMoves() { return moves; }
+    protected Collection<ChessMove> getMoves() {
+        return moves;
+    }
 }

@@ -1,4 +1,4 @@
-package chessRules;
+package chess_rules;
 
 import chess.*;
 
@@ -7,12 +7,16 @@ import java.util.Collection;
 public class PawnRules extends Rules {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ChessGame.TeamColor color = ChessGame.TeamColor.WHITE;
-        if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK) { color = ChessGame.TeamColor.BLACK; }
+        if (board.getPiece(myPosition).getTeamColor() == ChessGame.TeamColor.BLACK) {
+            color = ChessGame.TeamColor.BLACK;
+        }
         ChessPiece currPiece = new ChessPiece(color, ChessPiece.PieceType.PAWN);
 
         int numForward = 1;
         if ((color == ChessGame.TeamColor.BLACK && myPosition.getRow() == 7)
-                || (color == ChessGame.TeamColor.WHITE) && myPosition.getRow() == 2) { numForward++; }
+                || (color == ChessGame.TeamColor.WHITE) && myPosition.getRow() == 2) {
+            numForward++;
+        }
 
         int modifier = 1;
         for (int i = 0; i < numForward; i++) {
@@ -24,26 +28,34 @@ public class PawnRules extends Rules {
             ChessPosition currPosition = new ChessPosition(myPosition.getRow() + rowMod,
                     myPosition.getColumn());
 
-            if (currPosition.getRow() > 8 || currPosition.getRow() < 1) { break; }
-            if (currPosition.getColumn() > 8 || currPosition.getColumn() < 1) { break; }
+            if (currPosition.getRow() > 8 || currPosition.getRow() < 1) {
+                break;
+            }
+            if (currPosition.getColumn() > 8 || currPosition.getColumn() < 1) {
+                break;
+            }
 
             int colMod = -1;
             for (int j = 0; j < 2; j++) {
                 ChessPosition capturePosition = new ChessPosition(currPosition.getRow(),
                         currPosition.getColumn() + colMod);
 
-                if (capturePosition.getRow() > 8 || capturePosition.getRow() < 1) { break; }
-                if (capturePosition.getColumn() > 8 || capturePosition.getColumn() < 1) { break; }
+                if (capturePosition.getRow() > 8 || capturePosition.getRow() < 1) {
+                    break;
+                }
+                if (capturePosition.getColumn() > 8 || capturePosition.getColumn() < 1) {
+                    break;
+                }
 
                 if (board.getPiece(capturePosition) != null) {
                     if (board.getPiece(capturePosition).getTeamColor()
-                            == board.getPiece(myPosition).getTeamColor()) { break; }
-                    else {
+                            == board.getPiece(myPosition).getTeamColor()) {
+                        break;
+                    } else {
                         if ((capturePosition.getRow() == 1 && color == ChessGame.TeamColor.BLACK)
                                 || (capturePosition.getRow() == 8 && color == ChessGame.TeamColor.WHITE)) {
                             currPiece.pawnPromotion(getMoves(), myPosition, capturePosition);
-                        }
-                        else {
+                        } else {
                             ChessMove captureMove = new ChessMove(myPosition, capturePosition, null);
                             getMoves().add(captureMove);
                         }
@@ -59,8 +71,7 @@ public class PawnRules extends Rules {
             if ((currPosition.getRow() == 1 && color == ChessGame.TeamColor.BLACK)
                     || (currPosition.getRow() == 8 && color == ChessGame.TeamColor.WHITE)) {
                 currPiece.pawnPromotion(getMoves(), myPosition, currPosition);
-            }
-            else {
+            } else {
                 ChessMove move = new ChessMove(myPosition, currPosition, null);
                 getMoves().add(move);
             }

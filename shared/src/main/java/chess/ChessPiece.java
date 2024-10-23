@@ -1,6 +1,6 @@
 package chess;
 
-import chessRules.*;
+import chess_rules.*;
 
 import java.util.Collection;
 
@@ -14,6 +14,7 @@ public class ChessPiece {
 
     private final ChessGame.TeamColor pieceColor;
     private final PieceType type;
+
     public ChessPiece(ChessGame.TeamColor pieceColor, PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
@@ -48,10 +49,15 @@ public class ChessPiece {
     public void pawnPromotion(Collection<ChessMove> moves, ChessPosition myPosition, ChessPosition currPosition) {
         for (int j = 0; j < 4; j++) {
             PieceType promotion;
-            if (j == 0) { promotion = PieceType.QUEEN; }
-            else if (j == 1) { promotion = PieceType.BISHOP; }
-            else if (j == 2) { promotion = PieceType.ROOK; }
-            else { promotion = PieceType.KNIGHT; }
+            if (j == 0) {
+                promotion = PieceType.QUEEN;
+            } else if (j == 1) {
+                promotion = PieceType.BISHOP;
+            } else if (j == 2) {
+                promotion = PieceType.ROOK;
+            } else {
+                promotion = PieceType.KNIGHT;
+            }
 
             ChessMove move = new ChessMove(myPosition, currPosition, promotion);
             moves.add(move);
@@ -66,19 +72,30 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        if (type == PieceType.BISHOP) { return new BishopRules().pieceMoves(board, myPosition); }
-        else if (type == PieceType.KING) { return new KingRules().pieceMoves(board, myPosition); }
-        else if (type == PieceType.KNIGHT) { return new KnightRules().pieceMoves(board, myPosition); }
-        else if (type == PieceType.PAWN) { return new PawnRules().pieceMoves(board, myPosition); }
-        else if (type == PieceType.QUEEN) { return new QueenRules().pieceMoves(board, myPosition); }
-        else if (type == PieceType.ROOK) { return new RookRules().pieceMoves(board, myPosition); }
+        if (type == PieceType.BISHOP) {
+            return new BishopRules().pieceMoves(board, myPosition);
+        } else if (type == PieceType.KING) {
+            return new KingRules().pieceMoves(board, myPosition);
+        } else if (type == PieceType.KNIGHT) {
+            return new KnightRules().pieceMoves(board, myPosition);
+        } else if (type == PieceType.PAWN) {
+            return new PawnRules().pieceMoves(board, myPosition);
+        } else if (type == PieceType.QUEEN) {
+            return new QueenRules().pieceMoves(board, myPosition);
+        } else if (type == PieceType.ROOK) {
+            return new RookRules().pieceMoves(board, myPosition);
+        }
         return null;
     }
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) { return true; }
-        if (object == null || getClass() != object.getClass()) { return false; }
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
         ChessPiece piece = (ChessPiece) object;
         return (pieceColor.equals(piece.getTeamColor()) && type.equals(piece.getPieceType()));
     }
