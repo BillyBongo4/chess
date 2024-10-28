@@ -13,7 +13,7 @@ public class MemoryDataAccess implements DataAccess {
     private final HashMap<Integer, GameData> games = new HashMap<>();
 
     @Override
-    public UserData getUser(String username) {
+    public UserData getUser(String username) throws Exception {
         return users.get(username);
 
     }
@@ -25,7 +25,7 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public AuthData createAuth(AuthData authData) {
+    public AuthData createAuth(AuthData authData) throws Exception {
         auths.put(authData.authToken(), authData);
         return authData;
     }
@@ -46,7 +46,8 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public GameData createGame(GameData gameData) {
+    public GameData createGame(String gameName) {
+        GameData gameData = new GameData(games.size() + 1, null, null, gameName, new ChessGame());
         games.put(gameData.gameId(), gameData);
         return gameData;
     }

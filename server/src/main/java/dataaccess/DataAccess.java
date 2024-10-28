@@ -3,25 +3,25 @@ package dataaccess;
 import model.*;
 
 public interface DataAccess {
-    UserData getUser(String username);
+    UserData getUser(String username) throws Exception;
 
-    UserData createUser(UserData userData);
+    UserData createUser(UserData userData) throws DataAccessException;
 
-    AuthData createAuth(AuthData authData);
+    AuthData createAuth(AuthData authData) throws Exception;
 
-    AuthData getAuth(String authToken);
+    AuthData getAuth(String authToken) throws DataAccessException;
 
-    void deleteAuth(String authToken);
+    void deleteAuth(String authToken) throws DataAccessException;
 
-    GameData[] listGames();
+    GameData[] listGames() throws DataAccessException;
 
-    GameData createGame(GameData gameData);
+    GameData createGame(String gameName) throws DataAccessException;
 
-    GameData getGame(int gameID);
+    GameData getGame(int gameID) throws DataAccessException;
 
     boolean checkColorUsername(int gameID, String color) throws DataAccessException;
 
-    void updateGame(int gameID, String username, String color);
+    void updateGame(int gameID, String username, String color) throws DataAccessException;
 
     void clearGameData();
 
