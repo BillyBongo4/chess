@@ -25,11 +25,15 @@ public class Service {
 
     private AuthData createAuth(UserData user) {
         AuthData authData = new AuthData(UUID.randomUUID().toString(), user.username());
-        dataAccess.createAuth(authData);
+        try {
+            dataAccess.createAuth(authData);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         return authData;
     }
 
-    public AuthData registerUser(UserData newUser) throws ServiceException {
+    public AuthData registerUser(UserData newUser) throws Exception {
         validateUserData(newUser);
         if (dataAccess.getUser(newUser.username()) != null) {
             throw new ServiceException(403, "Error: User already exists");
@@ -40,7 +44,7 @@ public class Service {
         return createAuth(newUser);
     }
 
-    public AuthData loginUser(UserData user) throws ServiceException {
+    public AuthData loginUser(UserData user) throws Exception {
         validateUserData(user);
         if (dataAccess.getUser(user.username()) == null) {
             throw new ServiceException(401, "Error: User doesn't exists");
@@ -51,7 +55,7 @@ public class Service {
         return createAuth(user);
     }
 
-    public String logoutUser(String authToken) throws ServiceException {
+    public String logoutUser(String authToken) throws Exception {
         if (dataAccess.getAuth(authToken) == null) {
             throw new ServiceException(401, "Error: Unauthorized");
         }
@@ -61,7 +65,7 @@ public class Service {
         return null;
     }
 
-    public Map<String, GameListEntry[]> listGames(String authToken) throws ServiceException {
+    public Map<String, GameListEntry[]> listGames(String authToken) throws Exception {
         if (dataAccess.getAuth(authToken) == null) {
             throw new ServiceException(401, "Error: Unauthorized");
         }
@@ -82,17 +86,15 @@ public class Service {
         return result;
     }
 
-    public Map<String, Integer> createGame(String authToken, String gameName) throws ServiceException {
+    public Map<String, Integer> createGame(String authToken, String gameName) throws Exception {
         if (dataAccess.getAuth(authToken) == null) {
             throw new ServiceException(401, "Error: Unauthorized");
         }
-        int gameID = listGames(authToken).get("games").length + 1;
-        ChessGame game = new ChessGame();
-        GameData gameData = new GameData(gameID, null, null, gameName, game);
-        dataAccess.createGame(gameData);
+
+        var gameData = dataAccess.createGame(gameName);
 
         Map<String, Integer> result = new HashMap<>();
-        result.put("gameID", gameID);
+        result.put("gameID", gameData.gameId());
         return result;
     }
 
