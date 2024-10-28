@@ -11,7 +11,7 @@ import service.ServiceException;
 import spark.*;
 
 public class Server {
-    private final DataAccess dataAccess = new MemoryDataAccess();
+    private final DataAccess dataAccess = new MySqlDataAccess();//MemoryDataAccess();
     private final Service service = new Service(dataAccess);
     private final Gson serializer = new Gson();
 
