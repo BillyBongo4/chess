@@ -46,9 +46,9 @@ public class MySqlDataAccess implements DataAccess {
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(query)) {
                 preparedStatement.setString(1, username);
-                var rs = preparedStatement.executeQuery();
-                if (rs.next()) {
-                    return new UserData(rs.getString("username"), rs.getString("password"), rs.getString("email"));
+                var result = preparedStatement.executeQuery();
+                if (result.next()) {
+                    return new UserData(result.getString("username"), result.getString("password"), result.getString("email"));
                 }
             }
         } catch (SQLException e) {
@@ -90,6 +90,18 @@ public class MySqlDataAccess implements DataAccess {
 
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
+        String query = "SELECT * FROM auths WHERE authToken = ?";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, authToken);
+                var result = preparedStatement.executeQuery();
+                if (result.next()) {
+                    return new AuthData(result.getString("authToken"), result.getString("username"));
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
         return null;
     }
 
