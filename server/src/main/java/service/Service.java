@@ -51,7 +51,6 @@ public class Service {
 
     public AuthData loginUser(UserData user) throws Exception {
         validateUserData(user);
-        String test = dataAccess.getUser(user.username()).password();
         if (dataAccess.getUser(user.username()) == null) {
             throw new ServiceException(401, "Error: User doesn't exists");
         } else if (BCrypt.checkpw(user.username(), dataAccess.getUser(user.username()).password())) {
