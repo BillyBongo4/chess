@@ -123,7 +123,7 @@ public class Service {
         return null;
     }
 
-    public String clear() {
+    public String clear() throws Exception {
         dataAccess.clearGameData();
         dataAccess.clearAuthData();
         dataAccess.clearUserData();

@@ -98,7 +98,7 @@ public class Server {
         return serializer.toJson(result);
     }
 
-    private String clear(Request req, Response res) {
+    private String clear(Request req, Response res) throws Exception {
         return serializer.toJson(service.clear());
     }
 
