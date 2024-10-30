@@ -53,7 +53,7 @@ public class Service {
         validateUserData(user);
         if (dataAccess.getUser(user.username()) == null) {
             throw new ServiceException(401, "Error: User doesn't exists");
-        } else if (BCrypt.checkpw(user.username(), dataAccess.getUser(user.username()).password())) {
+        } else if (!BCrypt.checkpw(user.password(), dataAccess.getUser(user.username()).password())) {
             throw new ServiceException(401, "Error: Unauthorized");
         }
 
