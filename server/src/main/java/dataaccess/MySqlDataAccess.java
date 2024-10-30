@@ -170,13 +170,37 @@ public class MySqlDataAccess implements DataAccess {
 
     @Override
     public boolean checkColorUsername(int gameID, String color) throws DataAccessException {
+        String query = "SELECT * FROM games WHERE gameID = ?";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setInt(1, gameID);
+                var result = preparedStatement.executeQuery();
 
+                if (result.next()) {
+                    if (color.equals("WHITE") && result.getString("whiteUsername") != null) {
+                        return true;
+                    } else if (color.equals("BLACK") && result.getString("blackUsername") != null) {
+                        return true;
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
         return false;
     }
 
     @Override
     public void updateGame(int gameID, String username, String color) throws DataAccessException {
-
+        String query = "UPDATE games SET " + (color.equalsIgnoreCase("WHITE") ? "whiteUsername" : "blackUsername") + " = ? WHERE gameID = ?";
+        try (var conn = DatabaseManager.getConnection();
+             var preparedStatement = conn.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            preparedStatement.setInt(2, gameID);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
