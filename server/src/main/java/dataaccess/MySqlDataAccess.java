@@ -1,8 +1,12 @@
 package dataaccess;
 
+import chess.ChessGame;
+import com.google.gson.Gson;
 import model.*;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MySqlDataAccess implements DataAccess {
     public MySqlDataAccess() {
@@ -120,12 +124,48 @@ public class MySqlDataAccess implements DataAccess {
 
     @Override
     public GameData[] listGames() throws DataAccessException {
-        return new GameData[0];
+        String query = "SELECT * FROM games";
+        List<GameData> gamesList = new ArrayList<>();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(query)) {
+                var result = preparedStatement.executeQuery();
+                while (result.next()) {
+                    int gameId = result.getInt("gameID");
+                    String gameName = result.getString("gameName");
+                    String whiteUsername = result.getString("whiteUsername");
+                    String blackUsername = result.getString("blackUsername");
+                    String chessGameJson = result.getString("chessGame");
+                    ChessGame game = new Gson().fromJson(chessGameJson, ChessGame.class);
+
+                    GameData gameData = new GameData(gameId, whiteUsername, blackUsername, gameName, game);
+
+                    gamesList.add(gameData);
+                }
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+        return gamesList.toArray(new GameData[0]);
     }
 
     @Override
     public GameData createGame(String gameName) throws DataAccessException {
-        return null;
+        String query = "INSERT INTO games (gameName, whiteUsername, blackUsername, chessGame) VALUES (?, ?, ?, ?)";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(query)) {
+                String chessGame = new Gson().toJson(new ChessGame());
+
+                preparedStatement.setString(1, gameName);
+                preparedStatement.setString(2, null);
+                preparedStatement.setString(3, null);
+                preparedStatement.setString(4, chessGame);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+
+        return new GameData(listGames().length, null, null, gameName, new ChessGame());
     }
 
     @Override
