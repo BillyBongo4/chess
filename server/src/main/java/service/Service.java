@@ -5,6 +5,7 @@ import dataaccess.DataAccess;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,9 +40,13 @@ public class Service {
             throw new ServiceException(403, "Error: User already exists");
         }
 
-        dataAccess.createUser(newUser);
+        String hashPassword = BCrypt.hashpw(newUser.password(), BCrypt.gensalt());
 
-        return createAuth(newUser);
+        UserData hashedUser = new UserData(newUser.username(), hashPassword, newUser.email());
+
+        dataAccess.createUser(hashedUser);
+
+        return createAuth(hashedUser);
     }
 
     public AuthData loginUser(UserData user) throws Exception {

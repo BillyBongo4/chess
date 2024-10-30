@@ -17,7 +17,7 @@ public class MySqlDataAccess implements DataAccess {
     private void createTables() throws Exception {
         String userDataTable = "CREATE TABLE IF NOT EXISTS users (" +
                 "username VARCHAR(50) NOT NULL PRIMARY KEY, " +
-                "password VARCHAR(50) NOT NULL, " +
+                "password VARCHAR(255) NOT NULL, " +
                 "email VARCHAR(100) NOT NULL)";
         String authDataTable = "CREATE TABLE IF NOT EXISTS auths (" +
                 "authToken VARCHAR(255) NOT NULL PRIMARY KEY, " +
