@@ -193,28 +193,50 @@ public class MySqlDataAccess implements DataAccess {
     @Override
     public void updateGame(int gameID, String username, String color) throws DataAccessException {
         String query = "UPDATE games SET " + (color.equalsIgnoreCase("WHITE") ? "whiteUsername" : "blackUsername") + " = ? WHERE gameID = ?";
-        try (var conn = DatabaseManager.getConnection();
-             var preparedStatement = conn.prepareStatement(query)) {
-            preparedStatement.setString(1, username);
-            preparedStatement.setInt(2, gameID);
-            preparedStatement.executeUpdate();
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.setString(1, username);
+                preparedStatement.setInt(2, gameID);
+                preparedStatement.executeUpdate();
+            }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
     }
 
     @Override
-    public void clearGameData() {
-
+    public void clearGameData() throws DataAccessException {
+        String query = "TRUNCATE TABLE games";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public void clearAuthData() {
-
+    public void clearAuthData() throws DataAccessException {
+        String query = "TRUNCATE TABLE auths";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 
     @Override
-    public void clearUserData() {
-
+    public void clearUserData() throws DataAccessException {
+        String query = "TRUNCATE TABLE users";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(query)) {
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
     }
 }
