@@ -53,11 +53,6 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
-    public GameData getGame(int gameID) {
-        return games.get(gameID);
-    }
-
-    @Override
     public boolean checkColorUsername(int gameID, String color) throws DataAccessException {
         var game = games.get(gameID);
 

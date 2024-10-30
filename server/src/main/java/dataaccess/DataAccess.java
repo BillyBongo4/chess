@@ -17,8 +17,6 @@ public interface DataAccess {
 
     GameData createGame(String gameName) throws DataAccessException;
 
-    GameData getGame(int gameID) throws DataAccessException;
-
     boolean checkColorUsername(int gameID, String color) throws DataAccessException;
 
     void updateGame(int gameID, String username, String color) throws DataAccessException;

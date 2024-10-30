@@ -169,12 +169,8 @@ public class MySqlDataAccess implements DataAccess {
     }
 
     @Override
-    public GameData getGame(int gameID) throws DataAccessException {
-        return null;
-    }
-
-    @Override
     public boolean checkColorUsername(int gameID, String color) throws DataAccessException {
+
         return false;
     }
 
