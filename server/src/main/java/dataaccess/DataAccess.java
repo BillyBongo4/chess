@@ -2,12 +2,14 @@ package dataaccess;
 
 import model.*;
 
+import javax.xml.crypto.Data;
+
 public interface DataAccess {
     UserData getUser(String username) throws Exception;
 
     UserData createUser(UserData userData) throws DataAccessException;
 
-    AuthData createAuth(AuthData authData) throws Exception;
+    AuthData createAuth(AuthData authData) throws DataAccessException;
 
     AuthData getAuth(String authToken) throws DataAccessException;
 
