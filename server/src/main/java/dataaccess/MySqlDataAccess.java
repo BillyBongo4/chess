@@ -70,11 +70,12 @@ public class MySqlDataAccess implements DataAccess {
                 preparedStatement.setString(2, userData.password());
                 preparedStatement.setString(3, userData.email());
                 preparedStatement.executeUpdate();
+
+                return userData;
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
-        return null;
     }
 
     @Override
@@ -85,11 +86,12 @@ public class MySqlDataAccess implements DataAccess {
                 preparedStatement.setString(1, authData.authToken());
                 preparedStatement.setString(2, authData.username());
                 preparedStatement.executeUpdate();
+
+                return authData;
             }
         } catch (SQLException e) {
             throw new DataAccessException(e.getMessage());
         }
-        return null;
     }
 
     @Override
