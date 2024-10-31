@@ -194,6 +194,14 @@ public class MySqlDataAccess implements DataAccess {
 
     @Override
     public void updateGame(int gameID, String username, String color) throws DataAccessException {
+        if (gameID > listGames().length) {
+            throw new DataAccessException("Error: Invalid gameID");
+        } else if (username.isEmpty()) {
+            throw new DataAccessException("Error: Invalid username");
+        } else if (!color.equals("WHITE") && !color.equals("BLACK")) {
+            throw new DataAccessException("Error: Invalid color");
+        }
+
         String query = "UPDATE games SET " + (color.equalsIgnoreCase("WHITE") ? "whiteUsername" : "blackUsername") + " = ? WHERE gameID = ?";
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(query)) {
