@@ -79,7 +79,7 @@ public class MySqlDataAccess implements DataAccess {
     }
 
     @Override
-    public AuthData createAuth(AuthData authData) throws Exception {
+    public AuthData createAuth(AuthData authData) throws DataAccessException {
         String query = "INSERT INTO auths (authToken, username) VALUES (?, ?)";
         try (var conn = DatabaseManager.getConnection()) {
             try (var preparedStatement = conn.prepareStatement(query)) {
