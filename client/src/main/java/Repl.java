@@ -29,10 +29,6 @@ public class Repl {
     }
 
     private void printPrompt() {
-        String loggedInStatus = "[LOGGED_OUT]";
-        if (client.getLoggedInStatus()) {
-            loggedInStatus = "[LOGGED_IN]";
-        }
-        System.out.print("\n" + RESET_TEXT_COLOR + loggedInStatus + " >>> " + SET_TEXT_COLOR_GREEN);
+        System.out.print("\n" + RESET_TEXT_COLOR + "[" + client.getUsername() + "] >>> " + SET_TEXT_COLOR_GREEN);
     }
 }

@@ -85,7 +85,7 @@ public class Client {
         }
     }
 
-    public boolean getLoggedInStatus() {
-        return loggedIn;
+    public String getUsername() {
+        return loggedIn ? username : "LOGGED_OUT";
     }
 }
