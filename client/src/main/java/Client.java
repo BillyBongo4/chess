@@ -7,6 +7,7 @@ public class Client {
     private final String serverUrl;
     private boolean loggedIn = false;
     private String username;
+    private String authToken;
 
     public Client(String serverUrl) {
         server = new ServerFacade(serverUrl);
@@ -21,6 +22,7 @@ public class Client {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "login" -> login(params);
+                case "logout" -> logout();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -32,9 +34,9 @@ public class Client {
     public String register(String... params) throws Exception {
         if (params.length == 3) {
             var newUser = new UserData(params[0], params[1], params[2]);
-            var createdUser = server.createUser(newUser);
+            authToken = server.createUser(newUser);
             loggedIn = true;
-            username = createdUser.username();
+            username = params[0];
             return String.format("Logged in as %s", username);
         }
         throw new Exception("Expected: <USERNAME> <PASSWORD> <EMAIL>");
@@ -49,6 +51,11 @@ public class Client {
             return String.format("Logged in as %s", username);
         }
         throw new Exception("Expected: <USERNAME> <PASSWORD>");
+    }
+
+    public String logout() {
+        loggedIn = false;
+        return "Logged out!";
     }
 
     public String help() {

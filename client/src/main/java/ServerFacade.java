@@ -1,5 +1,6 @@
 import chess.ChessGame;
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import model.GameData;
 import model.UserData;
 
@@ -13,9 +14,10 @@ public class ServerFacade {
         this.serverUrl = serverUrl;
     }
 
-    public UserData createUser(UserData user) throws Exception {
+    public String createUser(UserData user) throws Exception {
         var path = "/user";
-        return makeRequest("POST", path, user, UserData.class);
+        var result = makeRequest("POST", path, user, LinkedTreeMap.class);
+        return (String) result.get("authToken");
     }
 
     public UserData loginUser(UserData user) throws Exception {
