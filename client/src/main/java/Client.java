@@ -54,9 +54,14 @@ public class Client {
     }
 
     public String logout() throws Exception {
-        loggedIn = false;
-        server.logoutUser(authToken, new UserData(username, "", ""));
-        return "Logged out!";
+        if (loggedIn) {
+            server.logoutUser(authToken);
+            loggedIn = false;
+            authToken = null;
+            username = null;
+            return "Logged out successfully!";
+        }
+        return "You are not logged in.";
     }
 
     public String help() {

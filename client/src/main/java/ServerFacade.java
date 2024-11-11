@@ -16,24 +16,24 @@ public class ServerFacade {
 
     public String createUser(UserData user) throws Exception {
         var path = "/user";
-        var result = makeRequest("POST", path, user, LinkedTreeMap.class);
+        var result = makeRequest("POST", path, user, LinkedTreeMap.class, null);
         return (String) result.get("authToken");
     }
 
     public String loginUser(UserData user) throws Exception {
         var path = "/session";
-        var result = makeRequest("POST", path, user, LinkedTreeMap.class);
+        var result = makeRequest("POST", path, user, LinkedTreeMap.class, null);
         return (String) result.get("authToken");
     }
 
-    public void logoutUser(String authToken, UserData user) throws Exception {
+    public void logoutUser(String authToken) throws Exception {
         var path = "/session";
-        makeRequest("DELETE", path, user, void.class);
+        makeRequest("DELETE", path, null, Object.class, authToken);
     }
 
     public void listGames() throws Exception {
         var path = "/game";
-        makeRequest("GET", path, new GameData(0, null, null, "", new ChessGame()), GameData.class);
+        makeRequest("GET", path, null, GameData.class, null);
     }
 
     public void createGame() throws Exception {
@@ -45,12 +45,16 @@ public class ServerFacade {
     public void clear() throws Exception {
     }
 
-    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws Exception {
+    private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws Exception {
         try {
             URL url = (new URI(serverUrl + path)).toURL();
             HttpURLConnection http = (HttpURLConnection) url.openConnection();
             http.setRequestMethod(method);
             http.setDoOutput(true);
+
+            if (authToken != null) {
+                http.addRequestProperty("Authorization", authToken);
+            }
 
             writeBody(request, http);
             http.connect();
