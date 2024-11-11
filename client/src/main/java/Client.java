@@ -1,3 +1,5 @@
+import model.UserData;
+
 import java.util.Arrays;
 
 public class Client {
@@ -28,18 +30,22 @@ public class Client {
     }
 
     public String register(String... params) throws Exception {
-        if (params.length >= 1) {
+        if (params.length == 3) {
+            var newUser = new UserData(params[0], params[1], params[2]);
+            var createdUser = server.createUser(newUser);
             loggedIn = true;
-            username = params[0];
+            username = createdUser.username();
             return String.format("Logged in as %s", username);
         }
         throw new Exception("Expected: <USERNAME> <PASSWORD> <EMAIL>");
     }
 
     public String login(String... params) throws Exception {
-        if (params.length >= 1) {
+        if (params.length == 2) {
+            var user = new UserData(params[0], params[1], "");
+            var loggedInUser = server.loginUser(user);
             loggedIn = true;
-            username = params[0];
+            username = loggedInUser.username();
             return String.format("Logged in as %s", username);
         }
         throw new Exception("Expected: <USERNAME> <PASSWORD>");
