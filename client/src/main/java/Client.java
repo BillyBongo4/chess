@@ -45,16 +45,17 @@ public class Client {
     public String login(String... params) throws Exception {
         if (params.length == 2) {
             var user = new UserData(params[0], params[1], "");
-            var loggedInUser = server.loginUser(user);
+            authToken = server.loginUser(user);
             loggedIn = true;
-            username = loggedInUser.username();
+            username = params[0];
             return String.format("Logged in as %s", username);
         }
         throw new Exception("Expected: <USERNAME> <PASSWORD>");
     }
 
-    public String logout() {
+    public String logout() throws Exception {
         loggedIn = false;
+        server.logoutUser(authToken, new UserData(username, "", ""));
         return "Logged out!";
     }
 

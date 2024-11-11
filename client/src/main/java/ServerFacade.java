@@ -20,14 +20,15 @@ public class ServerFacade {
         return (String) result.get("authToken");
     }
 
-    public UserData loginUser(UserData user) throws Exception {
+    public String loginUser(UserData user) throws Exception {
         var path = "/session";
-        return makeRequest("POST", path, user, UserData.class);
+        var result = makeRequest("POST", path, user, LinkedTreeMap.class);
+        return (String) result.get("authToken");
     }
 
-    public void logoutUser(UserData user) throws Exception {
+    public void logoutUser(String authToken, UserData user) throws Exception {
         var path = "/session";
-        makeRequest("DELETE", path, user, UserData.class);
+        makeRequest("DELETE", path, user, void.class);
     }
 
     public void listGames() throws Exception {
