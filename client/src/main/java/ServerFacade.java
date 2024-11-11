@@ -1,4 +1,6 @@
+import chess.ChessGame;
 import com.google.gson.Gson;
+import model.GameData;
 import model.UserData;
 
 import java.io.*;
@@ -16,13 +18,19 @@ public class ServerFacade {
         return makeRequest("POST", path, user, UserData.class);
     }
 
-    public void loginUser() throws Exception {
+    public UserData loginUser(UserData user) throws Exception {
+        var path = "/session";
+        return makeRequest("POST", path, user, UserData.class);
     }
 
-    public void logoutUser() throws Exception {
+    public void logoutUser(UserData user) throws Exception {
+        var path = "/session";
+        makeRequest("DELETE", path, user, UserData.class);
     }
 
     public void listGames() throws Exception {
+        var path = "/game";
+        makeRequest("GET", path, new GameData(0, null, null, "", new ChessGame()), GameData.class);
     }
 
     public void createGame() throws Exception {
