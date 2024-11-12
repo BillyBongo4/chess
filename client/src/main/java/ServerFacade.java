@@ -6,6 +6,9 @@ import model.UserData;
 
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -33,9 +36,28 @@ public class ServerFacade {
 
     public String listGames(String authToken) throws Exception {
         var path = "/game";
-        var result = makeRequest("GET", path, null, GameData.class, authToken);
-        if (result.gameName() != null) {
-            return "LIST";
+        var result = makeRequest("GET", path, null, HashMap.class, authToken);
+        Gson gson = new Gson();
+        List<GameData> gameList = new ArrayList<>();
+        List<LinkedTreeMap> games = (List<LinkedTreeMap>) result.get("games");
+        for (LinkedTreeMap game : games) {
+            GameData gameData = gson.fromJson(gson.toJson(game), GameData.class);
+            gameList.add(gameData);
+        }
+        if (!gameList.isEmpty()) {
+            StringBuilder output = new StringBuilder();
+            for (int i = 0; i < gameList.size(); i++) {
+                output.append((i + 1) + ". " + gameList.get(i).gameName() + "\n");
+                String whiteUsername = (gameList.get(i).whiteUsername() == null) ? "No Player" : gameList.get(i).whiteUsername();
+                String blackUsername = (gameList.get(i).blackUsername() == null) ? "No Player" : gameList.get(i).blackUsername();
+                output.append("    White: " + whiteUsername + "\n");
+                output.append("    Black: " + blackUsername);
+
+                if (i + 1 < gameList.size()) {
+                    output.append("\n");
+                }
+            }
+            return output.toString();
         } else {
             return "No games! Do 'create <NAME>' to create one!";
         }
@@ -48,9 +70,6 @@ public class ServerFacade {
     }
 
     public void joinGame() throws Exception {
-    }
-
-    public void clear() throws Exception {
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws Exception {
