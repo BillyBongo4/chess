@@ -41,7 +41,10 @@ public class ServerFacade {
         }
     }
 
-    public void createGame() throws Exception {
+    public void createGame(String authToken, String name) throws Exception {
+        var path = "/game";
+        var game = new GameData(0, null, null, name, null);
+        makeRequest("POST", path, game, GameData.class, authToken);
     }
 
     public void joinGame() throws Exception {

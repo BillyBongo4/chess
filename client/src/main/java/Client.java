@@ -59,7 +59,7 @@ public class Client {
 
     public String create(String... params) throws Exception {
         if (params.length == 1) {
-
+            server.createGame(authToken, params[0]);
             return "Created game: '" + params[0] + "'";
         }
         return "Expected: create <NAME>";
