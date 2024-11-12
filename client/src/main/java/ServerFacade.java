@@ -31,9 +31,14 @@ public class ServerFacade {
         makeRequest("DELETE", path, null, Object.class, authToken);
     }
 
-    public void listGames() throws Exception {
+    public String listGames(String authToken) throws Exception {
         var path = "/game";
-        makeRequest("GET", path, null, GameData.class, null);
+        var result = makeRequest("GET", path, null, GameData.class, authToken);
+        if (result.gameName() != null) {
+            return "LIST";
+        } else {
+            return "No games! Do 'create <NAME>' to create one!";
+        }
     }
 
     public void createGame() throws Exception {

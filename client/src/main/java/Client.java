@@ -43,7 +43,7 @@ public class Client {
             username = params[0];
             return String.format("Logged in as %s", username);
         }
-        throw new Exception("Expected: <USERNAME> <PASSWORD> <EMAIL>");
+        throw new Exception("Expected: register <USERNAME> <PASSWORD> <EMAIL>");
     }
 
     public String login(String... params) throws Exception {
@@ -54,15 +54,19 @@ public class Client {
             username = params[0];
             return String.format("Logged in as %s", username);
         }
-        throw new Exception("Expected: <USERNAME> <PASSWORD>");
+        throw new Exception("Expected: login <USERNAME> <PASSWORD>");
     }
 
     public String create(String... params) throws Exception {
-        return "CREATE!";
+        if (params.length == 1) {
+
+            return "Created game: '" + params[0] + "'";
+        }
+        return "Expected: create <NAME>";
     }
 
     public String list() throws Exception {
-        return "LIST!";
+        return server.listGames(authToken);
     }
 
     public String join(String... params) throws Exception {
