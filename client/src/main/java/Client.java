@@ -22,6 +22,10 @@ public class Client {
             return switch (cmd) {
                 case "register" -> register(params);
                 case "login" -> login(params);
+                case "create" -> create(params);
+                case "list" -> list();
+                case "join" -> join(params);
+                case "observe" -> observe(params);
                 case "logout" -> logout();
                 case "quit" -> "quit";
                 default -> help();
@@ -51,6 +55,22 @@ public class Client {
             return String.format("Logged in as %s", username);
         }
         throw new Exception("Expected: <USERNAME> <PASSWORD>");
+    }
+
+    public String create(String... params) throws Exception {
+        return "CREATE!";
+    }
+
+    public String list() throws Exception {
+        return "LIST!";
+    }
+
+    public String join(String... params) throws Exception {
+        return "JOIN!";
+    }
+
+    public String observe(String... params) throws Exception {
+        return "OBSERVE!";
     }
 
     public String logout() throws Exception {
