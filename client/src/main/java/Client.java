@@ -133,7 +133,7 @@ public class Client {
             output.append(RESET_TEXT_COLOR);
 
             output.append(buildHeaderFooter(labels));
-            output.append(buildBoard(game, !params[1].equals("black")));
+            //output.append(buildBoard(game, !params[1].equals("black")));
             output.append(buildBoard(game, params[1].equals("black")));
             output.append(buildHeaderFooter(labels));
 
