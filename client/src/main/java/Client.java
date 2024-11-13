@@ -53,14 +53,18 @@ public class Client {
     }
 
     public String login(String... params) throws Exception {
-        if (params.length == 2) {
-            var user = new UserData(params[0], params[1], "");
-            authToken = server.loginUser(user);
-            loggedIn = true;
-            username = params[0];
-            return String.format("Logged in as %s", username);
+        try {
+            if (params.length == 2) {
+                var user = new UserData(params[0], params[1], "");
+                authToken = server.loginUser(user);
+                loggedIn = true;
+                username = params[0];
+                return String.format("Logged in as %s", username);
+            }
+            throw new Exception("Expected: login <USERNAME> <PASSWORD>");
+        } catch (Exception e) {
+            throw new Exception("Invalid username or password!");
         }
-        throw new Exception("Expected: login <USERNAME> <PASSWORD>");
     }
 
     public String create(String... params) throws Exception {
@@ -125,22 +129,26 @@ public class Client {
     }
 
     public String join(String... params) throws Exception {
-        if (params.length == 2) {
-            var game = server.joinGame(authToken, params[0], params[1]);
-            StringBuilder output = new StringBuilder();
-            String labels = params[1].equals("black") ? "h  g  f  e  d  c  b  a" : "a  b  c  d  e  f  g  h";
+        try {
+            if (params.length == 2) {
+                var game = server.joinGame(authToken, params[0], params[1]);
+                StringBuilder output = new StringBuilder();
+                String labels = params[1].equals("black") ? "h  g  f  e  d  c  b  a" : "a  b  c  d  e  f  g  h";
 
-            output.append(RESET_TEXT_COLOR);
+                output.append(RESET_TEXT_COLOR);
 
-            output.append(buildHeaderFooter(labels));
-            //output.append(buildBoard(game, !params[1].equals("black")));
-            output.append(buildBoard(game, params[1].equals("black")));
-            output.append(buildHeaderFooter(labels));
+                output.append(buildHeaderFooter(labels));
+                //output.append(buildBoard(game, !params[1].equals("black")));
+                output.append(buildBoard(game, params[1].equals("black")));
+                output.append(buildHeaderFooter(labels));
 
-            output.append(RESET_BG_COLOR);
-            return output.toString();
+                output.append(RESET_BG_COLOR);
+                return output.toString();
+            }
+            return "Expected: join <ID> <WHITE|BLACK>";
+        } catch (Exception e) {
+            throw new Exception("Invalid id or color!");
         }
-        return "Expected: join <ID> <WHITE|BLACK>";
     }
 
     public String observe(String... params) throws Exception {
