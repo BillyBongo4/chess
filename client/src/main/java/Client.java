@@ -71,7 +71,8 @@ public class Client {
 
     public String join(String... params) throws Exception {
         if (params.length == 2) {
-            server.joinGame(authToken, params[0], params[1]);
+            var game = server.joinGame(authToken, params[0], params[1]);
+            return "Success!";
         }
         return "Expected: join <ID> <WHITE|BLACK>";
     }

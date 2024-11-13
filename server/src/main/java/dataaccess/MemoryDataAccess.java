@@ -109,6 +109,15 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
+    public GameData getGame(int gameID) throws DataAccessException {
+        if (gameID > listGames().length) {
+            throw new DataAccessException("Error: Invalid gameID");
+        }
+
+        return games.get(gameID);
+    }
+
+    @Override
     public void clearGameData() {
         games.clear();
     }

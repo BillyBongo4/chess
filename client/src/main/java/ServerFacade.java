@@ -70,14 +70,13 @@ public class ServerFacade {
         makeRequest("POST", path, game, GameData.class, authToken);
     }
 
-    public void joinGame(String authToken, String id, String color) throws Exception {
+    public ChessGame joinGame(String authToken, String id, String color) throws Exception {
         var path = "/game";
         JsonObject request = new JsonObject();
         request.addProperty("gameID", id);
         color = color.toUpperCase();
         request.addProperty("playerColor", color);
-        var test = makeRequest("PUT", path, request, null, authToken);
-        System.out.println(test);
+        return makeRequest("PUT", path, request, ChessGame.class, authToken);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws Exception {

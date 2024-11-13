@@ -103,7 +103,7 @@ public class Service {
         return result;
     }
 
-    public String joinGame(String authToken, int gameID, String playerColor) throws Exception {
+    public ChessGame joinGame(String authToken, int gameID, String playerColor) throws Exception {
         AuthData authData = dataAccess.getAuth(authToken);
         if (authData == null) {
             throw new ServiceException(401, "Error: Unauthorized");
@@ -119,7 +119,7 @@ public class Service {
 
         dataAccess.updateGame(gameID, user.username(), playerColor);
 
-        return null;
+        return dataAccess.getGame(gameID).game();
     }
 
     public String clear() throws Exception {

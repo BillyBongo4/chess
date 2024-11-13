@@ -23,6 +23,8 @@ public interface DataAccess {
 
     void updateGame(int gameID, String username, String color) throws DataAccessException;
 
+    GameData getGame(int gameID) throws DataAccessException;
+
     void clearGameData() throws DataAccessException;
 
     void clearAuthData() throws DataAccessException;
