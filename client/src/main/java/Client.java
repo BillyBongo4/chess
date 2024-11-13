@@ -70,7 +70,10 @@ public class Client {
     }
 
     public String join(String... params) throws Exception {
-        return "JOIN!";
+        if (params.length == 2) {
+            server.joinGame(authToken, params[0], params[1]);
+        }
+        return "Expected: join <ID> <WHITE|BLACK>";
     }
 
     public String observe(String... params) throws Exception {
