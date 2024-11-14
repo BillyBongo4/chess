@@ -43,14 +43,22 @@ public class Client {
     }
 
     public String register(String... params) throws Exception {
-        if (params.length == 3) {
-            var newUser = new UserData(params[0], params[1], params[2]);
-            authToken = server.createUser(newUser);
-            loggedIn = true;
-            username = params[0];
-            return String.format("Logged in as %s", username);
+        try {
+            if (params.length == 3) {
+                var newUser = new UserData(params[0], params[1], params[2]);
+                authToken = server.createUser(newUser);
+                loggedIn = true;
+                username = params[0];
+                return String.format("Logged in as %s", username);
+            }
+            throw new Exception("Expected: register <USERNAME> <PASSWORD> <EMAIL>");
+        } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().equals("Expected: register <USERNAME> <PASSWORD> <EMAIL>")) {
+                throw e;
+            } else {
+                throw new Exception("User already exists!");
+            }
         }
-        throw new Exception("Expected: register <USERNAME> <PASSWORD> <EMAIL>");
     }
 
     public String login(String... params) throws Exception {
@@ -64,7 +72,11 @@ public class Client {
             }
             throw new Exception("Expected: login <USERNAME> <PASSWORD>");
         } catch (Exception e) {
-            throw new Exception("Invalid username or password!");
+            if (e.getMessage() != null && e.getMessage().equals("Expected: login <USERNAME> <PASSWORD>")) {
+                throw e;
+            } else {
+                throw new Exception("Invalid username or password!");
+            }
         }
     }
 
@@ -152,7 +164,11 @@ public class Client {
             }
             return "Expected: join <ID> <WHITE|BLACK>";
         } catch (Exception e) {
-            throw new Exception("Invalid id or color!");
+            if (e.getMessage() != null && e.getMessage().equals("Expected: join <ID>")) {
+                throw e;
+            } else {
+                throw new Exception("Invalid id or color!");
+            }
         }
     }
 
