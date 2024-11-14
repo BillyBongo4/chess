@@ -107,6 +107,13 @@ public class ServerFacadeTests {
         Assertions.assertEquals("No games! Do 'create <NAME>' to create one!", result);
     }
 
+    private void createGames(String authToken) throws Exception {
+        facade.createGame(authToken, "gameName");
+        facade.createGame(authToken, "gameName2");
+        facade.createGame(authToken, "gameName3");
+        facade.createGame(authToken, "gameName4");
+    }
+
     @Test
     public void listGames() throws Exception {
         String expected = "1. gameName\n" +
@@ -125,10 +132,7 @@ public class ServerFacadeTests {
         UserData user = new UserData("username", "password", "email");
         String authToken = facade.createUser(user);
 
-        facade.createGame(authToken, "gameName");
-        facade.createGame(authToken, "gameName2");
-        facade.createGame(authToken, "gameName3");
-        facade.createGame(authToken, "gameName4");
+        createGames(authToken);
 
         var result = facade.listGames(authToken);
         Assertions.assertEquals(expected, result);
@@ -139,10 +143,7 @@ public class ServerFacadeTests {
         UserData user = new UserData("username", "password", "email");
         String authToken = facade.createUser(user);
 
-        facade.createGame(authToken, "gameName");
-        facade.createGame(authToken, "gameName2");
-        facade.createGame(authToken, "gameName3");
-        facade.createGame(authToken, "gameName4");
+        createGames(authToken);
 
         Assertions.assertDoesNotThrow(() -> {
             var result = facade.joinGame(authToken, "1", "white");
@@ -155,10 +156,7 @@ public class ServerFacadeTests {
         UserData user = new UserData("username", "password", "email");
         String authToken = facade.createUser(user);
 
-        facade.createGame(authToken, "gameName");
-        facade.createGame(authToken, "gameName2");
-        facade.createGame(authToken, "gameName3");
-        facade.createGame(authToken, "gameName4");
+        createGames(authToken);
 
         Assertions.assertThrows(Exception.class, () -> {
             facade.joinGame(authToken, "20", "white");
@@ -170,10 +168,7 @@ public class ServerFacadeTests {
         UserData user = new UserData("username", "password", "email");
         String authToken = facade.createUser(user);
 
-        facade.createGame(authToken, "gameName");
-        facade.createGame(authToken, "gameName2");
-        facade.createGame(authToken, "gameName3");
-        facade.createGame(authToken, "gameName4");
+        createGames(authToken);
 
         Assertions.assertThrows(Exception.class, () -> {
             facade.joinGame(authToken, "1", "blue");
@@ -185,10 +180,7 @@ public class ServerFacadeTests {
         UserData user = new UserData("username", "password", "email");
         String authToken = facade.createUser(user);
 
-        facade.createGame(authToken, "gameName");
-        facade.createGame(authToken, "gameName2");
-        facade.createGame(authToken, "gameName3");
-        facade.createGame(authToken, "gameName4");
+        createGames(authToken);
         facade.joinGame(authToken, "1", "white");
 
         Assertions.assertThrows(Exception.class, () -> {
@@ -201,10 +193,7 @@ public class ServerFacadeTests {
         UserData user = new UserData("username", "password", "email");
         String authToken = facade.createUser(user);
 
-        facade.createGame(authToken, "gameName");
-        facade.createGame(authToken, "gameName2");
-        facade.createGame(authToken, "gameName3");
-        facade.createGame(authToken, "gameName4");
+        createGames(authToken);
 
         Assertions.assertDoesNotThrow(() -> {
             var result = facade.observeGame(authToken, "1");
@@ -217,10 +206,7 @@ public class ServerFacadeTests {
         UserData user = new UserData("username", "password", "email");
         String authToken = facade.createUser(user);
 
-        facade.createGame(authToken, "gameName");
-        facade.createGame(authToken, "gameName2");
-        facade.createGame(authToken, "gameName3");
-        facade.createGame(authToken, "gameName4");
+        createGames(authToken);
 
         Assertions.assertThrows(Exception.class, () -> {
             facade.joinGame(authToken, "20", "white");

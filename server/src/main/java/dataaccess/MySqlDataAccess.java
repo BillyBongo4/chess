@@ -224,7 +224,8 @@ public class MySqlDataAccess implements DataAccess {
                 if (result.next()) {
                     var jsonGame = result.getString("chessGame");
                     var game = new Gson().fromJson(jsonGame, ChessGame.class);
-                    return new GameData(result.getInt("gameID"), result.getString("whiteUsername"), result.getString("blackUsername"), result.getString("gameName"), game);
+                    var gameName = result.getString("gameName");
+                    return new GameData(result.getInt("gameID"), result.getString("whiteUsername"), result.getString("blackUsername"), gameName, game);
                 }
             }
         } catch (SQLException e) {
