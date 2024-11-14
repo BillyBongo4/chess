@@ -224,7 +224,6 @@ public class ServiceTests {
         var authData = service.registerUser(new UserData("fellow1", "p", "e"));
         var authData2 = service.registerUser(new UserData("fellow2", "p", "e"));
         var expectedListLength = 1;
-        Object expectedJoin = null;
         Object expectedClear = null;
 
         service.logoutUser(authData.authToken());
@@ -239,7 +238,7 @@ public class ServiceTests {
 
         var joinResult = service.joinGame(authData.authToken(), 1, "WHITE");
 
-        assertEquals(expectedJoin, joinResult);
+        assertEquals(ChessGame.class, joinResult.getClass());
 
         assertThrows(ServiceException.class, () -> {
             service.joinGame(authData2.authToken(), 1, "WHITE");
