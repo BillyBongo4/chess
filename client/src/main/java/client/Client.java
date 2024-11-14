@@ -1,4 +1,5 @@
-import chess.ChessBoard;
+package client;
+
 import chess.ChessGame;
 import chess.ChessPiece;
 import chess.ChessPosition;
@@ -128,22 +129,26 @@ public class Client {
         return output.toString();
     }
 
+    private String outputBoard(ChessGame game, String... params) {
+        StringBuilder output = new StringBuilder();
+        String labels = params[1].equals("black") ? "h  g  f  e  d  c  b  a" : "a  b  c  d  e  f  g  h";
+
+        output.append(RESET_TEXT_COLOR);
+
+        output.append(buildHeaderFooter(labels));
+        //output.append(buildBoard(game, !params[1].equals("black")));
+        output.append(buildBoard(game, params[1].equals("black")));
+        output.append(buildHeaderFooter(labels));
+
+        output.append(RESET_BG_COLOR);
+        return output.toString();
+    }
+
     public String join(String... params) throws Exception {
         try {
             if (params.length == 2) {
                 var game = server.joinGame(authToken, params[0], params[1]);
-                StringBuilder output = new StringBuilder();
-                String labels = params[1].equals("black") ? "h  g  f  e  d  c  b  a" : "a  b  c  d  e  f  g  h";
-
-                output.append(RESET_TEXT_COLOR);
-
-                output.append(buildHeaderFooter(labels));
-                //output.append(buildBoard(game, !params[1].equals("black")));
-                output.append(buildBoard(game, params[1].equals("black")));
-                output.append(buildHeaderFooter(labels));
-
-                output.append(RESET_BG_COLOR);
-                return output.toString();
+                return outputBoard(game, params);
             }
             return "Expected: join <ID> <WHITE|BLACK>";
         } catch (Exception e) {
@@ -152,7 +157,14 @@ public class Client {
     }
 
     public String observe(String... params) throws Exception {
-        return "OBSERVE!";
+        try {
+            String[] newParams = Arrays.copyOf(params, params.length + 1);
+            newParams[newParams.length - 1] = "white";
+            var game = server.observeGame(authToken, params[0]);
+            return outputBoard(game, newParams);
+        } catch (Exception e) {
+            throw new Exception("Invalid id!");
+        }
     }
 
     public String logout() throws Exception {

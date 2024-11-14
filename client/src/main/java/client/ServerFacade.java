@@ -1,3 +1,5 @@
+package client;
+
 import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -65,6 +67,10 @@ public class ServerFacade {
     }
 
     public void createGame(String authToken, String name) throws Exception {
+        if (name == null) {
+            throw new Exception("Error: No name!");
+        }
+
         var path = "/game";
         var game = new GameData(0, null, null, name, null);
         makeRequest("POST", path, game, GameData.class, authToken);
@@ -77,6 +83,11 @@ public class ServerFacade {
         color = color.toUpperCase();
         request.addProperty("playerColor", color);
         return makeRequest("PUT", path, request, ChessGame.class, authToken);
+    }
+
+    public ChessGame observeGame(String authToken, String id) throws Exception {
+        var path = "/game/observe?gameID=" + id; // Use query parameter
+        return makeRequest("GET", path, null, ChessGame.class, authToken); // Pass null for GET request body
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws Exception {

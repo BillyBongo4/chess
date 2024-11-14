@@ -27,6 +27,7 @@ public class Server {
         Spark.get("/game", this::listGames);
         Spark.post("/game", this::createGame);
         Spark.put("/game", this::joinGame);
+        Spark.get("/game/observe", this::observeGame);
         Spark.delete("/db", this::clear);
         Spark.exception(ServiceException.class, this::exceptionHandler);
 
@@ -95,6 +96,13 @@ public class Server {
         var gameID = body.get("gameID").getAsInt();
 
         var result = service.joinGame(authToken, gameID, playerColor);
+        return serializer.toJson(result);
+    }
+
+    private String observeGame(Request req, Response res) throws Exception {
+        var authToken = req.headers("Authorization");
+        var gameID = Integer.parseInt(req.queryParams("gameID")); // Use queryParams for GET request
+        var result = service.observeGame(authToken, gameID);
         return serializer.toJson(result);
     }
 

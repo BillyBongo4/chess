@@ -1,3 +1,5 @@
+import client.Client;
+
 import static ui.EscapeSequences.*;
 
 import java.util.Scanner;
