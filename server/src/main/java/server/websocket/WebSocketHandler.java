@@ -8,7 +8,7 @@ import websocket.commands.UserGameCommand;
 
 @WebSocket
 public class WebSocketHandler {
-    private ConnectionManager connections = new ConnectionManager();
+    private final ConnectionManager connections = new ConnectionManager();
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
