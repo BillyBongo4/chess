@@ -10,11 +10,11 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 public class WebSocketFacade extends Endpoint {
-    private Session session;
-    private NotificationHandler notificationHandler;
+    private final Session session;
+    private final NotificationHandler notificationHandler;
 
     public WebSocketFacade(String url, NotificationHandler notificationHandler) throws IOException, URISyntaxException, DeploymentException {
-        url.replace("http", "ws");
+        url = url.replace("http", "ws");
         URI socketURI = new URI(url + "/ws");
         this.notificationHandler = notificationHandler;
 
