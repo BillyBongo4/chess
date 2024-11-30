@@ -1,13 +1,17 @@
 import client.Client;
 
+import javax.websocket.DeploymentException;
+
 import static ui.EscapeSequences.*;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Scanner;
 
 public class Repl {
     private final Client client;
 
-    public Repl(String serverUrl) {
+    public Repl(String serverUrl) throws IOException, URISyntaxException, DeploymentException {
         client = new Client(serverUrl);
     }
 

@@ -1,10 +1,18 @@
 package client;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import model.UserData;
+import websocket.NotificationHandler;
+import websocket.WebSocketFacade;
+import websocket.commands.MakeMove;
+import websocket.commands.UserGameCommand;
 
+import javax.websocket.DeploymentException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 import static ui.EscapeSequences.*;
@@ -15,10 +23,14 @@ public class Client {
     private boolean loggedIn = false;
     private String username;
     private String authToken;
+    private WebSocketFacade ws;
+    private NotificationHandler notificationHandler;
 
-    public Client(String serverUrl) {
+    public Client(String serverUrl) throws IOException, URISyntaxException, DeploymentException {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
+        this.notificationHandler = new NotificationHandler();
+        this.ws = new WebSocketFacade(serverUrl, notificationHandler);
     }
 
     public String eval(String input) throws Exception {
@@ -183,12 +195,43 @@ public class Client {
         }
     }
 
+    private ChessPosition parsePosition(String pos) {
+        int row = Character.getNumericValue(pos.charAt(1));
+        int col = pos.charAt(0) - 'a' + 1;
+        return new ChessPosition(row, col);
+    }
+
+    public String makeMove(String... params) throws IOException {
+        if (params.length == 2) {
+            ChessMove move = new ChessMove(parsePosition(params[0]), parsePosition(params[1]), null);
+            MakeMove moveCommand = new MakeMove(authToken, null, move);
+            ws.sendCommand(moveCommand);
+            return "Move sent";
+        }
+        throw new IOException("Expected: <source> <destination>");
+    }
+
+    public String leave() throws IOException {
+        UserGameCommand leaveCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, null);
+        ws.sendCommand(leaveCommand);
+        ws.closeSession();
+        return String.format("%s left the game", username);
+    }
+
+    public String resign() throws IOException {
+        UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, null);
+        ws.sendCommand(resignCommand);
+        ws.closeSession();
+        return String.format("%s resigned", username);
+    }
+
     public String logout() throws Exception {
         if (loggedIn) {
             server.logoutUser(authToken);
             loggedIn = false;
             authToken = null;
             username = null;
+            ws.closeSession();
             return "Logged out successfully!";
         }
         return "You are not logged in.";
