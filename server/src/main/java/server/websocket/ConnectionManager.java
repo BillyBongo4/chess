@@ -11,19 +11,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ConnectionManager {
     private final Map<String, Connection> connections = new ConcurrentHashMap<>();
 
-    public void addConnection(String username, Session session) {
-        connections.put(username, new Connection(username, session));
+    public void addConnection(String authToken, Session session) {
+        connections.put(authToken, new Connection(authToken, session));
     }
 
-    public void removeConnection(String username) {
-        connections.remove(username);
+    public void removeConnection(String authToken) {
+        connections.remove(authToken);
     }
 
-    public void broadcast(String excludingUsername, Notification message) throws IOException {
+    public void broadcast(String excludingAuthToken, Notification message) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var connection : connections.values()) {
             if (connection.getSession().isOpen()) {
-                if (!connection.getUsername().equals(excludingUsername)) {
+                if (!connection.getAuthToken().equals(excludingAuthToken)) {
                     connection.send(message.toString());
                 }
             } else {
@@ -32,7 +32,7 @@ public class ConnectionManager {
         }
 
         for (var connection : removeList) {
-            connections.remove(connection.getUsername());
+            connections.remove(connection.getAuthToken());
         }
     }
 }

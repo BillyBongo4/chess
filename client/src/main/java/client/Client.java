@@ -30,7 +30,6 @@ public class Client {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
         this.notificationHandler = new NotificationHandler();
-        this.ws = new WebSocketFacade(serverUrl, notificationHandler);
     }
 
     public String eval(String input) throws Exception {
@@ -172,6 +171,9 @@ public class Client {
         try {
             if (params.length == 2) {
                 var game = server.joinGame(authToken, params[0], params[1]);
+                ws = new WebSocketFacade(serverUrl, notificationHandler);
+                
+                //ws.sendCommand(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, Integer.parseInt(params[0])));
                 return outputBoard(game, params);
             }
             return "Expected: join <ID> <WHITE|BLACK>";
@@ -205,7 +207,7 @@ public class Client {
         if (params.length == 2) {
             ChessMove move = new ChessMove(parsePosition(params[0]), parsePosition(params[1]), null);
             MakeMove moveCommand = new MakeMove(authToken, null, move);
-            ws.sendCommand(moveCommand);
+            //ws.sendCommand(moveCommand);
             return "Move sent";
         }
         throw new IOException("Expected: <source> <destination>");
@@ -213,15 +215,15 @@ public class Client {
 
     public String leave() throws IOException {
         UserGameCommand leaveCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, null);
-        ws.sendCommand(leaveCommand);
-        ws.closeSession();
+        //ws.sendCommand(leaveCommand);
+        //ws.closeSession();
         return String.format("%s left the game", username);
     }
 
     public String resign() throws IOException {
         UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, null);
-        ws.sendCommand(resignCommand);
-        ws.closeSession();
+        //ws.sendCommand(resignCommand);
+        //ws.closeSession();
         return String.format("%s resigned", username);
     }
 
@@ -231,7 +233,7 @@ public class Client {
             loggedIn = false;
             authToken = null;
             username = null;
-            ws.closeSession();
+            //ws.closeSession();
             return "Logged out successfully!";
         }
         return "You are not logged in.";

@@ -22,6 +22,7 @@ public class WebSocketHandler {
     }
 
     private void handleConnect(Session session, UserGameCommand command) {
+        connections.addConnection(command.getAuthToken(), session);
     }
 
     private void handleMakeMove(UserGameCommand command) {
