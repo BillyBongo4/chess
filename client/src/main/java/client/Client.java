@@ -10,6 +10,7 @@ import websocket.WebSocketFacade;
 import websocket.commands.Connect;
 import websocket.commands.MakeMove;
 import websocket.commands.UserGameCommand;
+import websocket.messages.Notification;
 
 import javax.websocket.DeploymentException;
 import java.io.IOException;
