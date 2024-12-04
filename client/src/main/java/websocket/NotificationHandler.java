@@ -19,6 +19,7 @@ public class NotificationHandler {
     private void handleOtherMessageTypes(ServerMessage message) {
         switch (message.getServerMessageType()) {
             case LOAD_GAME:
+                System.out.println("TEST");
                 break;
             case ERROR:
                 break;

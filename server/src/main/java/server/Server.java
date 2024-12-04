@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import dataaccess.*;
 import model.GameData;
 import model.UserData;
+import server.websocket.WebSocketHandler;
 import service.Service;
 import service.ServiceException;
 import spark.*;
@@ -13,12 +14,15 @@ import spark.*;
 public class Server {
     private final DataAccess dataAccess = new MySqlDataAccess();//MemoryDataAccess();
     private final Service service = new Service(dataAccess);
+    private final WebSocketHandler webSocketHandler = new WebSocketHandler();
     private final Gson serializer = new Gson();
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/ws", webSocketHandler);
 
         // Register your endpoints and handle exceptions here.
         Spark.post("/user", this::createUser);
@@ -94,7 +98,7 @@ public class Server {
 
         var playerColor = body.get("playerColor").getAsString();
         var gameID = body.get("gameID").getAsInt();
-
+        
         var result = service.joinGame(authToken, gameID, playerColor);
         return serializer.toJson(result);
     }

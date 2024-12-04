@@ -5,6 +5,8 @@ import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import websocket.commands.UserGameCommand;
+import websocket.messages.Notification;
+import websocket.messages.ServerMessage;
 
 @WebSocket
 public class WebSocketHandler {
@@ -21,8 +23,10 @@ public class WebSocketHandler {
         }
     }
 
-    private void handleConnect(Session session, UserGameCommand command) {
+    private void handleConnect(Session session, UserGameCommand command) throws Exception {
         connections.addConnection(command.getAuthToken(), session);
+        Notification notification = new Notification("Loading");
+        connections.broadcast(command.getAuthToken(), notification);
     }
 
     private void handleMakeMove(UserGameCommand command) {

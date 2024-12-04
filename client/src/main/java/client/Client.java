@@ -29,7 +29,8 @@ public class Client {
     public Client(String serverUrl) throws IOException, URISyntaxException, DeploymentException {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
-        this.notificationHandler = new NotificationHandler();
+        notificationHandler = new NotificationHandler();
+        ws = new WebSocketFacade(serverUrl, notificationHandler);
     }
 
     public String eval(String input) throws Exception {
@@ -44,6 +45,7 @@ public class Client {
                 case "list" -> list();
                 case "join" -> join(params);
                 case "observe" -> observe(params);
+                case "move" -> makeMove(params);
                 case "logout" -> logout();
                 case "quit" -> "quit";
                 default -> help();
@@ -171,9 +173,7 @@ public class Client {
         try {
             if (params.length == 2) {
                 var game = server.joinGame(authToken, params[0], params[1]);
-                ws = new WebSocketFacade(serverUrl, notificationHandler);
-                
-                //ws.sendCommand(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, Integer.parseInt(params[0])));
+                ws.sendCommand(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, Integer.parseInt(params[0])));
                 return outputBoard(game, params);
             }
             return "Expected: join <ID> <WHITE|BLACK>";
@@ -190,6 +190,7 @@ public class Client {
         try {
             String[] newParams = Arrays.copyOf(params, params.length + 1);
             newParams[newParams.length - 1] = "white";
+            ws.sendCommand(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, Integer.parseInt(params[0])));
             var game = server.observeGame(authToken, params[0]);
             return outputBoard(game, newParams);
         } catch (Exception e) {
@@ -207,7 +208,7 @@ public class Client {
         if (params.length == 2) {
             ChessMove move = new ChessMove(parsePosition(params[0]), parsePosition(params[1]), null);
             MakeMove moveCommand = new MakeMove(authToken, null, move);
-            //ws.sendCommand(moveCommand);
+            ws.sendCommand(moveCommand);
             return "Move sent";
         }
         throw new IOException("Expected: <source> <destination>");
@@ -215,15 +216,15 @@ public class Client {
 
     public String leave() throws IOException {
         UserGameCommand leaveCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, null);
-        //ws.sendCommand(leaveCommand);
-        //ws.closeSession();
+        ws.sendCommand(leaveCommand);
+        ws.closeSession();
         return String.format("%s left the game", username);
     }
 
     public String resign() throws IOException {
         UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, null);
-        //ws.sendCommand(resignCommand);
-        //ws.closeSession();
+        ws.sendCommand(resignCommand);
+        ws.closeSession();
         return String.format("%s resigned", username);
     }
 
@@ -233,7 +234,7 @@ public class Client {
             loggedIn = false;
             authToken = null;
             username = null;
-            //ws.closeSession();
+            ws.closeSession();
             return "Logged out successfully!";
         }
         return "You are not logged in.";
@@ -255,7 +256,6 @@ public class Client {
                     - observe <ID> - a game
                     - logout - when you are done
                     - help - with possible commands
-                    - quit
                     """;
         }
     }
