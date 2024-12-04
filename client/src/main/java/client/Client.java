@@ -7,6 +7,7 @@ import chess.ChessPosition;
 import model.UserData;
 import websocket.NotificationHandler;
 import websocket.WebSocketFacade;
+import websocket.commands.Connect;
 import websocket.commands.MakeMove;
 import websocket.commands.UserGameCommand;
 
@@ -176,7 +177,7 @@ public class Client {
         try {
             if (params.length == 2) {
                 var game = server.joinGame(authToken, params[0], params[1]);
-                ws.sendCommand(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, Integer.parseInt(params[0])));
+                ws.sendCommand(new Connect(UserGameCommand.CommandType.CONNECT, authToken, Integer.parseInt(params[0]), game));
                 gameID = Integer.parseInt(params[0]);
                 return outputBoard(game, params);
             }

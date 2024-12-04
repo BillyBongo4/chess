@@ -1,5 +1,6 @@
 package websocket;
 
+import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
@@ -7,7 +8,8 @@ public class NotificationHandler {
     public void handleNotification(ServerMessage message) {
         switch (message.getServerMessageType()) {
             case LOAD_GAME:
-                System.out.println("TEST");
+                LoadGame loadGame = (LoadGame) message;
+                System.out.println(loadGame.getGame().toString());
                 break;
             case ERROR:
                 break;

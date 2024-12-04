@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import websocket.commands.Connect;
 import websocket.commands.UserGameCommand;
+import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
@@ -14,7 +16,7 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
-        UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
+        Connect command = new Gson().fromJson(message, Connect.class);
         switch (command.getCommandType()) {
             case CONNECT -> handleConnect(session, command);
             case MAKE_MOVE -> handleMakeMove(command);
@@ -23,10 +25,10 @@ public class WebSocketHandler {
         }
     }
 
-    private void handleConnect(Session session, UserGameCommand command) throws Exception {
+    private void handleConnect(Session session, Connect command) throws Exception {
         connections.addConnection(command.getAuthToken(), session);
-        Notification notification = new Notification("Loading");
-        connections.broadcast(command.getAuthToken(), notification);
+        LoadGame loadGame = new LoadGame(command.getGame());
+        connections.broadcast(command.getAuthToken(), loadGame);
     }
 
     private void handleMakeMove(UserGameCommand command) {

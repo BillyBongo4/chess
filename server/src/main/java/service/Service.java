@@ -122,7 +122,7 @@ public class Service {
         return dataAccess.getGame(gameID).game();
     }
 
-    /*public ChessGame getGame(String authToken, int gameID) throws Exception {
+    public ChessGame getGame(String authToken, int gameID) throws Exception {
         AuthData authData = dataAccess.getAuth(authToken);
         if (authData == null) {
             throw new ServiceException(401, "Error: Unauthorized");
@@ -132,7 +132,7 @@ public class Service {
         validateUserData(user);
 
         return dataAccess.getGame(gameID).game();
-    }*/
+    }
 
     public ChessGame observeGame(String authToken, int gameID) throws Exception {
         AuthData authData = dataAccess.getAuth(authToken);
