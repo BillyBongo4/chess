@@ -122,6 +122,18 @@ public class Service {
         return dataAccess.getGame(gameID).game();
     }
 
+    /*public ChessGame getGame(String authToken, int gameID) throws Exception {
+        AuthData authData = dataAccess.getAuth(authToken);
+        if (authData == null) {
+            throw new ServiceException(401, "Error: Unauthorized");
+        }
+
+        UserData user = dataAccess.getUser(authData.username());
+        validateUserData(user);
+
+        return dataAccess.getGame(gameID).game();
+    }*/
+
     public ChessGame observeGame(String authToken, int gameID) throws Exception {
         AuthData authData = dataAccess.getAuth(authToken);
         if (authData == null) {

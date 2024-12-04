@@ -23,14 +23,15 @@ public class Client {
     private boolean loggedIn = false;
     private String username;
     private String authToken;
-    private WebSocketFacade ws;
-    private NotificationHandler notificationHandler;
+    private int gameID = 0;
+    private final WebSocketFacade ws;
+    //private final NotificationHandler notificationHandler;
 
     public Client(String serverUrl) throws IOException, URISyntaxException, DeploymentException {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
-        notificationHandler = new NotificationHandler();
-        ws = new WebSocketFacade(serverUrl, notificationHandler);
+        //notificationHandler = new NotificationHandler();
+        ws = new WebSocketFacade(serverUrl, new NotificationHandler());
     }
 
     public String eval(String input) throws Exception {
@@ -46,6 +47,8 @@ public class Client {
                 case "join" -> join(params);
                 case "observe" -> observe(params);
                 case "move" -> makeMove(params);
+                case "resign" -> resign();
+                case "leave" -> leave();
                 case "logout" -> logout();
                 case "quit" -> "quit";
                 default -> help();
@@ -174,6 +177,7 @@ public class Client {
             if (params.length == 2) {
                 var game = server.joinGame(authToken, params[0], params[1]);
                 ws.sendCommand(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, Integer.parseInt(params[0])));
+                gameID = Integer.parseInt(params[0]);
                 return outputBoard(game, params);
             }
             return "Expected: join <ID> <WHITE|BLACK>";
@@ -247,6 +251,13 @@ public class Client {
                     - login <USERNAME> <PASSWORD> - to play chess
                     - help - with possible commands
                     - quit - playing chess
+                    """;
+        } else if (gameID > 0) {
+            return """
+                    - redraw - redraw board
+                    - move <PIECE POSITION> <DESTINATION> - make move
+                    - resign - accept defeat (ends game)
+                    - leave - leave the game
                     """;
         } else {
             return """

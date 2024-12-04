@@ -30,11 +30,14 @@ public class WebSocketHandler {
     }
 
     private void handleMakeMove(UserGameCommand command) {
+        System.out.println("Made move");
     }
 
     private void handleResign(UserGameCommand command) {
+        System.out.println("Resigned");
     }
 
     private void handleLeave(UserGameCommand command) {
+        System.out.println("Left");
     }
 }
