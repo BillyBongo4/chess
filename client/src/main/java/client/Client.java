@@ -10,7 +10,6 @@ import websocket.WebSocketFacade;
 import websocket.commands.Connect;
 import websocket.commands.MakeMove;
 import websocket.commands.UserGameCommand;
-import websocket.messages.Notification;
 
 import javax.websocket.DeploymentException;
 import java.io.IOException;
@@ -178,7 +177,7 @@ public class Client {
         try {
             if (params.length == 2) {
                 var game = server.joinGame(authToken, params[0], params[1]);
-                ws.sendCommand(new Connect(UserGameCommand.CommandType.CONNECT, authToken, Integer.parseInt(params[0]), game));
+                ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username, params[1]));
                 gameID = Integer.parseInt(params[0]);
                 return outputBoard(game, params);
             }
@@ -196,7 +195,7 @@ public class Client {
         try {
             String[] newParams = Arrays.copyOf(params, params.length + 1);
             newParams[newParams.length - 1] = "white";
-            ws.sendCommand(new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, Integer.parseInt(params[0])));
+            ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username, "observer"));
             var game = server.observeGame(authToken, params[0]);
             return outputBoard(game, newParams);
         } catch (Exception e) {
@@ -210,10 +209,11 @@ public class Client {
         return new ChessPosition(row, col);
     }
 
-    public String makeMove(String... params) throws IOException {
+    public String makeMove(String... params) throws Exception {
         if (params.length == 2) {
             ChessMove move = new ChessMove(parsePosition(params[0]), parsePosition(params[1]), null);
-            MakeMove moveCommand = new MakeMove(authToken, gameID, move);
+            ChessGame game = server.observeGame(authToken, String.valueOf(gameID));
+            MakeMove moveCommand = new MakeMove(authToken, gameID, move, game);
             ws.sendCommand(moveCommand);
             return "Move sent";
         }

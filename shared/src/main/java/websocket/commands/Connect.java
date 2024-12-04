@@ -1,19 +1,26 @@
 package websocket.commands;
 
 import chess.ChessGame;
+import chess.ChessMove;
 
 import java.util.Objects;
 
 public class Connect extends UserGameCommand {
-    private final ChessGame game;
+    private final String username;
+    private final String color;
 
-    public Connect(CommandType commandType, String authToken, Integer gameID, ChessGame game) {
-        super(commandType, authToken, gameID);
-        this.game = game;
+    public Connect(String authToken, Integer gameID, String username, String color) {
+        super(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        this.username = username;
+        this.color = color;
     }
 
-    public ChessGame getGame() {
-        return game;
+    public String getUsername() {
+        return username;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     @Override
@@ -29,11 +36,11 @@ public class Connect extends UserGameCommand {
         }
 
         Connect connect = (Connect) o;
-        return Objects.equals(getGame(), connect.getGame());
+        return Objects.equals(getUsername(), connect.getUsername());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getGame());
+        return Objects.hash(super.hashCode(), getUsername());
     }
 }
