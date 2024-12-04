@@ -3,6 +3,7 @@ package websocket;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import websocket.commands.UserGameCommand;
+import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
 
 import javax.websocket.*;
@@ -25,7 +26,7 @@ public class WebSocketFacade extends Endpoint {
         this.session.addMessageHandler(new MessageHandler.Whole<String>() {
             @Override
             public void onMessage(String message) {
-                ServerMessage serverMessage = new Gson().fromJson(message, ServerMessage.class);
+                ServerMessage serverMessage = new Gson().fromJson(message, Notification.class);
                 notificationHandler.handleNotification(serverMessage);
             }
         });

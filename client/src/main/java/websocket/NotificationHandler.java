@@ -13,7 +13,7 @@ public class NotificationHandler {
                 break;
             case NOTIFICATION:
                 Notification notification = (Notification) message;
-                System.out.println("Notification: " + notification);
+                System.out.println("Notification: " + notification.getMessage());
                 break;
         }
     }

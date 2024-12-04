@@ -211,7 +211,7 @@ public class Client {
     public String makeMove(String... params) throws IOException {
         if (params.length == 2) {
             ChessMove move = new ChessMove(parsePosition(params[0]), parsePosition(params[1]), null);
-            MakeMove moveCommand = new MakeMove(authToken, null, move);
+            MakeMove moveCommand = new MakeMove(authToken, gameID, move);
             ws.sendCommand(moveCommand);
             return "Move sent";
         }
@@ -219,14 +219,15 @@ public class Client {
     }
 
     public String leave() throws IOException {
-        UserGameCommand leaveCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, null);
+        UserGameCommand leaveCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
         ws.sendCommand(leaveCommand);
         ws.closeSession();
+        gameID = 0;
         return String.format("%s left the game", username);
     }
 
     public String resign() throws IOException {
-        UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, null);
+        UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
         ws.sendCommand(resignCommand);
         ws.closeSession();
         return String.format("%s resigned", username);
@@ -238,6 +239,7 @@ public class Client {
             loggedIn = false;
             authToken = null;
             username = null;
+            gameID = 0;
             ws.closeSession();
             return "Logged out successfully!";
         }
