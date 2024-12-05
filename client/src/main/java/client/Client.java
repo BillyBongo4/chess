@@ -25,6 +25,7 @@ public class Client {
     private String username;
     private String authToken;
     private int gameID = 0;
+    private boolean observing = false;
     private final WebSocketFacade ws;
     //private final NotificationHandler notificationHandler;
 
@@ -196,6 +197,7 @@ public class Client {
             String[] newParams = Arrays.copyOf(params, params.length + 1);
             newParams[newParams.length - 1] = "white";
             ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username, "observer"));
+            observing = true;
             var game = server.observeGame(authToken, params[0]);
             return outputBoard(game, newParams);
         } catch (Exception e) {
@@ -225,6 +227,7 @@ public class Client {
         ws.sendCommand(leaveCommand);
         ws.closeSession();
         gameID = 0;
+        observing = false;
         return String.format("%s left the game", username);
     }
 
@@ -256,11 +259,18 @@ public class Client {
                     - help - with possible commands
                     - quit - playing chess
                     """;
-        } else if (gameID > 0) {
+        } else if (gameID > 0 && !observing) {
             return """
                     - redraw - redraw board
+                    - valid <PIECE POSITION> - valid moves for given piece
                     - move <PIECE POSITION> <DESTINATION> - make move
                     - resign - accept defeat (ends game)
+                    - leave - leave the game
+                    """;
+        } else if (observing) {
+            return """
+                    - redraw - redraw board
+                    - valid <PIECE POSITION> - valid moves for given piece
                     - leave - leave the game
                     """;
         } else {
