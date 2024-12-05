@@ -20,7 +20,7 @@ public class ConnectionManager {
         connections.remove(authToken);
     }
 
-    public void loadGame(String authToken, ServerMessage message) throws IOException {
+    public void broadcastToOneUser(String authToken, ServerMessage message) throws IOException {
         for (var connection : connections.values()) {
             if (connection.getSession().isOpen()) {
                 if (connection.getAuthToken().equals(authToken)) {

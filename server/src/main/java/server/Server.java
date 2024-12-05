@@ -1,6 +1,8 @@
 package server;
 
 import chess.ChessGame;
+import chess.ChessMove;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -11,6 +13,8 @@ import server.websocket.WebSocketHandler;
 import service.Service;
 import service.ServiceException;
 import spark.*;
+
+import java.util.Collection;
 
 public class Server {
     private final DataAccess dataAccess = new MySqlDataAccess();//MemoryDataAccess();
@@ -119,8 +123,14 @@ public class Server {
         return service.getUser(authToken);
     }
 
-    public ChessGame updateChessGame(String authToken, int gameID, ChessGame game) throws Exception {
-        return service.updateChessGame(authToken, gameID, game);
+    public String updateChessGame(String authToken, int gameID, ChessGame game, ChessMove move) throws Exception {
+        try {
+            game.makeMove(move);
+        } catch (InvalidMoveException e) {
+            return "Invalid move!";
+        }
+
+        return new Gson().toJson(service.updateChessGame(authToken, gameID, game));
     }
 
     private String clear(Request req, Response res) throws Exception {

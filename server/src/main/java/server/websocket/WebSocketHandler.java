@@ -1,5 +1,6 @@
 package server.websocket;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -49,16 +50,31 @@ public class WebSocketHandler {
     private void handleConnect(Session session, Connect command) throws Exception {
         connections.addConnection(command.getAuthToken(), command.getGameID(), session);
         connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(command.getUsername() + " joined as " + command.getColor()));
-        connections.loadGame(command.getAuthToken(), new LoadGame(server.getGame(command.getAuthToken(), command.getGameID()), command.getColor()));
+        connections.broadcastToOneUser(command.getAuthToken(), new LoadGame(server.getGame(command.getAuthToken(), command.getGameID()), command.getColor()));
     }
 
     private void handleMakeMove(MakeMove command) throws Exception {
-        var updatedGame = server.updateChessGame(command.getAuthToken(), command.getGameID(), command.getGame());
-        var username = server.getUsername(command.getAuthToken());
+        ChessGame.TeamColor teamColor = ChessGame.TeamColor.WHITE;
+        if (command.getColor().equals("black")) {
+            teamColor = ChessGame.TeamColor.BLACK;
+        }
 
-        LoadGame loadGame = new LoadGame(updatedGame, command.getColor());
-        connections.broadcastToAllInGame(command.getGameID(), loadGame);
-        connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(username + " moved " + command.getMove().toString()));
+        if (teamColor == command.getGame().getTeamTurn()) {
+            var result = server.updateChessGame(command.getAuthToken(), command.getGameID(), command.getGame(), command.getMove());
+            var username = server.getUsername(command.getAuthToken());
+
+            if (!result.equals("Invalid move!")) {
+                ChessGame updatedGame = new Gson().fromJson(result, ChessGame.class);
+
+                LoadGame loadGame = new LoadGame(updatedGame, command.getColor());
+                connections.broadcastToAllInGame(command.getGameID(), loadGame);
+                connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(username + " moved " + command.getMove().toString()));
+            } else {
+                connections.broadcastToOneUser(command.getAuthToken(), new Notification(result));
+            }
+        } else {
+            connections.broadcastToOneUser(command.getAuthToken(), new Notification("Not your turn!"));
+        }
     }
 
     private void handleResign(UserGameCommand command) {
