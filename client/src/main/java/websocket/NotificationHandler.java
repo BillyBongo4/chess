@@ -18,10 +18,11 @@ public class NotificationHandler {
                 System.out.println(outputBoard(loadGame.getGame(), loadGame.getColor()));
                 break;
             case ERROR:
+                System.out.println("Error!");
                 break;
             case NOTIFICATION:
                 Notification notification = (Notification) message;
-                System.out.println("Notification: " + notification.getMessage());
+                System.out.println(notification.getMessage());
                 break;
         }
     }
