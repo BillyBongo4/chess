@@ -33,10 +33,10 @@ public class Client {
     private WebSocketFacade ws;
     private final NotificationHandler notificationHandler;
 
-    public Client(String serverUrl) throws IOException, URISyntaxException, DeploymentException {
+    public Client(String serverUrl, NotificationHandler notificationHandler) throws IOException, URISyntaxException, DeploymentException {
         server = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
-        notificationHandler = new NotificationHandler();
+        this.notificationHandler = notificationHandler;
         //ws = new WebSocketFacade(serverUrl, new NotificationHandler());
     }
 
@@ -233,7 +233,7 @@ public class Client {
                 game = server.joinGame(authToken, params[0], params[1]);
                 color = params[1];
                 gameID = Integer.parseInt(params[0]);
-                return "";
+                return "joined game";
                 //return outputBoard(game, params);
             }
             return "Expected: join <ID> <WHITE|BLACK>";
