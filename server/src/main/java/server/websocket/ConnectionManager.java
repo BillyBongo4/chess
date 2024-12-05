@@ -54,11 +54,11 @@ public class ConnectionManager {
         }
     }
 
-    public void broadcastToAllElseInGame(String excludingAuthToken, ServerMessage message) throws IOException {
+    public void broadcastToAllElseInGame(String excludingAuthToken, int gameId, ServerMessage message) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var connection : connections.values()) {
             if (connection.session().isOpen()) {
-                if (!connection.authToken().equals(excludingAuthToken)) {
+                if (!connection.authToken().equals(excludingAuthToken) && connection.gameID() == gameId) {
                     connection.send(new Gson().toJson(message));
                 }
             } else {

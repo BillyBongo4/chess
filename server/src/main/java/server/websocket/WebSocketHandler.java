@@ -60,7 +60,7 @@ public class WebSocketHandler {
 
     private void handleConnect(Session session, Connect command) throws Exception {
         connections.addConnection(command.getAuthToken(), command.getGameID(), command.getColor(), session);
-        connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(command.getUsername() + " joined as " + command.getColor()));
+        connections.broadcastToAllElseInGame(command.getAuthToken(), command.getGameID(), new Notification(command.getUsername() + " joined as " + command.getColor()));
         connections.broadcastToOneUser(command.getAuthToken(), new LoadGame(server.getGame(command.getAuthToken(), command.getGameID()), command.getColor()));
     }
 
@@ -89,7 +89,7 @@ public class WebSocketHandler {
         String username = server.getUsername(command.getAuthToken());
 
         broadcastGameUpdate(command, updatedGame);
-        notifyMove(command.getAuthToken(), username, command.getMove());
+        notifyMove(command.getAuthToken(), command.getGameID(), username, command.getMove());
         notifyGameStatus(command.getGameID(), updatedGame);
     }
 
@@ -120,9 +120,9 @@ public class WebSocketHandler {
         return String.valueOf(col) + row;
     }
 
-    private void notifyMove(String authToken, String username, ChessMove move) throws Exception {
+    private void notifyMove(String authToken, int gameID, String username, ChessMove move) throws Exception {
         String userChessMove = positionToString(move.getStartPosition()) + " -> " + positionToString(move.getEndPosition());
-        connections.broadcastToAllElseInGame(authToken, new Notification(username + " moved " + userChessMove));
+        connections.broadcastToAllElseInGame(authToken, gameID, new Notification(username + " moved " + userChessMove));
     }
 
     private void notifyGameStatus(int gameID, ChessGame game) throws Exception {
@@ -145,14 +145,14 @@ public class WebSocketHandler {
         server.updateChessGame(command.getAuthToken(), command.getGameID(), game);
         var username = server.getUsername(command.getAuthToken());
 
-        connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(username + " has resigned! Game over!"));
+        connections.broadcastToAllInGame(command.getGameID(), new Notification(username + " has resigned! Game over!"));
     }
 
     private void handleLeave(Leave command) throws Exception {
         var username = server.getUsername(command.getAuthToken());
         server.updateChessUsername(command.getAuthToken(), command.getGameID(), command.getColor());
 
-        connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(username + " has left the game!"));
+        connections.broadcastToAllElseInGame(command.getAuthToken(), command.getGameID(), new Notification(username + " has left the game!"));
         connections.removeConnection(command.getAuthToken());
     }
 }

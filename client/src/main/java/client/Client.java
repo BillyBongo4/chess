@@ -305,7 +305,7 @@ public class Client {
     public String resign() throws IOException {
         UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
         ws.sendCommand(resignCommand);
-        return "You've resigned";
+        return "";
     }
 
     public String logout() throws Exception {
