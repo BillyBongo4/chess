@@ -22,7 +22,7 @@ import static ui.EscapeSequences.*;
 
 public class Client {
     private final ServerFacade server;
-    //private final String serverUrl;
+    private final String serverUrl;
     private boolean loggedIn = false;
     private String username;
     private String authToken;
@@ -30,14 +30,14 @@ public class Client {
     private int gameID = 0;
     private boolean observing = false;
     private ChessGame game = null;
-    private final WebSocketFacade ws;
-    //private final NotificationHandler notificationHandler;
+    private WebSocketFacade ws;
+    private final NotificationHandler notificationHandler;
 
     public Client(String serverUrl) throws IOException, URISyntaxException, DeploymentException {
         server = new ServerFacade(serverUrl);
-        //this.serverUrl = serverUrl;
-        //notificationHandler = new NotificationHandler();
-        ws = new WebSocketFacade(serverUrl, new NotificationHandler());
+        this.serverUrl = serverUrl;
+        notificationHandler = new NotificationHandler();
+        //ws = new WebSocketFacade(serverUrl, new NotificationHandler());
     }
 
     public String eval(String input) {
@@ -228,8 +228,9 @@ public class Client {
     public String join(String... params) throws Exception {
         try {
             if (params.length == 2) {
-                game = server.joinGame(authToken, params[0], params[1]);
+                ws = new WebSocketFacade(serverUrl, notificationHandler);
                 ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username, params[1]));
+                game = server.joinGame(authToken, params[0], params[1]);
                 color = params[1];
                 gameID = Integer.parseInt(params[0]);
                 return "";
@@ -291,20 +292,19 @@ public class Client {
     }
 
     public String leave() throws IOException {
-        UserGameCommand leaveCommand = new Leave(authToken, gameID, color);
+        Leave leaveCommand = new Leave(authToken, gameID, color);
         ws.sendCommand(leaveCommand);
         ws.closeSession();
         gameID = 0;
         color = "";
         observing = false;
         game = null;
-        return String.format("%s left the game", username);
+        return "You've left the game";
     }
 
     public String resign() throws IOException {
         UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
         ws.sendCommand(resignCommand);
-        ws.closeSession();
         return "You've resigned";
     }
 
@@ -350,8 +350,8 @@ public class Client {
             return """
                     - create <NAME> - a game
                     - list - games
-                    - join <ID> [WHITE|BLACK] - a game
-                    - observe <ID> - a game
+                    - join <NUMBER> [WHITE|BLACK] - a game
+                    - observe <NUMBER> - a game
                     - logout - when you are done
                     - help - with possible commands
                     """;

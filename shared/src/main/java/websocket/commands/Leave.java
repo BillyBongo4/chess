@@ -9,7 +9,7 @@ public class Leave extends UserGameCommand {
     private final String color;
 
     public Leave(String authToken, Integer gameID, String color) {
-        super(UserGameCommand.CommandType.MAKE_MOVE, authToken, gameID);
+        super(UserGameCommand.CommandType.LEAVE, authToken, gameID);
         this.color = color;
     }
 

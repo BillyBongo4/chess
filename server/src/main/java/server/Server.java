@@ -123,18 +123,16 @@ public class Server {
         return service.getUser(authToken);
     }
 
-    public String updateChessGame(String authToken, int gameID, ChessGame game, ChessMove move) throws Exception {
-        try {
-            game.makeMove(move);
-        } catch (InvalidMoveException e) {
-            return "Invalid move!";
-        }
-
-        return new Gson().toJson(service.updateChessGame(authToken, gameID, game));
+    public ChessGame updateChessGame(String authToken, int gameID, ChessGame game) throws Exception {
+        return service.updateChessGame(authToken, gameID, game);
     }
 
     public void updateChessUsername(String authToken, int gameID, String color) throws Exception {
-        service.updateChessUsername(authToken, gameID, color);
+        String formattedColor = "WHITE";
+        if (color.equals("black")) {
+            formattedColor = "BLACK";
+        }
+        service.updateChessUsername(authToken, gameID, formattedColor);
     }
 
     private String clear(Request req, Response res) throws Exception {

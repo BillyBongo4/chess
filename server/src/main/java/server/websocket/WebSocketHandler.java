@@ -3,6 +3,7 @@ package server.websocket;
 import chess.ChessGame;
 import chess.ChessMove;
 import chess.ChessPosition;
+import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -34,7 +35,7 @@ public class WebSocketHandler {
             connect = new Gson().fromJson(message, Connect.class);
         } else if (command.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE) {
             makeMove = new Gson().fromJson(message, MakeMove.class);
-        } else if (command.getCommandType() == UserGameCommand.CommandType.RESIGN) {
+        } else if (command.getCommandType() == UserGameCommand.CommandType.LEAVE) {
             leave = new Gson().fromJson(message, Leave.class);
         }
         switch (command.getCommandType()) {
@@ -76,13 +77,15 @@ public class WebSocketHandler {
             return;
         }
 
-        String result = server.updateChessGame(command.getAuthToken(), command.getGameID(), command.getGame(), command.getMove());
-        if (result.equals("Invalid move!")) {
-            notifyUser(command.getAuthToken(), result);
-            return;
+        try {
+            command.getGame().makeMove(command.getMove());
+        } catch (InvalidMoveException e) {
+            notifyUser(command.getAuthToken(), "Invalid Move!");
         }
 
-        ChessGame updatedGame = new Gson().fromJson(result, ChessGame.class);
+        ChessGame updatedGame = server.updateChessGame(command.getAuthToken(), command.getGameID(), command.getGame());
+
+        //ChessGame updatedGame = new Gson().fromJson(result, ChessGame.class);
         String username = server.getUsername(command.getAuthToken());
 
         broadcastGameUpdate(command, updatedGame);
@@ -139,6 +142,7 @@ public class WebSocketHandler {
     private void handleResign(UserGameCommand command) throws Exception {
         var game = server.getGame(command.getAuthToken(), command.getGameID());
         game.setGameOver(true);
+        server.updateChessGame(command.getAuthToken(), command.getGameID(), game);
         var username = server.getUsername(command.getAuthToken());
 
         connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(username + " has resigned! Game over!"));
