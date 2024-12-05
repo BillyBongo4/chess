@@ -133,6 +133,10 @@ public class Server {
         return new Gson().toJson(service.updateChessGame(authToken, gameID, game));
     }
 
+    public void updateChessUsername(String authToken, int gameID, String color) throws Exception {
+        service.updateChessUsername(authToken, gameID, color);
+    }
+
     private String clear(Request req, Response res) throws Exception {
         return serializer.toJson(service.clear());
     }

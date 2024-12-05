@@ -177,6 +177,15 @@ public class Service {
         return dataAccess.getGame(gameID).game();
     }
 
+    public void updateChessUsername(String authToken, int gameID, String color) throws Exception {
+        AuthData authData = dataAccess.getAuth(authToken);
+        if (authData == null) {
+            throw new ServiceException(401, "Error: Unauthorized");
+        }
+
+        dataAccess.updateGame(gameID, null, color);
+    }
+
     public String clear() throws Exception {
         dataAccess.clearGameData();
         dataAccess.clearAuthData();

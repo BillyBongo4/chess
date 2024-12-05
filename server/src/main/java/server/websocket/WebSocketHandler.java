@@ -9,6 +9,7 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import server.Server;
 import websocket.commands.Connect;
+import websocket.commands.Leave;
 import websocket.commands.MakeMove;
 import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGame;
@@ -28,10 +29,13 @@ public class WebSocketHandler {
         UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
         Connect connect = null;
         MakeMove makeMove = null;
+        Leave leave = null;
         if (command.getCommandType() == UserGameCommand.CommandType.CONNECT) {
             connect = new Gson().fromJson(message, Connect.class);
         } else if (command.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE) {
             makeMove = new Gson().fromJson(message, MakeMove.class);
+        } else if (command.getCommandType() == UserGameCommand.CommandType.RESIGN) {
+            leave = new Gson().fromJson(message, Leave.class);
         }
         switch (command.getCommandType()) {
             case CONNECT -> {
@@ -45,7 +49,11 @@ public class WebSocketHandler {
                 }
             }
             case RESIGN -> handleResign(command);
-            case LEAVE -> handleLeave(command);
+            case LEAVE -> {
+                if (leave != null) {
+                    handleLeave(leave);
+                }
+            }
         }
     }
 
@@ -86,7 +94,8 @@ public class WebSocketHandler {
         return game.isInCheckmate(ChessGame.TeamColor.WHITE) ||
                 game.isInCheckmate(ChessGame.TeamColor.BLACK) ||
                 game.isInStalemate(ChessGame.TeamColor.WHITE) ||
-                game.isInStalemate(ChessGame.TeamColor.BLACK);
+                game.isInStalemate(ChessGame.TeamColor.BLACK) ||
+                game.getGameOver();
     }
 
     private ChessGame.TeamColor getTeamColor(String color) {
@@ -108,7 +117,6 @@ public class WebSocketHandler {
         return String.valueOf(col) + row;
     }
 
-
     private void notifyMove(String authToken, String username, ChessMove move) throws Exception {
         String userChessMove = positionToString(move.getStartPosition()) + " -> " + positionToString(move.getEndPosition());
         connections.broadcastToAllElseInGame(authToken, new Notification(username + " moved " + userChessMove));
@@ -128,12 +136,19 @@ public class WebSocketHandler {
         }
     }
 
-    private void handleResign(UserGameCommand command) {
-        System.out.println("Resigned");
+    private void handleResign(UserGameCommand command) throws Exception {
+        var game = server.getGame(command.getAuthToken(), command.getGameID());
+        game.setGameOver(true);
+        var username = server.getUsername(command.getAuthToken());
+
+        connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(username + " has resigned! Game over!"));
     }
 
-    private void handleLeave(UserGameCommand command) {
-        System.out.println("Left");
+    private void handleLeave(Leave command) throws Exception {
+        var username = server.getUsername(command.getAuthToken());
+        server.updateChessUsername(command.getAuthToken(), command.getGameID(), command.getColor());
+
+        connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(username + " has left the game!"));
         connections.removeConnection(command.getAuthToken());
     }
 }

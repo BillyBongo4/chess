@@ -13,6 +13,8 @@ public class ChessGame {
 
     ChessBoard board;
     TeamColor teamTurn;
+    boolean gameOver = false;
+
     public ChessGame() {
         board = new ChessBoard();
         board.resetBoard();
@@ -43,6 +45,14 @@ public class ChessGame {
         BLACK
     }
 
+    public boolean getGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean over) {
+        gameOver = over;
+    }
+
     private Collection<ChessPosition> getTeamPositions(ChessBoard chessBoard, TeamColor team) {
         Collection<ChessPosition> positions = new ArrayList<>();
         for (int i = 1; i < 9; i++) {
@@ -61,7 +71,9 @@ public class ChessGame {
 
     private boolean kingInCheck(ChessBoard checker, TeamColor currColor) {
         TeamColor enemyColor = TeamColor.WHITE;
-        if (currColor == TeamColor.WHITE) { enemyColor = TeamColor.BLACK; }
+        if (currColor == TeamColor.WHITE) {
+            enemyColor = TeamColor.BLACK;
+        }
         Collection<ChessPosition> enemies = getTeamPositions(checker, enemyColor);
 
         for (var enemy : enemies) {
@@ -87,7 +99,9 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        if (startPosition == null) { return null; }
+        if (startPosition == null) {
+            return null;
+        }
 
         ChessPiece currPiece = board.getPiece(startPosition);
 
@@ -135,14 +149,19 @@ public class ChessGame {
             if (move.getPromotionPiece() != null) {
                 ChessPiece promotion = new ChessPiece(board.getPiece(move.getStartPosition()).getTeamColor(), move.getPromotionPiece());
                 board.addPiece(move.getEndPosition(), promotion);
+            } else {
+                board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition()));
             }
-            else { board.addPiece(move.getEndPosition(), board.getPiece(move.getStartPosition())); }
             board.removePiece(move.getStartPosition());
 
-            if (teamTurn == TeamColor.WHITE) { teamTurn = TeamColor.BLACK; }
-            else { teamTurn = TeamColor.WHITE; }
+            if (teamTurn == TeamColor.WHITE) {
+                teamTurn = TeamColor.BLACK;
+            } else {
+                teamTurn = TeamColor.WHITE;
+            }
+        } else {
+            throw new chess.InvalidMoveException();
         }
-        else { throw new chess.InvalidMoveException(); }
     }
 
     /**

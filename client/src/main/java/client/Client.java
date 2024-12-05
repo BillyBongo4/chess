@@ -8,6 +8,7 @@ import model.UserData;
 import websocket.NotificationHandler;
 import websocket.WebSocketFacade;
 import websocket.commands.Connect;
+import websocket.commands.Leave;
 import websocket.commands.MakeMove;
 import websocket.commands.UserGameCommand;
 
@@ -290,7 +291,7 @@ public class Client {
     }
 
     public String leave() throws IOException {
-        UserGameCommand leaveCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+        UserGameCommand leaveCommand = new Leave(authToken, gameID, color);
         ws.sendCommand(leaveCommand);
         ws.closeSession();
         gameID = 0;
@@ -304,7 +305,7 @@ public class Client {
         UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
         ws.sendCommand(resignCommand);
         ws.closeSession();
-        return String.format("%s resigned", username);
+        return "You've resigned";
     }
 
     public String logout() throws Exception {
