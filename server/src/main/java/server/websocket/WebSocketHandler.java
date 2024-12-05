@@ -59,21 +59,37 @@ public class WebSocketHandler {
             teamColor = ChessGame.TeamColor.BLACK;
         }
 
-        if (teamColor == command.getGame().getTeamTurn()) {
-            var result = server.updateChessGame(command.getAuthToken(), command.getGameID(), command.getGame(), command.getMove());
-            var username = server.getUsername(command.getAuthToken());
-
-            if (!result.equals("Invalid move!")) {
-                ChessGame updatedGame = new Gson().fromJson(result, ChessGame.class);
-
-                LoadGame loadGame = new LoadGame(updatedGame, command.getColor());
-                connections.broadcastToAllInGame(command.getGameID(), loadGame);
-                connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(username + " moved " + command.getMove().toString()));
-            } else {
-                connections.broadcastToOneUser(command.getAuthToken(), new Notification(result));
-            }
+        if (command.getGame().isInCheckmate(ChessGame.TeamColor.WHITE) || command.getGame().isInCheckmate(ChessGame.TeamColor.BLACK)
+                || command.getGame().isInStalemate(ChessGame.TeamColor.WHITE) || command.getGame().isInStalemate(ChessGame.TeamColor.BLACK)) {
+            connections.broadcastToOneUser(command.getAuthToken(), new Notification("Can't make move! Game is over!"));
         } else {
-            connections.broadcastToOneUser(command.getAuthToken(), new Notification("Not your turn!"));
+            if (teamColor == command.getGame().getTeamTurn()) {
+                var result = server.updateChessGame(command.getAuthToken(), command.getGameID(), command.getGame(), command.getMove());
+                var username = server.getUsername(command.getAuthToken());
+
+                if (!result.equals("Invalid move!")) {
+                    ChessGame updatedGame = new Gson().fromJson(result, ChessGame.class);
+
+                    LoadGame loadGame = new LoadGame(updatedGame, command.getColor());
+                    connections.broadcastToAllInGame(command.getGameID(), loadGame);
+                    connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(username + " moved " + command.getMove().toString()));
+                    if (updatedGame.isInCheckmate(ChessGame.TeamColor.WHITE)) {
+                        connections.broadcastToAllInGame(command.getGameID(), new Notification("Checkmate! Black wins!"));
+                    } else if (updatedGame.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+                        connections.broadcastToAllInGame(command.getGameID(), new Notification("Checkmate! White wins!"));
+                    } else if (updatedGame.isInStalemate(ChessGame.TeamColor.WHITE) || updatedGame.isInStalemate(ChessGame.TeamColor.BLACK)) {
+                        connections.broadcastToAllInGame(command.getGameID(), new Notification("Stalemate! It's a Draw!"));
+                    } else if (updatedGame.isInCheck(ChessGame.TeamColor.WHITE)) {
+                        connections.broadcastToAllInGame(command.getGameID(), new Notification("White is in Check!"));
+                    } else if (updatedGame.isInCheck(ChessGame.TeamColor.BLACK)) {
+                        connections.broadcastToAllInGame(command.getGameID(), new Notification("Black is in Check!"));
+                    }
+                } else {
+                    connections.broadcastToOneUser(command.getAuthToken(), new Notification(result));
+                }
+            } else {
+                connections.broadcastToOneUser(command.getAuthToken(), new Notification("Not your turn!"));
+            }
         }
     }
 
