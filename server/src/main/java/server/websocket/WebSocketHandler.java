@@ -48,7 +48,7 @@ public class WebSocketHandler {
     }
 
     private void handleConnect(Session session, Connect command) throws Exception {
-        connections.addConnection(command.getAuthToken(), command.getGameID(), session);
+        connections.addConnection(command.getAuthToken(), command.getGameID(), command.getColor(), session);
         connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(command.getUsername() + " joined as " + command.getColor()));
         connections.broadcastToOneUser(command.getAuthToken(), new LoadGame(server.getGame(command.getAuthToken(), command.getGameID()), command.getColor()));
     }
