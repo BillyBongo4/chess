@@ -15,7 +15,7 @@ public class NotificationHandler {
         switch (message.getServerMessageType()) {
             case LOAD_GAME:
                 LoadGame loadGame = (LoadGame) message;
-                System.out.println(outputBoard(loadGame.getGame(), "white"));
+                System.out.println(outputBoard(loadGame.getGame(), loadGame.getColor()));
                 break;
             case ERROR:
                 break;

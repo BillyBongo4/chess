@@ -20,6 +20,16 @@ public class ConnectionManager {
         connections.remove(authToken);
     }
 
+    public void loadGame(String authToken, ServerMessage message) throws IOException {
+        for (var connection : connections.values()) {
+            if (connection.getSession().isOpen()) {
+                if (connection.getAuthToken().equals(authToken)) {
+                    connection.send(new Gson().toJson(message));
+                }
+            }
+        }
+    }
+
     public void broadcastToAllInGame(int gameId, ServerMessage message) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var connection : connections.values()) {

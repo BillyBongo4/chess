@@ -47,8 +47,9 @@ public class WebSocketHandler {
 
     private void handleMakeMove(MakeMove command) throws Exception {
         System.out.println("Made move");
-        LoadGame loadGame = new LoadGame(command.getGame());
+        LoadGame loadGame = new LoadGame(command.getGame(), command.getColor());
         connections.broadcastToAllInGame(command.getGameID(), loadGame);
+        connections.loadGame(command.getAuthToken(), loadGame);
     }
 
     private void handleResign(UserGameCommand command) {

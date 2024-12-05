@@ -6,14 +6,20 @@ import java.util.Objects;
 
 public class LoadGame extends ServerMessage {
     private ChessGame game;
+    private String color;
 
-    public LoadGame(ChessGame game) {
+    public LoadGame(ChessGame game, String color) {
         super(ServerMessageType.LOAD_GAME);
         this.game = game;
+        this.color = color;
     }
 
     public ChessGame getGame() {
         return game;
+    }
+
+    public String getColor() {
+        return color;
     }
 
     @Override

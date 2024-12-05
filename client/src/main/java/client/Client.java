@@ -24,6 +24,7 @@ public class Client {
     private boolean loggedIn = false;
     private String username;
     private String authToken;
+    private String color;
     private int gameID = 0;
     private boolean observing = false;
     private final WebSocketFacade ws;
@@ -179,6 +180,7 @@ public class Client {
             if (params.length == 2) {
                 var game = server.joinGame(authToken, params[0], params[1]);
                 ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username, params[1]));
+                color = params[1];
                 gameID = Integer.parseInt(params[0]);
                 return outputBoard(game, params);
             }
@@ -197,6 +199,7 @@ public class Client {
             String[] newParams = Arrays.copyOf(params, params.length + 1);
             newParams[newParams.length - 1] = "white";
             ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username, "observer"));
+            color = "observer";
             observing = true;
             var game = server.observeGame(authToken, params[0]);
             return outputBoard(game, newParams);
@@ -215,7 +218,7 @@ public class Client {
         if (params.length == 2) {
             ChessMove move = new ChessMove(parsePosition(params[0]), parsePosition(params[1]), null);
             ChessGame game = server.observeGame(authToken, String.valueOf(gameID));
-            MakeMove moveCommand = new MakeMove(authToken, gameID, move, game);
+            MakeMove moveCommand = new MakeMove(authToken, gameID, move, game, color);
             ws.sendCommand(moveCommand);
             return "Move sent";
         }
@@ -227,6 +230,7 @@ public class Client {
         ws.sendCommand(leaveCommand);
         ws.closeSession();
         gameID = 0;
+        color = "";
         observing = false;
         return String.format("%s left the game", username);
     }
@@ -245,6 +249,8 @@ public class Client {
             authToken = null;
             username = null;
             gameID = 0;
+            color = null;
+            observing = false;
             ws.closeSession();
             return "Logged out successfully!";
         }
