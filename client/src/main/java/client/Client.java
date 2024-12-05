@@ -21,7 +21,7 @@ import static ui.EscapeSequences.*;
 
 public class Client {
     private final ServerFacade server;
-    private final String serverUrl;
+    //private final String serverUrl;
     private boolean loggedIn = false;
     private String username;
     private String authToken;
@@ -34,12 +34,12 @@ public class Client {
 
     public Client(String serverUrl) throws IOException, URISyntaxException, DeploymentException {
         server = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
+        //this.serverUrl = serverUrl;
         //notificationHandler = new NotificationHandler();
         ws = new WebSocketFacade(serverUrl, new NotificationHandler());
     }
 
-    public String eval(String input) throws Exception {
+    public String eval(String input) {
         try {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
@@ -116,20 +116,14 @@ public class Client {
     }
 
     private String getPieceSymbol(ChessPiece piece) {
-        switch (piece.getPieceType()) {
-            case ChessPiece.PieceType.ROOK:
-                return "R";
-            case ChessPiece.PieceType.KNIGHT:
-                return "N";
-            case ChessPiece.PieceType.BISHOP:
-                return "B";
-            case ChessPiece.PieceType.KING:
-                return "K";
-            case ChessPiece.PieceType.QUEEN:
-                return "Q";
-            default:
-                return "P";
-        }
+        return switch (piece.getPieceType()) {
+            case ChessPiece.PieceType.ROOK -> "R";
+            case ChessPiece.PieceType.KNIGHT -> "N";
+            case ChessPiece.PieceType.BISHOP -> "B";
+            case ChessPiece.PieceType.KING -> "K";
+            case ChessPiece.PieceType.QUEEN -> "Q";
+            default -> "P";
+        };
     }
 
     private String buildHeaderFooter(String labels) {
@@ -252,8 +246,8 @@ public class Client {
 
     public String observe(String... params) throws Exception {
         try {
-            String[] newParams = Arrays.copyOf(params, params.length + 1);
-            newParams[newParams.length - 1] = "white";
+            /*String[] newParams = Arrays.copyOf(params, params.length + 1);
+            newParams[newParams.length - 1] = "white";*/
             ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username, "observer"));
             color = "observer";
             observing = true;
@@ -332,7 +326,7 @@ public class Client {
     public String help() {
         if (!loggedIn) {
             return """
-                    - register <USERNAMAE> <PASSWORD> <EMAIL> - to create an account
+                    - register <USERNAME> <PASSWORD> <EMAIL> - to create an account
                     - login <USERNAME> <PASSWORD> - to play chess
                     - help - with possible commands
                     - quit - playing chess

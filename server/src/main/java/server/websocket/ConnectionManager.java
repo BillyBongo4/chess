@@ -23,8 +23,8 @@ public class ConnectionManager {
 
     public void broadcastToOneUser(String authToken, ServerMessage message) throws IOException {
         for (var connection : connections.values()) {
-            if (connection.getSession().isOpen()) {
-                if (connection.getAuthToken().equals(authToken)) {
+            if (connection.session().isOpen()) {
+                if (connection.authToken().equals(authToken)) {
                     connection.send(new Gson().toJson(message));
                 }
             }
@@ -34,11 +34,11 @@ public class ConnectionManager {
     public void broadcastToAllInGame(int gameId, ServerMessage message) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var connection : connections.values()) {
-            if (connection.getSession().isOpen()) {
-                if (gameId == connection.getGameID()) {
+            if (connection.session().isOpen()) {
+                if (gameId == connection.gameID()) {
                     if (message.getServerMessageType() == ServerMessage.ServerMessageType.LOAD_GAME) {
                         LoadGame loadGame = (LoadGame) message;
-                        loadGame = new LoadGame(loadGame.getGame(), connection.getColor());
+                        loadGame = new LoadGame(loadGame.getGame(), connection.color());
                         connection.send(new Gson().toJson(loadGame));
                     } else {
                         connection.send(new Gson().toJson(message));
@@ -50,15 +50,15 @@ public class ConnectionManager {
         }
 
         for (var connection : removeList) {
-            connections.remove(connection.getAuthToken());
+            connections.remove(connection.authToken());
         }
     }
 
     public void broadcastToAllElseInGame(String excludingAuthToken, ServerMessage message) throws IOException {
         var removeList = new ArrayList<Connection>();
         for (var connection : connections.values()) {
-            if (connection.getSession().isOpen()) {
-                if (!connection.getAuthToken().equals(excludingAuthToken)) {
+            if (connection.session().isOpen()) {
+                if (!connection.authToken().equals(excludingAuthToken)) {
                     connection.send(new Gson().toJson(message));
                 }
             } else {
@@ -67,7 +67,7 @@ public class ConnectionManager {
         }
 
         for (var connection : removeList) {
-            connections.remove(connection.getAuthToken());
+            connections.remove(connection.authToken());
         }
     }
 }

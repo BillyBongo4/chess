@@ -27,20 +27,14 @@ public class NotificationHandler {
     }
 
     private String getPieceSymbol(ChessPiece piece) {
-        switch (piece.getPieceType()) {
-            case ChessPiece.PieceType.ROOK:
-                return "R";
-            case ChessPiece.PieceType.KNIGHT:
-                return "N";
-            case ChessPiece.PieceType.BISHOP:
-                return "B";
-            case ChessPiece.PieceType.KING:
-                return "K";
-            case ChessPiece.PieceType.QUEEN:
-                return "Q";
-            default:
-                return "P";
-        }
+        return switch (piece.getPieceType()) {
+            case ChessPiece.PieceType.ROOK -> "R";
+            case ChessPiece.PieceType.KNIGHT -> "N";
+            case ChessPiece.PieceType.BISHOP -> "B";
+            case ChessPiece.PieceType.KING -> "K";
+            case ChessPiece.PieceType.QUEEN -> "Q";
+            default -> "P";
+        };
     }
 
     private String buildHeaderFooter(String labels) {
