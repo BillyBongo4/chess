@@ -115,6 +115,10 @@ public class Server {
         return service.getGame(authToken, gameID);
     }
 
+    public String getUsername(String authToken) throws Exception {
+        return service.getUser(authToken);
+    }
+
     public ChessGame updateChessGame(String authToken, int gameID, ChessGame game) throws Exception {
         return service.updateChessGame(authToken, gameID, game);
     }

@@ -54,10 +54,11 @@ public class WebSocketHandler {
 
     private void handleMakeMove(MakeMove command) throws Exception {
         var updatedGame = server.updateChessGame(command.getAuthToken(), command.getGameID(), command.getGame());
+        var username = server.getUsername(command.getAuthToken());
 
         LoadGame loadGame = new LoadGame(updatedGame, command.getColor());
         connections.broadcastToAllInGame(command.getGameID(), loadGame);
-        //connections.loadGame(command.getAuthToken(), loadGame);
+        connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(username + " moved " + command.getMove().toString()));
     }
 
     private void handleResign(UserGameCommand command) {

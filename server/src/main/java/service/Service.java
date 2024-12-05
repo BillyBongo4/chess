@@ -60,6 +60,14 @@ public class Service {
         return createAuth(user);
     }
 
+    public String getUser(String authToken) throws Exception {
+        if (dataAccess.getAuth(authToken) == null) {
+            throw new ServiceException(401, "Error: Unauthorized");
+        }
+
+        return dataAccess.getAuth(authToken).username();
+    }
+
     public String logoutUser(String authToken) throws Exception {
         if (dataAccess.getAuth(authToken) == null) {
             throw new ServiceException(401, "Error: Unauthorized");
