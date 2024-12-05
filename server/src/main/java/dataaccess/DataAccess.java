@@ -1,5 +1,6 @@
 package dataaccess;
 
+import chess.ChessGame;
 import model.*;
 
 import javax.xml.crypto.Data;
@@ -22,6 +23,8 @@ public interface DataAccess {
     boolean checkColorUsername(int gameID, String color) throws DataAccessException;
 
     void updateGame(int gameID, String username, String color) throws DataAccessException;
+    
+    void updateChessGame(int gameID, ChessGame game) throws DataAccessException;
 
     GameData getGame(int gameID) throws DataAccessException;
 

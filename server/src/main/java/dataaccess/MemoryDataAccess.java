@@ -109,6 +109,20 @@ public class MemoryDataAccess implements DataAccess {
     }
 
     @Override
+    public void updateChessGame(int gameID, ChessGame game) throws DataAccessException {
+        if (gameID > listGames().length) {
+            throw new DataAccessException("Error: Invalid gameID");
+        }
+
+        String whiteUsername = games.get(gameID).whiteUsername();
+        String blackUsername = games.get(gameID).blackUsername();
+        String gameName = games.get(gameID).gameName();
+
+        games.remove(gameID);
+        games.put(gameID, new GameData(gameID, whiteUsername, blackUsername, gameName, game));
+    }
+
+    @Override
     public GameData getGame(int gameID) throws DataAccessException {
         if (gameID > listGames().length) {
             throw new DataAccessException("Error: Invalid gameID");

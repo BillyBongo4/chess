@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import server.Server;
 import websocket.commands.Connect;
 import websocket.commands.MakeMove;
 import websocket.commands.UserGameCommand;
@@ -13,6 +14,11 @@ import websocket.messages.Notification;
 @WebSocket
 public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
+    private final Server server;
+
+    public WebSocketHandler(Server server) {
+        this.server = server;
+    }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
@@ -43,13 +49,15 @@ public class WebSocketHandler {
     private void handleConnect(Session session, Connect command) throws Exception {
         connections.addConnection(command.getAuthToken(), command.getGameID(), session);
         connections.broadcastToAllElseInGame(command.getAuthToken(), new Notification(command.getUsername() + " joined as " + command.getColor()));
+        connections.loadGame(command.getAuthToken(), new LoadGame(server.getGame(command.getAuthToken(), command.getGameID()), command.getColor()));
     }
 
     private void handleMakeMove(MakeMove command) throws Exception {
-        System.out.println("Made move");
-        LoadGame loadGame = new LoadGame(command.getGame(), command.getColor());
+        var updatedGame = server.updateChessGame(command.getAuthToken(), command.getGameID(), command.getGame());
+
+        LoadGame loadGame = new LoadGame(updatedGame, command.getColor());
         connections.broadcastToAllInGame(command.getGameID(), loadGame);
-        connections.loadGame(command.getAuthToken(), loadGame);
+        //connections.loadGame(command.getAuthToken(), loadGame);
     }
 
     private void handleResign(UserGameCommand command) {

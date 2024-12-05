@@ -215,6 +215,22 @@ public class MySqlDataAccess implements DataAccess {
     }
 
     @Override
+    public void updateChessGame(int gameID, ChessGame chessGame) throws DataAccessException {
+        String query = "UPDATE games SET chessGame = ? WHERE gameID = ?";
+        try (var conn = DatabaseManager.getConnection()) {
+            try (var preparedStatement = conn.prepareStatement(query)) {
+                String chessGameJson = new Gson().toJson(chessGame);
+
+                preparedStatement.setString(1, chessGameJson);
+                preparedStatement.setInt(2, gameID);
+                preparedStatement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException(e.getMessage());
+        }
+    }
+
+    @Override
     public GameData getGame(int gameID) throws DataAccessException {
         String query = "SELECT * FROM games WHERE gameID = ?";
         try (var conn = DatabaseManager.getConnection()) {

@@ -150,6 +150,25 @@ public class Service {
         return dataAccess.getGame(gameID).game();
     }
 
+    public ChessGame updateChessGame(String authToken, int gameID, ChessGame game) throws Exception {
+        AuthData authData = dataAccess.getAuth(authToken);
+        if (authData == null) {
+            throw new ServiceException(401, "Error: Unauthorized");
+        }
+
+        if (gameID > listGames(authToken).get("games").length) {
+            throw new ServiceException(401, "Error: Invalid gameID");
+        }
+
+        if (game == null) {
+            throw new ServiceException(401, "Error: Game null");
+        }
+
+        dataAccess.updateChessGame(gameID, game);
+
+        return dataAccess.getGame(gameID).game();
+    }
+
     public String clear() throws Exception {
         dataAccess.clearGameData();
         dataAccess.clearAuthData();

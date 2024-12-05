@@ -1,5 +1,6 @@
 package server;
 
+import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -14,7 +15,7 @@ import spark.*;
 public class Server {
     private final DataAccess dataAccess = new MySqlDataAccess();//MemoryDataAccess();
     private final Service service = new Service(dataAccess);
-    private final WebSocketHandler webSocketHandler = new WebSocketHandler();
+    private final WebSocketHandler webSocketHandler = new WebSocketHandler(this);
     private final Gson serializer = new Gson();
 
     public int run(int desiredPort) {
@@ -98,7 +99,7 @@ public class Server {
 
         var playerColor = body.get("playerColor").getAsString();
         var gameID = body.get("gameID").getAsInt();
-        
+
         var result = service.joinGame(authToken, gameID, playerColor);
         return serializer.toJson(result);
     }
@@ -108,6 +109,14 @@ public class Server {
         var gameID = Integer.parseInt(req.queryParams("gameID")); // Use queryParams for GET request
         var result = service.observeGame(authToken, gameID);
         return serializer.toJson(result);
+    }
+
+    public ChessGame getGame(String authToken, int gameID) throws Exception {
+        return service.getGame(authToken, gameID);
+    }
+
+    public ChessGame updateChessGame(String authToken, int gameID, ChessGame game) throws Exception {
+        return service.updateChessGame(authToken, gameID, game);
     }
 
     private String clear(Request req, Response res) throws Exception {
