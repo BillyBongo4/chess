@@ -196,7 +196,7 @@ public class Client {
     }
 
 
-    private String outputBoard(ChessGame game, String... params) {
+    public String outputBoard(ChessGame game, String... params) {
         StringBuilder output = new StringBuilder();
         String labels = params[1].equals("black") ? "h  g  f  e  d  c  b  a" : "a  b  c  d  e  f  g  h";
 
