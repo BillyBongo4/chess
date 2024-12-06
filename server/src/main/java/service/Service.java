@@ -2,6 +2,7 @@ package service;
 
 import chess.ChessGame;
 import dataaccess.DataAccess;
+import dataaccess.DataAccessException;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
@@ -61,17 +62,13 @@ public class Service {
     }
 
     public String getUser(String authToken) throws Exception {
-        if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException(401, "Error: Unauthorized");
-        }
+        validateAuth(authToken);
 
         return dataAccess.getAuth(authToken).username();
     }
 
     public String logoutUser(String authToken) throws Exception {
-        if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException(401, "Error: Unauthorized");
-        }
+        validateAuth(authToken);
 
         dataAccess.deleteAuth(authToken);
 
@@ -171,12 +168,11 @@ public class Service {
     }
 
     // Utility Methods to Reduce Duplications
-    private void validateAuth(String authToken) throws Exception {
+    private void validateAuth(String authToken) throws ServiceException, DataAccessException {
         if (dataAccess.getAuth(authToken) == null) {
             throw new ServiceException(401, "Error: Unauthorized");
         }
     }
-
 
     private void validateGameID(String authToken, int gameID) throws Exception {
         if (gameID > listGames(authToken).get("games").length) {
