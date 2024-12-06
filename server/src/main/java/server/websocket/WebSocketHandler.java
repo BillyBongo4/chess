@@ -96,6 +96,7 @@ public class WebSocketHandler {
         }
     }
 
+
     private void handleMakeMove(MakeMove command) throws Exception {
         if (isGameOver(command.getGame())) {
             notifyUser(command.getAuthToken(), "Can't make move! Game is over!");
