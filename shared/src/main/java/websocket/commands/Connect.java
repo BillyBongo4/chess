@@ -8,8 +8,8 @@ import java.util.Objects;
 public class Connect extends UserGameCommand {
     private final String username;
 
-    public Connect(String authToken, Integer gameID, String username, String color) {
-        super(UserGameCommand.CommandType.CONNECT, authToken, gameID, color);
+    public Connect(String authToken, Integer gameID, String username) {
+        super(UserGameCommand.CommandType.CONNECT, authToken, gameID);
         this.username = username;
     }
 

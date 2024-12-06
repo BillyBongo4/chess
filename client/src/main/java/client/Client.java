@@ -8,7 +8,6 @@ import model.UserData;
 import websocket.NotificationHandler;
 import websocket.WebSocketFacade;
 import websocket.commands.Connect;
-import websocket.commands.Leave;
 import websocket.commands.MakeMove;
 import websocket.commands.UserGameCommand;
 
@@ -228,9 +227,9 @@ public class Client {
     public String join(String... params) throws Exception {
         try {
             if (params.length == 2) {
-                ws = new WebSocketFacade(serverUrl, notificationHandler);
-                ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username, params[1]));
                 game = server.joinGame(authToken, params[0], params[1]);
+                ws = new WebSocketFacade(serverUrl, notificationHandler);
+                ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username));
                 color = params[1];
                 gameID = Integer.parseInt(params[0]);
                 return "joined game";
@@ -251,7 +250,7 @@ public class Client {
             /*String[] newParams = Arrays.copyOf(params, params.length + 1);
             newParams[newParams.length - 1] = "white";*/
             ws = new WebSocketFacade(serverUrl, notificationHandler);
-            ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username, "observer"));
+            ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username));
             gameID = Integer.parseInt(params[0]);
             color = "observer";
             observing = true;
@@ -285,7 +284,7 @@ public class Client {
         if (params.length == 2) {
             game = server.observeGame(authToken, String.valueOf(gameID));
             ChessMove move = new ChessMove(parsePosition(params[0]), parsePosition(params[1]), null);
-            MakeMove moveCommand = new MakeMove(authToken, gameID, move, game, color);
+            MakeMove moveCommand = new MakeMove(authToken, gameID, move, game);
             ws.sendCommand(moveCommand);
             //game = server.observeGame(authToken, String.valueOf(gameID));
             return "";
@@ -295,7 +294,7 @@ public class Client {
 
     public String leave() throws IOException {
         if (!color.equals("observer")) {
-            Leave leaveCommand = new Leave(authToken, gameID, color);
+            UserGameCommand leaveCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
             ws.sendCommand(leaveCommand);
         }
         ws.closeSession();
@@ -307,7 +306,7 @@ public class Client {
     }
 
     public String resign() throws IOException {
-        UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID, null);
+        UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
         ws.sendCommand(resignCommand);
         return "";
     }

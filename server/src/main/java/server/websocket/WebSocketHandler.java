@@ -5,6 +5,7 @@ import chess.ChessMove;
 import chess.ChessPosition;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
+import model.GameData;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
@@ -13,14 +14,11 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import server.Server;
 import service.ServiceException;
 import websocket.commands.Connect;
-import websocket.commands.Leave;
 import websocket.commands.MakeMove;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
-import websocket.messages.ServerMessage;
-
-import java.io.IOException;
 
 @WebSocket
 public class WebSocketHandler {
@@ -42,13 +40,10 @@ public class WebSocketHandler {
             UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
             Connect connect = null;
             MakeMove makeMove = null;
-            Leave leave = null;
             if (command.getCommandType() == UserGameCommand.CommandType.CONNECT) {
                 connect = new Gson().fromJson(message, Connect.class);
             } else if (command.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE) {
                 makeMove = new Gson().fromJson(message, MakeMove.class);
-            } else if (command.getCommandType() == UserGameCommand.CommandType.LEAVE) {
-                leave = new Gson().fromJson(message, Leave.class);
             }
             switch (command.getCommandType()) {
                 case CONNECT -> {
@@ -62,20 +57,28 @@ public class WebSocketHandler {
                     }
                 }
                 case RESIGN -> handleResign(command);
-                case LEAVE -> {
-                    if (leave != null) {
-                        handleLeave(leave);
-                    }
-                }
+                case LEAVE -> handleLeave(command);
             }
         } catch (Exception e) {
             onError(session, e);
         }
     }
 
+    private String getColor(String authToken, GameData game) throws Exception {
+        String username = server.getUsername(authToken);
+        if (game.whiteUsername().equals(username)) {
+            return "white";
+        } else if (game.blackUsername().equals(username)) {
+            return "black";
+        } else {
+            return "observer";
+        }
+    }
+
     private void handleConnect(Session session, Connect command) throws Exception {
         try {
-            ChessGame game = server.getGame(command.getAuthToken(), command.getGameID());
+            GameData gameData = server.getGameData(command.getAuthToken(), command.getGameID());
+            ChessGame game = gameData.game();
             if (game == null) {
                 // Send an error notification to the user
                 System.out.println("Invalid gameID detected.");
@@ -85,10 +88,12 @@ public class WebSocketHandler {
                 return;
             }
 
-            connections.addConnection(command.getAuthToken(), command.getGameID(), command.getColor(), session);
+            String color = getColor(command.getAuthToken(), gameData);
+
+            connections.addConnection(command.getAuthToken(), command.getGameID(), color, session);
             connections.broadcastToAllElseInGame(command.getAuthToken(), command.getGameID(),
-                    new Notification(command.getUsername() + " joined as " + command.getColor()));
-            connections.broadcastToOneUser(command.getAuthToken(), new LoadGame(game, command.getColor()));
+                    new Notification(command.getUsername() + " joined as " + color));
+            connections.broadcastToOneUser(command.getAuthToken(), new LoadGame(game, color));
         } catch (ServiceException e) {
             // Catch the ServiceException and notify the user
             System.out.println("ServiceException caught in handleConnect: " + e.getMessage());
@@ -103,7 +108,10 @@ public class WebSocketHandler {
             return;
         }
 
-        ChessGame.TeamColor teamColor = getTeamColor(command.getColor());
+        GameData game = server.getGameData(command.getAuthToken(), command.getGameID());
+        String color = getColor(command.getAuthToken(), game);
+
+        ChessGame.TeamColor teamColor = getTeamColor(color);
 
         if (teamColor != command.getGame().getTeamTurn()) {
             notifyUser(command.getAuthToken(), "Not your turn!");
@@ -120,7 +128,7 @@ public class WebSocketHandler {
         ChessGame updatedGame = server.updateChessGame(command.getAuthToken(), command.getGameID(), command.getGame());
         String username = server.getUsername(command.getAuthToken());
 
-        broadcastGameUpdate(command, updatedGame);
+        broadcastGameUpdate(updatedGame, color, command.getGameID());
         notifyMove(command.getAuthToken(), command.getGameID(), username, command.getMove());
         notifyGameStatus(command.getGameID(), updatedGame);
     }
@@ -141,9 +149,9 @@ public class WebSocketHandler {
         connections.broadcastToOneUser(authToken, new Notification(message));
     }
 
-    private void broadcastGameUpdate(MakeMove command, ChessGame game) throws Exception {
-        LoadGame loadGame = new LoadGame(game, command.getColor());
-        connections.broadcastToAllInGame(command.getGameID(), loadGame);
+    private void broadcastGameUpdate(ChessGame game, String color, int gameID) throws Exception {
+        LoadGame loadGame = new LoadGame(game, color);
+        connections.broadcastToAllInGame(gameID, loadGame);
     }
 
     private String positionToString(ChessPosition position) {
@@ -172,17 +180,27 @@ public class WebSocketHandler {
     }
 
     private void handleResign(UserGameCommand command) throws Exception {
-        var game = server.getGame(command.getAuthToken(), command.getGameID());
-        game.setGameOver(true);
-        server.updateChessGame(command.getAuthToken(), command.getGameID(), game);
-        var username = server.getUsername(command.getAuthToken());
+        var game = server.getGameData(command.getAuthToken(), command.getGameID()).game();
+        if (!game.getGameOver()) {
+            if (!connections.getConnection(command.getAuthToken()).color().equals("observer")) {
+                game.setGameOver(true);
 
-        connections.broadcastToAllInGame(command.getGameID(), new Notification(username + " has resigned! Game over!"));
+                server.updateChessGame(command.getAuthToken(), command.getGameID(), game);
+                var username = server.getUsername(command.getAuthToken());
+
+                connections.broadcastToAllInGame(command.getGameID(), new Notification(username + " has resigned! Game over!"));
+            } else {
+                connections.broadcastToOneUser(command.getAuthToken(), new ErrorMessage("Observers can't resign!"));
+            }
+        } else {
+            connections.broadcastToOneUser(command.getAuthToken(), new ErrorMessage("Game already over!"));
+        }
     }
 
-    private void handleLeave(Leave command) throws Exception {
+    private void handleLeave(UserGameCommand command) throws Exception {
         var username = server.getUsername(command.getAuthToken());
-        server.updateChessUsername(command.getAuthToken(), command.getGameID(), command.getColor());
+        String color = getColor(command.getAuthToken(), server.getGameData(command.getAuthToken(), command.getGameID()));
+        server.updateChessUsername(command.getAuthToken(), command.getGameID(), color);
 
         connections.broadcastToAllElseInGame(command.getAuthToken(), command.getGameID(), new Notification(username + " has left the game!"));
         connections.removeConnection(command.getAuthToken());

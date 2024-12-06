@@ -16,13 +16,10 @@ public class UserGameCommand {
 
     private final Integer gameID;
 
-    private final String color;
-
-    public UserGameCommand(CommandType commandType, String authToken, Integer gameID, String color) {
+    public UserGameCommand(CommandType commandType, String authToken, Integer gameID) {
         this.commandType = commandType;
         this.authToken = authToken;
         this.gameID = gameID;
-        this.color = color;
     }
 
     public enum CommandType {
@@ -44,10 +41,6 @@ public class UserGameCommand {
         return gameID;
     }
 
-    public String getColor() {
-        return color;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -56,10 +49,10 @@ public class UserGameCommand {
         if (!(o instanceof UserGameCommand)) {
             return false;
         }
-        UserGameCommand that = (UserGameCommand) o;
-        return getCommandType() == that.getCommandType() &&
-                Objects.equals(getAuthToken(), that.getAuthToken()) &&
-                Objects.equals(getGameID(), that.getGameID());
+        UserGameCommand command = (UserGameCommand) o;
+        return getCommandType() == command.getCommandType() &&
+                Objects.equals(getAuthToken(), command.getAuthToken()) &&
+                Objects.equals(getGameID(), command.getGameID());
     }
 
     @Override

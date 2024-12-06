@@ -17,6 +17,10 @@ public class ConnectionManager {
         connections.put(authToken, new Connection(authToken, gameID, color, session));
     }
 
+    public Connection getConnection(String authToken) {
+        return connections.get(authToken);
+    }
+
     public void removeConnection(String authToken) {
         connections.remove(authToken);
     }

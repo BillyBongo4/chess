@@ -3,6 +3,7 @@ import chess.ChessPiece;
 import chess.ChessPosition;
 import client.Client;
 import websocket.NotificationHandler;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
@@ -66,10 +67,9 @@ public class Repl implements NotificationHandler {
                 }
                 break;
             case ERROR:
-                Notification errorMessage = (Notification) message;
+                ErrorMessage errorMessage = (ErrorMessage) message;
                 System.out.println("Error: " + errorMessage.getMessage());
-                Notification errorNotification = new Notification("Error: " + errorMessage.getMessage());
-                System.out.println(errorNotification.getMessage());
+                System.out.println(errorMessage.getMessage());
                 printPrompt();
                 break;
             case NOTIFICATION:

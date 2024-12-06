@@ -120,14 +120,14 @@ public class Service {
         return dataAccess.getGame(gameID).game();
     }
 
-    public ChessGame getGame(String authToken, int gameID) throws Exception {
+    public GameData getGameData(String authToken, int gameID) throws Exception {
         validateAuth(authToken);
         validateGameID(authToken, gameID);
 
         UserData user = dataAccess.getUser(dataAccess.getAuth(authToken).username());
         validateUserData(user);
 
-        return dataAccess.getGame(gameID).game();
+        return dataAccess.getGame(gameID);
     }
 
     public ChessGame observeGame(String authToken, int gameID) throws Exception {
