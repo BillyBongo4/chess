@@ -177,6 +177,7 @@ public class Service {
         }
     }
 
+
     private void validateGameID(String authToken, int gameID) throws Exception {
         if (gameID > listGames(authToken).get("games").length) {
             throw new ServiceException(401, "Error: Invalid gameID");
