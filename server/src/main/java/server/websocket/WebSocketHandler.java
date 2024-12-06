@@ -103,29 +103,29 @@ public class WebSocketHandler {
 
 
     private void handleMakeMove(MakeMove command) throws Exception {
-        if (isGameOver(command.getGame())) {
+        GameData gameData = server.getGameData(command.getAuthToken(), command.getGameID());
+        if (isGameOver(gameData.game())) {
             notifyUser(command.getAuthToken(), "Can't make move! Game is over!");
             return;
         }
 
-        GameData game = server.getGameData(command.getAuthToken(), command.getGameID());
-        String color = getColor(command.getAuthToken(), game);
+        String color = getColor(command.getAuthToken(), gameData);
 
         ChessGame.TeamColor teamColor = getTeamColor(color);
 
-        if (teamColor != command.getGame().getTeamTurn()) {
+        if (teamColor != gameData.game().getTeamTurn()) {
             notifyUser(command.getAuthToken(), "Not your turn!");
             return;
         }
 
         try {
-            command.getGame().makeMove(command.getMove());
+            gameData.game().makeMove(command.getMove());
         } catch (InvalidMoveException e) {
             notifyUser(command.getAuthToken(), "Invalid Move!");
             return;
         }
 
-        ChessGame updatedGame = server.updateChessGame(command.getAuthToken(), command.getGameID(), command.getGame());
+        ChessGame updatedGame = server.updateChessGame(command.getAuthToken(), command.getGameID(), gameData.game());
         String username = server.getUsername(command.getAuthToken());
 
         broadcastGameUpdate(updatedGame, color, command.getGameID());

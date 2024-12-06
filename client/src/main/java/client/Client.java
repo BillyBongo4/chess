@@ -282,11 +282,9 @@ public class Client {
 
     public String makeMove(String... params) throws Exception {
         if (params.length == 2) {
-            game = server.observeGame(authToken, String.valueOf(gameID));
             ChessMove move = new ChessMove(parsePosition(params[0]), parsePosition(params[1]), null);
-            MakeMove moveCommand = new MakeMove(authToken, gameID, move, game);
+            MakeMove moveCommand = new MakeMove(authToken, gameID, move);
             ws.sendCommand(moveCommand);
-            //game = server.observeGame(authToken, String.valueOf(gameID));
             return "";
         }
         throw new IOException("Expected: <source> <destination>");

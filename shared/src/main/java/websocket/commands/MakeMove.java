@@ -7,20 +7,14 @@ import java.util.Objects;
 
 public class MakeMove extends UserGameCommand {
     private final ChessMove move;
-    private final ChessGame game;
 
-    public MakeMove(String authToken, Integer gameID, ChessMove move, ChessGame game) {
+    public MakeMove(String authToken, Integer gameID, ChessMove move) {
         super(CommandType.MAKE_MOVE, authToken, gameID);
         this.move = move;
-        this.game = game;
     }
 
     public ChessMove getMove() {
         return move;
-    }
-
-    public ChessGame getGame() {
-        return game;
     }
 
     @Override
