@@ -79,9 +79,7 @@ public class Service {
     }
 
     public Map<String, GameListEntry[]> listGames(String authToken) throws Exception {
-        if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException(401, "Error: Unauthorized");
-        }
+        validateAuth(authToken);
 
         GameData[] games = dataAccess.listGames();
         GameListEntry[] entries = new GameListEntry[games.length];
@@ -100,9 +98,7 @@ public class Service {
     }
 
     public Map<String, Integer> createGame(String authToken, String gameName) throws Exception {
-        if (dataAccess.getAuth(authToken) == null) {
-            throw new ServiceException(401, "Error: Unauthorized");
-        }
+        validateAuth(authToken);
 
         var gameData = dataAccess.createGame(gameName);
 
@@ -112,21 +108,14 @@ public class Service {
     }
 
     public ChessGame joinGame(String authToken, int gameID, String playerColor) throws Exception {
-        AuthData authData = dataAccess.getAuth(authToken);
-        if (authData == null) {
-            throw new ServiceException(401, "Error: Unauthorized");
-        }
-
-        if (gameID > listGames(authToken).get("games").length) {
-            throw new ServiceException(401, "Error: Invalid gameID");
-        }
+        validateAuth(authToken);
+        validateGameID(authToken, gameID);
 
         if (dataAccess.checkColorUsername(gameID, playerColor)) {
             throw new ServiceException(403, "Error: Already taken");
         }
 
-
-        UserData user = dataAccess.getUser(authData.username());
+        UserData user = dataAccess.getUser(dataAccess.getAuth(authToken).username());
         validateUserData(user);
 
         dataAccess.updateGame(gameID, user.username(), playerColor);
@@ -135,46 +124,28 @@ public class Service {
     }
 
     public ChessGame getGame(String authToken, int gameID) throws Exception {
-        AuthData authData = dataAccess.getAuth(authToken);
-        if (authData == null) {
-            throw new ServiceException(401, "Error: Unauthorized");
-        }
+        validateAuth(authToken);
+        validateGameID(authToken, gameID);
 
-        if (gameID > listGames(authToken).get("games").length) {
-            throw new ServiceException(401, "Error: Invalid gameID");
-        }
-
-        UserData user = dataAccess.getUser(authData.username());
+        UserData user = dataAccess.getUser(dataAccess.getAuth(authToken).username());
         validateUserData(user);
 
         return dataAccess.getGame(gameID).game();
     }
 
     public ChessGame observeGame(String authToken, int gameID) throws Exception {
-        AuthData authData = dataAccess.getAuth(authToken);
-        if (authData == null) {
-            throw new ServiceException(401, "Error: Unauthorized");
-        }
+        validateAuth(authToken);
+        validateGameID(authToken, gameID);
 
-        if (gameID > listGames(authToken).get("games").length) {
-            throw new ServiceException(401, "Error: Invalid gameID");
-        }
-
-        UserData user = dataAccess.getUser(authData.username());
+        UserData user = dataAccess.getUser(dataAccess.getAuth(authToken).username());
         validateUserData(user);
 
         return dataAccess.getGame(gameID).game();
     }
 
     public ChessGame updateChessGame(String authToken, int gameID, ChessGame game) throws Exception {
-        AuthData authData = dataAccess.getAuth(authToken);
-        if (authData == null) {
-            throw new ServiceException(401, "Error: Unauthorized");
-        }
-
-        if (gameID > listGames(authToken).get("games").length) {
-            throw new ServiceException(401, "Error: Invalid gameID");
-        }
+        validateAuth(authToken);
+        validateGameID(authToken, gameID);
 
         if (game == null) {
             throw new ServiceException(401, "Error: Game null");
@@ -186,10 +157,7 @@ public class Service {
     }
 
     public void updateChessUsername(String authToken, int gameID, String color) throws Exception {
-        AuthData authData = dataAccess.getAuth(authToken);
-        if (authData == null) {
-            throw new ServiceException(401, "Error: Unauthorized");
-        }
+        validateAuth(authToken);
 
         dataAccess.updateGame(gameID, null, color);
     }
@@ -200,5 +168,18 @@ public class Service {
         dataAccess.clearUserData();
 
         return null;
+    }
+
+    // Utility Methods to Reduce Duplications
+    private void validateAuth(String authToken) throws Exception {
+        if (dataAccess.getAuth(authToken) == null) {
+            throw new ServiceException(401, "Error: Unauthorized");
+        }
+    }
+
+    private void validateGameID(String authToken, int gameID) throws Exception {
+        if (gameID > listGames(authToken).get("games").length) {
+            throw new ServiceException(401, "Error: Invalid gameID");
+        }
     }
 }
