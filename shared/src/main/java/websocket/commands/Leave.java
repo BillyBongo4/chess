@@ -6,15 +6,8 @@ import chess.ChessMove;
 import java.util.Objects;
 
 public class Leave extends UserGameCommand {
-    private final String color;
-
     public Leave(String authToken, Integer gameID, String color) {
-        super(UserGameCommand.CommandType.LEAVE, authToken, gameID);
-        this.color = color;
-    }
-
-    public String getColor() {
-        return color;
+        super(UserGameCommand.CommandType.LEAVE, authToken, gameID, color);
     }
 
     @Override

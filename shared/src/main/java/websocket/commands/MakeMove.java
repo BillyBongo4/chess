@@ -8,13 +8,11 @@ import java.util.Objects;
 public class MakeMove extends UserGameCommand {
     private final ChessMove move;
     private final ChessGame game;
-    private final String color;
 
     public MakeMove(String authToken, Integer gameID, ChessMove move, ChessGame game, String color) {
-        super(CommandType.MAKE_MOVE, authToken, gameID);
+        super(CommandType.MAKE_MOVE, authToken, gameID, color);
         this.move = move;
         this.game = game;
-        this.color = color;
     }
 
     public ChessMove getMove() {
@@ -23,10 +21,6 @@ public class MakeMove extends UserGameCommand {
 
     public ChessGame getGame() {
         return game;
-    }
-
-    public String getColor() {
-        return color;
     }
 
     @Override

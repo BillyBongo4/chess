@@ -7,20 +7,14 @@ import java.util.Objects;
 
 public class Connect extends UserGameCommand {
     private final String username;
-    private final String color;
 
     public Connect(String authToken, Integer gameID, String username, String color) {
-        super(UserGameCommand.CommandType.CONNECT, authToken, gameID);
+        super(UserGameCommand.CommandType.CONNECT, authToken, gameID, color);
         this.username = username;
-        this.color = color;
     }
 
     public String getUsername() {
         return username;
-    }
-
-    public String getColor() {
-        return color;
     }
 
     @Override
