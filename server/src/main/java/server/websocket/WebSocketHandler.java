@@ -86,7 +86,8 @@ public class WebSocketHandler {
             }
 
             connections.addConnection(command.getAuthToken(), command.getGameID(), command.getColor(), session);
-            connections.broadcastToAllElseInGame(command.getAuthToken(), command.getGameID(), new Notification(command.getUsername() + " joined as " + command.getColor()));
+            connections.broadcastToAllElseInGame(command.getAuthToken(), command.getGameID(),
+                    new Notification(command.getUsername() + " joined as " + command.getColor()));
             connections.broadcastToOneUser(command.getAuthToken(), new LoadGame(game, command.getColor()));
         } catch (ServiceException e) {
             // Catch the ServiceException and notify the user
