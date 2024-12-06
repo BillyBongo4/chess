@@ -250,7 +250,9 @@ public class Client {
         try {
             /*String[] newParams = Arrays.copyOf(params, params.length + 1);
             newParams[newParams.length - 1] = "white";*/
+            ws = new WebSocketFacade(serverUrl, notificationHandler);
             ws.sendCommand(new Connect(authToken, Integer.parseInt(params[0]), username, "observer"));
+            gameID = Integer.parseInt(params[0]);
             color = "observer";
             observing = true;
             game = server.observeGame(authToken, params[0]);
@@ -292,8 +294,10 @@ public class Client {
     }
 
     public String leave() throws IOException {
-        Leave leaveCommand = new Leave(authToken, gameID, color);
-        ws.sendCommand(leaveCommand);
+        if (!color.equals("observer")) {
+            Leave leaveCommand = new Leave(authToken, gameID, color);
+            ws.sendCommand(leaveCommand);
+        }
         ws.closeSession();
         gameID = 0;
         color = "";
@@ -318,7 +322,6 @@ public class Client {
             color = null;
             observing = false;
             game = null;
-            ws.closeSession();
             return "Logged out successfully!";
         }
         return "You are not logged in.";

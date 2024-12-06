@@ -65,7 +65,11 @@ public class Repl implements NotificationHandler {
                 }
                 break;
             case ERROR:
-                System.out.println("Error!");
+                Notification errorMessage = (Notification) message;
+                System.out.println("Error: " + errorMessage.getMessage());
+                Notification errorNotification = new Notification("Error: " + errorMessage.getMessage());
+                System.out.println(errorNotification.getMessage());
+                printPrompt();
                 break;
             case NOTIFICATION:
                 Notification notification = (Notification) message;
@@ -74,6 +78,7 @@ public class Repl implements NotificationHandler {
                 break;
         }
     }
+
 
     private String getPieceSymbol(ChessPiece piece) {
         return switch (piece.getPieceType()) {

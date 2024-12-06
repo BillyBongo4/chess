@@ -6,15 +6,21 @@ import chess.ChessPosition;
 import chess.InvalidMoveException;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import server.Server;
+import service.ServiceException;
 import websocket.commands.Connect;
 import websocket.commands.Leave;
 import websocket.commands.MakeMove;
 import websocket.commands.UserGameCommand;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
+import websocket.messages.ServerMessage;
+
+import java.io.IOException;
 
 @WebSocket
 public class WebSocketHandler {
@@ -25,43 +31,68 @@ public class WebSocketHandler {
         this.server = server;
     }
 
+    @OnWebSocketConnect
+    public void onConnect(Session session) {
+        System.out.println("WebSocket connected: " + session);
+    }
+
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
-        UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
-        Connect connect = null;
-        MakeMove makeMove = null;
-        Leave leave = null;
-        if (command.getCommandType() == UserGameCommand.CommandType.CONNECT) {
-            connect = new Gson().fromJson(message, Connect.class);
-        } else if (command.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE) {
-            makeMove = new Gson().fromJson(message, MakeMove.class);
-        } else if (command.getCommandType() == UserGameCommand.CommandType.LEAVE) {
-            leave = new Gson().fromJson(message, Leave.class);
-        }
-        switch (command.getCommandType()) {
-            case CONNECT -> {
-                if (connect != null) {
-                    handleConnect(session, connect);
+        try {
+            UserGameCommand command = new Gson().fromJson(message, UserGameCommand.class);
+            Connect connect = null;
+            MakeMove makeMove = null;
+            Leave leave = null;
+            if (command.getCommandType() == UserGameCommand.CommandType.CONNECT) {
+                connect = new Gson().fromJson(message, Connect.class);
+            } else if (command.getCommandType() == UserGameCommand.CommandType.MAKE_MOVE) {
+                makeMove = new Gson().fromJson(message, MakeMove.class);
+            } else if (command.getCommandType() == UserGameCommand.CommandType.LEAVE) {
+                leave = new Gson().fromJson(message, Leave.class);
+            }
+            switch (command.getCommandType()) {
+                case CONNECT -> {
+                    if (connect != null) {
+                        handleConnect(session, connect);
+                    }
+                }
+                case MAKE_MOVE -> {
+                    if (makeMove != null) {
+                        handleMakeMove(makeMove);
+                    }
+                }
+                case RESIGN -> handleResign(command);
+                case LEAVE -> {
+                    if (leave != null) {
+                        handleLeave(leave);
+                    }
                 }
             }
-            case MAKE_MOVE -> {
-                if (makeMove != null) {
-                    handleMakeMove(makeMove);
-                }
-            }
-            case RESIGN -> handleResign(command);
-            case LEAVE -> {
-                if (leave != null) {
-                    handleLeave(leave);
-                }
-            }
+        } catch (Exception e) {
+            onError(session, e);
         }
     }
 
     private void handleConnect(Session session, Connect command) throws Exception {
-        connections.addConnection(command.getAuthToken(), command.getGameID(), command.getColor(), session);
-        connections.broadcastToAllElseInGame(command.getAuthToken(), command.getGameID(), new Notification(command.getUsername() + " joined as " + command.getColor()));
-        connections.broadcastToOneUser(command.getAuthToken(), new LoadGame(server.getGame(command.getAuthToken(), command.getGameID()), command.getColor()));
+        try {
+            ChessGame game = server.getGame(command.getAuthToken(), command.getGameID());
+            if (game == null) {
+                // Send an error notification to the user
+                System.out.println("Invalid gameID detected.");
+                connections.broadcastToOneUser(command.getAuthToken(), new Notification("Invalid gameID! Connection failed."));
+                // Log the notification sent
+                System.out.println("Notification sent for invalid gameID.");
+                return;
+            }
+
+            connections.addConnection(command.getAuthToken(), command.getGameID(), command.getColor(), session);
+            connections.broadcastToAllElseInGame(command.getAuthToken(), command.getGameID(), new Notification(command.getUsername() + " joined as " + command.getColor()));
+            connections.broadcastToOneUser(command.getAuthToken(), new LoadGame(game, command.getColor()));
+        } catch (ServiceException e) {
+            // Catch the ServiceException and notify the user
+            System.out.println("ServiceException caught in handleConnect: " + e.getMessage());
+            connections.broadcastToOneUser(command.getAuthToken(), new Notification("Error: " + e.getMessage()));
+        }
     }
 
     private void handleMakeMove(MakeMove command) throws Exception {
@@ -81,11 +112,10 @@ public class WebSocketHandler {
             command.getGame().makeMove(command.getMove());
         } catch (InvalidMoveException e) {
             notifyUser(command.getAuthToken(), "Invalid Move!");
+            return;
         }
 
         ChessGame updatedGame = server.updateChessGame(command.getAuthToken(), command.getGameID(), command.getGame());
-
-        //ChessGame updatedGame = new Gson().fromJson(result, ChessGame.class);
         String username = server.getUsername(command.getAuthToken());
 
         broadcastGameUpdate(command, updatedGame);
@@ -154,5 +184,16 @@ public class WebSocketHandler {
 
         connections.broadcastToAllElseInGame(command.getAuthToken(), command.getGameID(), new Notification(username + " has left the game!"));
         connections.removeConnection(command.getAuthToken());
+    }
+
+    @OnWebSocketError
+    public void onError(Session session, Throwable error) {
+        System.err.println("WebSocket Error: " + error.getMessage());
+        error.printStackTrace();
+        try {
+            session.close(1011, "An error occurred: " + error.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -117,6 +117,10 @@ public class Service {
             throw new ServiceException(401, "Error: Unauthorized");
         }
 
+        if (gameID > listGames(authToken).get("games").length) {
+            throw new ServiceException(401, "Error: Invalid gameID");
+        }
+
         if (dataAccess.checkColorUsername(gameID, playerColor)) {
             throw new ServiceException(403, "Error: Already taken");
         }
@@ -134,6 +138,10 @@ public class Service {
         AuthData authData = dataAccess.getAuth(authToken);
         if (authData == null) {
             throw new ServiceException(401, "Error: Unauthorized");
+        }
+
+        if (gameID > listGames(authToken).get("games").length) {
+            throw new ServiceException(401, "Error: Invalid gameID");
         }
 
         UserData user = dataAccess.getUser(authData.username());
