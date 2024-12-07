@@ -12,17 +12,26 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ConnectionManager {
     private final Map<String, Connection> connections = new ConcurrentHashMap<>();
+    private final Map<Session, String> sessionToAuthTokenMap = new ConcurrentHashMap<>();
 
     public void addConnection(String authToken, int gameID, String color, Session session) {
         connections.put(authToken, new Connection(authToken, gameID, color, session));
+        sessionToAuthTokenMap.put(session, authToken);
     }
 
     public Connection getConnection(String authToken) {
         return connections.get(authToken);
     }
 
+    public String getAuthBySession(Session session) {
+        return sessionToAuthTokenMap.get(session);
+    }
+
     public void removeConnection(String authToken) {
-        connections.remove(authToken);
+        Connection connection = connections.remove(authToken);
+        if (connection != null) {
+            sessionToAuthTokenMap.remove(connection.session());
+        }
     }
 
     public void broadcastToOneUser(String authToken, ServerMessage message) throws IOException {

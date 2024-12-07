@@ -66,9 +66,9 @@ public class WebSocketHandler {
 
     private String getColor(String authToken, GameData game) throws Exception {
         String username = server.getUsername(authToken);
-        if (game.whiteUsername().equals(username)) {
+        if (game.whiteUsername() != null && game.whiteUsername().equals(username)) {
             return "white";
-        } else if (game.blackUsername().equals(username)) {
+        } else if (game.blackUsername() != null && game.blackUsername().equals(username)) {
             return "black";
         } else {
             return "observer";
@@ -111,6 +111,11 @@ public class WebSocketHandler {
 
         String color = getColor(command.getAuthToken(), gameData);
 
+        if (color.equals("observer")) {
+            notifyUser(command.getAuthToken(), "Observers can't make moves!");
+            return;
+        }
+
         ChessGame.TeamColor teamColor = getTeamColor(color);
 
         if (teamColor != gameData.game().getTeamTurn()) {
@@ -146,7 +151,7 @@ public class WebSocketHandler {
     }
 
     private void notifyUser(String authToken, String message) throws Exception {
-        connections.broadcastToOneUser(authToken, new Notification(message));
+        connections.broadcastToOneUser(authToken, new ErrorMessage(message));
     }
 
     private void broadcastGameUpdate(ChessGame game, String color, int gameID) throws Exception {
@@ -207,9 +212,9 @@ public class WebSocketHandler {
     }
 
     @OnWebSocketError
-    public void onError(Session session, Throwable error) {
+    public void onError(Session session, Throwable error) throws Exception {
         System.err.println("WebSocket Error: " + error.getMessage());
-        error.printStackTrace();
+        notifyUser(connections.getAuthBySession(session), "Unauthorized!");
         try {
             session.close(1011, "An error occurred: " + error.getMessage());
         } catch (Exception e) {
