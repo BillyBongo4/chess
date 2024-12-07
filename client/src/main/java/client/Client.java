@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
 
@@ -273,8 +274,13 @@ public class Client {
     }
 
     public String resign() throws IOException {
-        UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
-        ws.sendCommand(resignCommand);
+        System.out.println("Are you sure?");
+        String answer = new Scanner(System.in).nextLine();
+        answer = answer.toLowerCase();
+        if (answer.equals("yes") || answer.equals("y")) {
+            UserGameCommand resignCommand = new UserGameCommand(UserGameCommand.CommandType.RESIGN, authToken, gameID);
+            ws.sendCommand(resignCommand);
+        }
         return "";
     }
 
