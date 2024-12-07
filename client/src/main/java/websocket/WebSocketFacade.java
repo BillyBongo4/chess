@@ -3,6 +3,7 @@ package websocket;
 import chess.ChessGame;
 import com.google.gson.Gson;
 import websocket.commands.UserGameCommand;
+import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 import websocket.messages.ServerMessage;
@@ -32,6 +33,8 @@ public class WebSocketFacade extends Endpoint {
                     notificationHandler.handleNotification(new Gson().fromJson(message, LoadGame.class));
                 } else if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.NOTIFICATION) {
                     notificationHandler.handleNotification(new Gson().fromJson(message, Notification.class));
+                } else if (serverMessage.getServerMessageType() == ServerMessage.ServerMessageType.ERROR) {
+                    notificationHandler.handleNotification(new Gson().fromJson(message, ErrorMessage.class));
                 } else {
                     notificationHandler.handleNotification(serverMessage);
                 }

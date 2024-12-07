@@ -31,8 +31,9 @@ public class Repl implements NotificationHandler {
         var result = "";
         while (!result.equals("quit")) {
             if (!inGame) {
-                printPrompt();
+                //printPrompt();
             }
+            printPrompt();
             String line = scanner.nextLine();
 
             try {
@@ -42,7 +43,7 @@ public class Repl implements NotificationHandler {
                     if (result.equals("joined game")) {
                         inGame = true;
                         result = "";
-                        printPrompt();
+                        //printPrompt();
                     } else if (result.equals("You've left the game")) {
                         inGame = false;
                     }
@@ -67,14 +68,15 @@ public class Repl implements NotificationHandler {
                 }
                 break;
             case ERROR:
-                ErrorMessage errorMessage = (ErrorMessage) message;
-                System.out.println("Error: " + errorMessage.getMessage());
-                System.out.println(errorMessage.getMessage());
-                printPrompt();
+                if (message instanceof ErrorMessage errorMessage) {
+                    System.out.println(SET_TEXT_COLOR_RED + "Error: " + errorMessage.getMessage() + RESET_TEXT_COLOR);
+                    //System.out.println(errorMessage.getMessage());
+                    printPrompt();
+                }
                 break;
             case NOTIFICATION:
                 Notification notification = (Notification) message;
-                System.out.println(notification.getMessage());
+                System.out.println(SET_TEXT_COLOR_BLUE + notification.getMessage() + RESET_TEXT_COLOR);
                 printPrompt();
                 break;
         }

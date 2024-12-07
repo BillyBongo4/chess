@@ -167,13 +167,17 @@ public class Client {
 
     public String outputBoard(ChessGame game, String... params) {
         StringBuilder output = new StringBuilder();
-        String labels = params[1].equals("black") ? "h  g  f  e  d  c  b  a" : "a  b  c  d  e  f  g  h";
+        int index = 0;
+        if (params.length > 1) {
+            index = 1;
+        }
+        String labels = params[index].equals("black") ? "h  g  f  e  d  c  b  a" : "a  b  c  d  e  f  g  h";
 
         output.append(RESET_TEXT_COLOR);
 
         output.append(buildHeaderFooter(labels));
         //output.append(buildBoard(game, !params[1].equals("black")));
-        output.append(buildBoard(game, params[1].equals("black"), null, null));
+        output.append(buildBoard(game, params[index].equals("black"), null, null));
         output.append(buildHeaderFooter(labels));
 
         output.append(RESET_BG_COLOR);
@@ -223,7 +227,7 @@ public class Client {
             color = "observer";
             observing = true;
             game = server.observeGame(authToken, params[0]);
-            return "";
+            return "joined game";
         } catch (Exception e) {
             throw new Exception("Invalid id!");
         }
@@ -258,10 +262,8 @@ public class Client {
     }
 
     public String leave() throws IOException {
-        if (!color.equals("observer")) {
-            UserGameCommand leaveCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
-            ws.sendCommand(leaveCommand);
-        }
+        UserGameCommand leaveCommand = new UserGameCommand(UserGameCommand.CommandType.LEAVE, authToken, gameID);
+        ws.sendCommand(leaveCommand);
         ws.closeSession();
         gameID = 0;
         color = "";

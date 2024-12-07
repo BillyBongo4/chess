@@ -202,7 +202,9 @@ public class WebSocketHandler {
     private void handleLeave(UserGameCommand command) throws Exception {
         var username = server.getUsername(command.getAuthToken());
         String color = getColor(command.getAuthToken(), server.getGameData(command.getAuthToken(), command.getGameID()));
-        server.updateChessUsername(command.getAuthToken(), command.getGameID(), color);
+        if (!color.equals("observer")) {
+            server.updateChessUsername(command.getAuthToken(), command.getGameID(), color);
+        }
 
         connections.broadcastToAllElseInGame(command.getAuthToken(), command.getGameID(), new Notification(username + " has left the game!"));
         connections.removeConnection(command.getAuthToken());
