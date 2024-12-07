@@ -30,9 +30,6 @@ public class Repl implements NotificationHandler {
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
-            if (!inGame) {
-                //printPrompt();
-            }
             printPrompt();
             String line = scanner.nextLine();
 
@@ -43,7 +40,6 @@ public class Repl implements NotificationHandler {
                     if (result.equals("joined game")) {
                         inGame = true;
                         result = "";
-                        //printPrompt();
                     } else if (result.equals("You've left the game")) {
                         inGame = false;
                     }
