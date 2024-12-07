@@ -29,11 +29,6 @@ public class WebSocketHandler {
         this.server = server;
     }
 
-    @OnWebSocketConnect
-    public void onConnect(Session session) {
-        System.out.println("WebSocket connected: " + session);
-    }
-
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws Exception {
         try {
@@ -77,16 +72,18 @@ public class WebSocketHandler {
 
     private void handleConnect(Session session, Connect command) throws Exception {
         try {
+            connections.addConnection(command.getAuthToken(), command.getGameID(), "", session);
+
             GameData gameData = server.getGameData(command.getAuthToken(), command.getGameID());
             ChessGame game = gameData.game();
             if (game == null) {
-                // Send an error notification to the user
                 System.out.println("Invalid gameID detected.");
-                connections.broadcastToOneUser(command.getAuthToken(), new Notification("Invalid gameID! Connection failed."));
-                // Log the notification sent
+                connections.broadcastToOneUser(command.getAuthToken(), new ErrorMessage("Invalid gameID! Connection failed."));
+
                 System.out.println("Notification sent for invalid gameID.");
                 return;
             }
+            connections.removeConnection(command.getAuthToken());
 
             String color = getColor(command.getAuthToken(), gameData);
 
@@ -97,7 +94,7 @@ public class WebSocketHandler {
         } catch (ServiceException e) {
             // Catch the ServiceException and notify the user
             System.out.println("ServiceException caught in handleConnect: " + e.getMessage());
-            connections.broadcastToOneUser(command.getAuthToken(), new Notification("Error: " + e.getMessage()));
+            connections.broadcastToOneUser(command.getAuthToken(), new ErrorMessage(e.getMessage()));
         }
     }
 
